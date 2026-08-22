@@ -5,18 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#03080d" />
   <meta name="color-scheme" content="dark" />
-  <meta name="description" content="Scout changelog with selected ProjectHub release, validation, RAG, deployment, and repository-control milestones." />
+  <meta name="description" content="Full Scout changelog and ProjectHub development history with production, integration, evaluation, release-control, and source-of-truth changes tied to commits and pull requests." />
   <meta property="og:title" content="Scout Changelog" />
-  <meta property="og:description" content="Selected source-linked Scout and ProjectHub development milestones." />
+  <meta property="og:description" content="Source-cited Scout and ProjectHub release and development history." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://bradleymatera.dev/scout/changelog.html" />
   <meta property="og:image" content="https://bradleymatera.dev/scout/assets/scout-og.svg" />
   <link rel="canonical" href="https://bradleymatera.dev/scout/changelog.html" />
   <link rel="icon" href="./assets/scout-mark.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./docs.css" />
   <title>Scout Changelog</title>
 </head>
-<body class="product-subpage">
+<body class="product-subpage docs-page changelog-page">
   <canvas id="ambient-three" aria-hidden="true"></canvas>
   <div class="page-grid" aria-hidden="true"></div>
   <div class="scan-line" aria-hidden="true"></div>
@@ -28,72 +29,243 @@
     <section class="subpage-hero">
       <div class="shell reveal">
         <div class="subpage-kicker">Scout / Changelog</div>
-        <h1>Changes tied to <span>history.</span></h1>
-        <p>This is a selected development history, not a marketing release feed. Entries below point to merged pull requests, commits, branch state, or checked-in reports that can be inspected directly.</p>
+        <h1>What changed, where it landed, <span>and what proves it.</span></h1>
+        <p>This changelog separates production releases from integration-only work and historical evaluation records. Entries summarize the actual change on this page. External links are included only as the source for that specific record.</p>
         <div class="subpage-actions">
-          <a class="button primary" href="https://github.com/BradleyMatera/ProjectHub/commits/develop" target="_blank" rel="noopener">Develop history ↗</a>
-          <a class="button" href="https://github.com/BradleyMatera/ProjectHub/commits/master" target="_blank" rel="noopener">Master history ↗</a>
+          <a class="button primary" href="#current-state">Current state</a>
           <a class="button" href="./docs.html">Docs</a>
+          <a class="button" href="./api.html">API reference</a>
+        </div>
+        <div class="docs-status-row" aria-label="Changelog source snapshot">
+          <div class="docs-status-card current"><span>Production</span><strong>master · 4a1eee7</strong></div>
+          <div class="docs-status-card"><span>Integration</span><strong>develop · 2d958e2</strong></div>
+          <div class="docs-status-card"><span>Develop vs master</span><strong>24 ahead · 4 behind</strong></div>
+          <div class="docs-status-card"><span>Snapshot</span><strong>August 22, 2026</strong></div>
         </div>
       </div>
     </section>
 
-    <section class="product-section">
-      <div class="shell">
-        <header class="product-section-head reveal">
-          <div class="index">Current state</div>
-          <div><h2>Released and integrated work are separated.</h2><p><code>master</code> is the production source line. <code>develop</code> is the integrated development line and can contain changes that have not yet been promoted to production.</p></div>
-        </header>
-        <div class="doc-grid">
-          <article class="product-card"><div class="code">Released</div><h3>ProjectHub:master</h3><p>Production source for the public ProjectHub widget and released Scout backend behavior.</p><a href="https://github.com/BradleyMatera/ProjectHub/tree/master" target="_blank" rel="noopener">open master ↗</a></article>
-          <article class="product-card"><div class="code">Integration</div><h3>ProjectHub:develop</h3><p>Integrated development source for newer RAG, contract, evidence-selection, negative-claim, and conversation changes.</p><a href="https://github.com/BradleyMatera/ProjectHub/tree/develop" target="_blank" rel="noopener">open develop ↗</a></article>
-          <article class="product-card"><div class="code">Staging</div><h3>ProjectHub-dev</h3><p>Staging deployment mirror generated from the integrated development source rather than a second independent Scout codebase.</p><a href="https://github.com/BradleyMatera/ProjectHub-dev" target="_blank" rel="noopener">open staging mirror ↗</a></article>
-        </div>
-      </div>
-    </section>
+    <div class="shell docs-mobile-nav"><label><span class="sr-only">Changelog section</span><select aria-label="Changelog section">
+      <option value="current-state">Current source state</option><option value="aug22-profile">Aug 22 · Profile evidence fixes</option><option value="post-release-develop">Aug 21–22 · Post-release develop</option><option value="aug21-model">Aug 21 · Cloudflare 8B Fast</option><option value="aug20-release">Aug 20 · Production release</option><option value="aug19-scorer">Aug 19 · Strict scorer</option><option value="aug12-recovery">Aug 12 · Repository recovery</option><option value="aug12-guardrails">Aug 12 · Git guardrails</option><option value="aug12-workspaces">Aug 12 · Workspace workflow</option><option value="jul17-staging">Jul 17 · Staging isolation</option><option value="jul17-ci">Jul 17 · CI hardening</option><option value="jul17-deploy">Jul 17 · Deploy safety</option><option value="jul17-release">Jul 17 · Coordinated releases</option><option value="evaluation-history">Evaluation history</option><option value="how-to-read">How to read this log</option>
+    </select></label></div>
 
-    <section class="product-section alt">
-      <div class="shell">
-        <header class="product-section-head reveal">
-          <div class="index">Selected history</div>
-          <div><h2>Repository milestones.</h2><p>The dates and descriptions below are the same milestones used on the Scout overview, expanded into a dedicated history page.</p></div>
-        </header>
+    <div class="shell docs-shell">
+      <aside class="docs-sidebar" aria-label="Changelog entries">
+        <div class="docs-sidebar-head"><div class="docs-sidebar-title"><span>Changelog</span><span>15 topics</span></div><input class="docs-search" type="search" placeholder="Search changes…" aria-label="Search changelog" /></div>
+        <nav class="docs-nav">
+          <div class="docs-nav-group"><span class="docs-nav-label">Current</span>
+            <a href="#current-state"><span class="nav-code">01</span>Current source state</a>
+            <a href="#aug22-profile"><span class="nav-code">02</span>Profile evidence fixes</a>
+            <a href="#post-release-develop"><span class="nav-code">03</span>Post-release develop</a>
+          </div>
+          <div class="docs-nav-group"><span class="docs-nav-label">August 2026</span>
+            <a href="#aug21-model"><span class="nav-code">04</span>Cloudflare 8B Fast</a>
+            <a href="#aug20-release"><span class="nav-code">05</span>Production release</a>
+            <a href="#aug19-scorer"><span class="nav-code">06</span>Strict scorer correction</a>
+            <a href="#aug12-recovery"><span class="nav-code">07</span>Repository recovery</a>
+            <a href="#aug12-guardrails"><span class="nav-code">08</span>Git guardrails</a>
+            <a href="#aug12-workspaces"><span class="nav-code">09</span>Workspace workflow</a>
+          </div>
+          <div class="docs-nav-group"><span class="docs-nav-label">July 2026</span>
+            <a href="#jul17-staging"><span class="nav-code">10</span>Staging isolation</a>
+            <a href="#jul17-ci"><span class="nav-code">11</span>CI hardening</a>
+            <a href="#jul17-deploy"><span class="nav-code">12</span>Deploy safety</a>
+            <a href="#jul17-release"><span class="nav-code">13</span>Coordinated releases</a>
+          </div>
+          <div class="docs-nav-group"><span class="docs-nav-label">Reference</span>
+            <a href="#evaluation-history"><span class="nav-code">14</span>Evaluation history</a>
+            <a href="#how-to-read"><span class="nav-code">15</span>How to read this log</a>
+          </div>
+        </nav>
+      </aside>
 
-        <div class="change-entry reveal"><div class="change-date">August 21–22, 2026</div><div><h3>Post-release develop hardening</h3><p>The integrated branch continued changing evidence selection, role framing, negative claims, follow-up handling, and UNKNOWN-state behavior after the production release. Inspect the <a href="https://github.com/BradleyMatera/ProjectHub/commits/develop" target="_blank" rel="noopener">develop commit history ↗</a>.</p></div></div>
+      <article class="docs-content">
+        <div class="docs-empty">No changelog entries match that search.</div>
 
-        <div class="change-entry reveal"><div class="change-date">August 21, 2026</div><div><h3>Cloudflare Llama 3.1 8B Fast configuration</h3><p>Runtime configuration and documentation were updated for <code>@cf/meta/llama-3.1-8b-instruct-fast</code>. <a href="https://github.com/BradleyMatera/ProjectHub/commit/d32b75e945578f9b4261cc1decd2766b7e111873" target="_blank" rel="noopener">commit d32b75e ↗</a></p></div></div>
+        <section class="docs-section" id="current-state" data-search="current source branch master develop production staging ahead behind diverged snapshot">
+          <div class="docs-eyebrow">01 / Source snapshot · 2026-08-22</div><h2>Production and integration are currently different.</h2>
+          <p class="docs-lede">At the time this page was rebuilt, <code>master</code> and <code>develop</code> were diverged. <code>master</code> is still the production source line, while <code>develop</code> contains additional integrated work that has not been promoted as one new production release.</p>
+          <div class="docs-grid-3">
+            <div class="docs-card"><span class="label">Production</span><h3><code>master</code> · <code>4a1eee7</code></h3><p>Head message: <em>fix(cache): bump production ProjectHub.js bundle to v16</em>. The branch is protected and requires the Test and Verify status check for non-admins.</p></div>
+            <div class="docs-card"><span class="label">Integration</span><h3><code>develop</code> · <code>2d958e2</code></h3><p>Head message: <em>fix: tighten profile evidence and keep title in answer</em>. This branch is also protected with the Test and Verify check.</p></div>
+            <div class="docs-card"><span class="label">Comparison</span><h3>24 ahead · 4 behind</h3><p>The GitHub comparison reported the branches as diverged. Differences include RAG agent, response contracts, recovery contracts, validation, conversation resolution, tools, UI and knowledge changes.</p></div>
+          </div>
+          <div class="docs-callout warning"><strong>This is a dated snapshot, not a live branch widget.</strong> New commits can make these SHAs and ahead/behind counts stale; the linked branch/compare records are the evidence captured for this entry.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/tree/master" target="_blank" rel="noopener">Source: master branch snapshot ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/tree/develop" target="_blank" rel="noopener">Source: develop branch snapshot ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/compare/master...develop" target="_blank" rel="noopener">Source: master…develop comparison ↗</a></div>
+        </section>
 
-        <div class="change-entry reveal"><div class="change-date">August 20, 2026</div><div><h3>Validated develop release promoted</h3><p>A 93-commit release pull request moved the validated development line to <code>master</code>. <a href="https://github.com/BradleyMatera/ProjectHub/pull/19" target="_blank" rel="noopener">PR #19 ↗</a></p></div></div>
+        <section class="docs-section" id="aug22-profile" data-search="2026 08 22 profile evidence intent original question title rag agent filter skills experience">
+          <div class="docs-eyebrow">02 / August 22, 2026 · Integration</div><h2>Profile-summary evidence was narrowed and intent classification moved back to the original question.</h2>
+          <p>Two consecutive <code>develop</code> fixes changed how profile-summary requests select evidence before generation.</p>
+          <div class="docs-flow">
+            <div class="docs-flow-step"><div><strong><code>a624cc2</code> · classify profile evidence intent from the original question.</strong><span>The RAG agent had classified evidence intent from a rewritten query. The fix now tries the original question first because rewriting could scramble phrases such as “tell me about” and cause the wrong evidence filter to run.</span></div></div>
+            <div class="docs-flow-step"><div><strong><code>2d958e2</code> · tighten profile evidence and preserve the exact title.</strong><span>Profile evidence filtering stopped admitting generic experience and <code>skills-*</code> chunks, and the profile guardrail now instructs generation to keep the exact documented title/location instead of replacing the title with vague words such as “person” or “candidate.”</span></div></div>
+          </div>
+          <div class="docs-callout"><strong>Release status:</strong> these changes are on <code>develop</code> in the captured source state. They should not be described as production behavior merely because they are the newest commits.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/commit/a624cc23b87b35a68b6dabba4d5f71d4e06e9a9f" target="_blank" rel="noopener">Source: a624cc2 ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/commit/2d958e28b48ff3798a501a650e544823e639f19b" target="_blank" rel="noopener">Source: 2d958e2 ↗</a></div>
+        </section>
 
-        <div class="change-entry reveal"><div class="change-date">August 19, 2026</div><div><h3>Strict scorer replaced earlier release-gate interpretation</h3><p>Stored outputs were re-scored after false positives were identified in the earlier scorer, changing how the preserved evaluation results were interpreted. <a href="https://github.com/BradleyMatera/ProjectHub/commit/e013a320d0495b56bd5cde0cee993d848f4323ec" target="_blank" rel="noopener">strict scorer commit ↗</a></p></div></div>
+        <section class="docs-section" id="post-release-develop" data-search="post release develop rag response contract recovery contract validation conversation role negative unknown source difference">
+          <div class="docs-eyebrow">03 / August 21–22, 2026 · Integration</div><h2>Post-release changes continued across RAG, contracts, recovery, validation and conversation handling.</h2>
+          <p>The current branch comparison shows substantive integrated changes after the production line diverged. The largest source differences are not limited to prompt wording.</p>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Area</th><th>Develop-only difference in captured comparison</th></tr></thead><tbody>
+            <tr><td><code>lib/rag-agent.js</code></td><td>174 changed lines in the comparison, including evidence selection and guardrail behavior.</td></tr>
+            <tr><td><code>lib/response-contract.js</code></td><td>185 changed lines, including semantic answer planning and claim-state handling.</td></tr>
+            <tr><td><code>lib/recovery-contract.js</code></td><td>70 additions, expanding recovery behavior after generation/validation problems.</td></tr>
+            <tr><td><code>lib/grounding-validator.js</code></td><td>39 changed lines in the captured comparison.</td></tr>
+            <tr><td><code>lib/conversation-resolver.js</code></td><td>36 changed lines around contextual resolution.</td></tr>
+            <tr><td><code>data/recruiter-knowledge.json</code></td><td>Large knowledge-tree change in the comparison, 121 additions and 384 deletions.</td></tr>
+          </tbody></table></div>
+          <p>Because these changes are integrated but not identical to the production tree, the product site continues to label released behavior separately from current <code>develop</code> behavior.</p>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/compare/master...develop" target="_blank" rel="noopener">Source: branch comparison ↗</a></div>
+        </section>
 
-        <div class="change-entry reveal"><div class="change-date">August 2026</div><div><h3>Conversation, contract, tool, and grounding layers expanded</h3><p>During the local-agent phase, conversation resolution, completeness checks, response contracts, read-only tool selection, retrieval evaluation, and generated-answer grounding were developed and tested. Related reports remain in <a href="https://github.com/BradleyMatera/ProjectHub/tree/develop/docs" target="_blank" rel="noopener">docs/ ↗</a>.</p></div></div>
+        <section class="docs-section" id="aug21-model" data-search="august 21 cloudflare llama 3.1 8b fast neurons model inference production staging qualify">
+          <div class="docs-eyebrow">04 / August 21, 2026 · Inference</div><h2>Cloudflare Llama 3.1 8B Fast became the qualified runtime model configuration.</h2>
+          <p>Commit <code>d32b75e</code> changed the configured Cloudflare model from Llama 3.2 3B Instruct to <code>@cf/meta/llama-3.1-8b-instruct-fast</code> across runtime documentation, model policy, runtime facts, UI usage display, cost configuration and provider-rate assumptions.</p>
+          <div class="docs-grid-3">
+            <div class="docs-card"><span class="label">Model</span><h3>Llama 3.1 8B Instruct Fast</h3><p>The current production runtime facts identify this as the normal Cloudflare Workers AI generative target.</p></div>
+            <div class="docs-card"><span class="label">Metering</span><h3>Model-specific neuron rates updated</h3><p>The same change updated the input/output neuron rates used for usage estimation.</p></div>
+            <div class="docs-card"><span class="label">Fallback</span><h3>Ollama remained non-default</h3><p>The change retained Ollama as dev/test and optional fallback architecture rather than making it the normal production generation path.</p></div>
+          </div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/commit/d32b75e945578f9b4261cc1decd2766b7e111873" target="_blank" rel="noopener">Source: d32b75e · model qualification/config update ↗</a></div>
+        </section>
 
-        <div class="change-entry reveal"><div class="change-date">August 12, 2026</div><div><h3>Git source-of-truth and workspace guardrails</h3><p>Repository protections were added after a stale-workspace merge problem, followed by multi-PC / IDE / agent workspace checks. <a href="https://github.com/BradleyMatera/ProjectHub/pull/13" target="_blank" rel="noopener">PR #13</a>, <a href="https://github.com/BradleyMatera/ProjectHub/pull/14" target="_blank" rel="noopener">#14</a>, <a href="https://github.com/BradleyMatera/ProjectHub/pull/15" target="_blank" rel="noopener">#15 ↗</a></p></div></div>
+        <section class="docs-section" id="aug20-release" data-search="august 20 release pr 19 93 commits staging smoke 9 9 dev backend healthy production master">
+          <div class="docs-eyebrow">05 / August 20, 2026 · Production release</div><h2>A validated <code>develop</code> line was promoted to <code>master</code>.</h2>
+          <p>PR #19 merged <code>develop</code> into <code>master</code>. Its release record states that staging smoke tests passed <strong>9/9</strong> and the development backend was healthy on commit <code>d7530d0</code> before promotion.</p>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Release property</th><th>Recorded value</th></tr></thead><tbody>
+            <tr><td>Pull request</td><td>#19 · “Release: promote validated develop to master”</td></tr>
+            <tr><td>Head source</td><td><code>develop</code> at <code>d7530d0910293a2e26cfc1c18c7046c34864d767</code></td></tr>
+            <tr><td>Merge commit</td><td><code>0a235c60df0e518736bb77e20f20aa83a18aff62</code></td></tr>
+            <tr><td>PR size</td><td>93 commits · 121 changed files</td></tr>
+            <tr><td>Pre-release evidence in PR body</td><td>Staging smoke tests 9/9; dev backend healthy.</td></tr>
+          </tbody></table></div>
+          <div class="docs-callout production"><strong>Release status:</strong> this entry is a production promotion, unlike later <code>develop</code>-only hardening entries.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/pull/19" target="_blank" rel="noopener">Source: PR #19 ↗</a></div>
+        </section>
 
-        <div class="change-entry reveal"><div class="change-date">July 17, 2026</div><div><h3>Staging and release controls</h3><p>Staging isolation, CI hardening, deployment rollback / health checks, and coordinated release work were merged. <a href="https://github.com/BradleyMatera/ProjectHub/pull/4" target="_blank" rel="noopener">PR #4</a>, <a href="https://github.com/BradleyMatera/ProjectHub/pull/5" target="_blank" rel="noopener">#5</a>, <a href="https://github.com/BradleyMatera/ProjectHub/pull/6" target="_blank" rel="noopener">#6</a>, <a href="https://github.com/BradleyMatera/ProjectHub/pull/7" target="_blank" rel="noopener">#7 ↗</a></p></div></div>
+        <section class="docs-section" id="aug19-scorer" data-search="august 19 strict scorer evaluation false positives 131 178 73.6 contract unknown future role false employer">
+          <div class="docs-eyebrow">06 / August 19, 2026 · Evaluation correction</div><h2>The earlier acceptance score was reclassified after a stricter semantic scorer found false positives.</h2>
+          <p>Commit <code>e013a32</code> added an offline strict semantic scorer, strict evaluation cases, scorer unit tests, re-score tooling, stored strict outputs, and initial contract fixes. The commit records an offline re-score baseline of <strong>131/178, 73.6%</strong>.</p>
+          <div class="docs-grid-2">
+            <div class="docs-card"><span class="label">Why it changed</span><h3>Old “GOOD” labels were not sufficient.</h3><p>Examples in the preserved artifacts included future-capability answers starting with an unsupported “No,” role-fit contracts with missing direct-answer state, and open-world employment claims collapsed into definitive negatives.</p></div>
+            <div class="docs-card"><span class="label">What changed in code</span><h3>Scorer + engine contract fixes.</h3><p>The change added strict validators for open-world claims, unknown skills, future capability, role fit and project technology, then adjusted response-contract/completeness/recovery behavior exposed by those failures.</p></div>
+          </div>
+          <div class="docs-callout warning"><strong>Historical-score rule:</strong> the old 114/115 and 40/40 results are retained as development history, not current accuracy claims. The strict re-score exists specifically because those older labels admitted false positives.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/commit/e013a320d0495b56bd5cde0cee993d848f4323ec" target="_blank" rel="noopener">Source: e013a32 · strict scorer and re-score ↗</a></div>
+        </section>
 
-        <div class="change-entry reveal"><div class="change-date">Earlier ProjectHub</div><div><h3>Embeddable recruiter / portfolio chatbot</h3><p>ProjectHub began around a browser-embeddable recruiter assistant, verified portfolio knowledge, provider routing, analytics, and the Scout chat experience. Later work moved more behavior into explicit retrieval, state, contracts, tools, and validation.</p></div></div>
-      </div>
-    </section>
+        <section class="docs-section" id="aug12-recovery" data-search="august 12 accidental desktop merge revert source of truth master recovery pr 13">
+          <div class="docs-eyebrow">07 / August 12, 2026 · Repository recovery</div><h2>An accidental stale-desktop merge to <code>master</code> was reverted.</h2>
+          <p>PR #13 removed four net accidental additions introduced by the desktop merge and added a local source-of-truth document stating that GitHub is authoritative. The PR description explicitly records that the core Scout runtime files were not overwritten by the accidental push.</p>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Removed accidental additions</th><th>Recovery result</th></tr></thead><tbody>
+            <tr><td><code>.github/copilot-instructions.md</code></td><td>Removed as part of the accidental tree cleanup.</td></tr>
+            <tr><td><code>CLAUDE.md</code></td><td>Removed in this recovery PR; later reintroduced deliberately under new guardrail work.</td></tr>
+            <tr><td>Screenshot asset</td><td>Removed from the production tree.</td></tr>
+            <tr><td><code>server-gcp.js</code></td><td>Removed from the accidental merge state.</td></tr>
+          </tbody></table></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/pull/13" target="_blank" rel="noopener">Source: PR #13 ↗</a></div>
+        </section>
 
-    <section class="product-section">
-      <div class="shell">
-        <header class="product-section-head reveal">
-          <div class="index">Evaluation history</div>
-          <div><h2>Measurements are versioned too.</h2><p>The project does not treat every historical score as current. The strict-scorer work exists because earlier evaluation logic produced false-positive acceptance results.</p></div>
-        </header>
-        <div class="doc-grid">
-          <article class="product-card"><div class="code">Retrieval</div><h3>40-query golden set</h3><p>The current product page reports the documented Recall@6 result alongside the exact golden-set and evaluator paths.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/data/eval-golden.json" target="_blank" rel="noopener">golden set ↗</a></article>
-          <article class="product-card"><div class="code">Acceptance</div><h3>61-request local API evaluation</h3><p>The checked-in engineering documentation describes a local API evaluation covering a bounded request set rather than a generic accuracy percentage.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/AGENTS.md" target="_blank" rel="noopener">engineering instructions ↗</a></article>
-          <article class="product-card"><div class="code">Conversation</div><h3>132-input regression set</h3><p>The current engineering instructions describe retained production conversation inputs plus a targeted unknown-technology repair regression.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/AGENTS.md" target="_blank" rel="noopener">regression instructions ↗</a></article>
-        </div>
-      </div>
-    </section>
+        <section class="docs-section" id="aug12-guardrails" data-search="august 12 github first guardrails pre push master develop fast forward pull origin pr 14">
+          <div class="docs-eyebrow">08 / August 12, 2026 · Repository controls</div><h2>GitHub-first guardrails were added to local clones and coding agents.</h2>
+          <p>PR #14 turned the recovery lesson into repository controls rather than leaving it as a one-time cleanup.</p>
+          <div class="docs-flow">
+            <div class="docs-flow-step"><div><strong>Tracked pre-push hook.</strong><span>Direct pushes to local <code>master</code> and <code>develop</code> were blocked.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Fast-forward-only pull configuration.</strong><span>Local setup configures protected-branch tracking and refuses accidental merge commits caused by stale divergence.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Cross-tool instructions.</strong><span>Repository instructions for Claude/Copilot and local source-of-truth guidance require a GitHub preflight before work.</span></div></div>
+          </div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/pull/14" target="_blank" rel="noopener">Source: PR #14 ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="aug12-workspaces" data-search="august 12 workspaces multiple pc ide agent switching workspace start check publish pr 15">
+          <div class="docs-eyebrow">09 / August 12, 2026 · Workspace workflow</div><h2>Multi-PC, IDE and agent handoff checks were added.</h2>
+          <p>PR #15 added a GitHub-backed workspace flow for switching between machines and coding tools without treating a local checkout as authoritative.</p>
+          <div class="docs-grid-3">
+            <div class="docs-card"><span class="label">workspace:start</span><h3>Begin from remote truth</h3><p>Fetches GitHub state and opens/creates a GitHub-backed feature branch rather than starting from a stale protected branch.</p></div>
+            <div class="docs-card"><span class="label">workspace:check</span><h3>Detect unsafe workspace state</h3><p>Checks stale/diverged/wrong-origin/protected-branch conditions before editing.</p></div>
+            <div class="docs-card"><span class="label">workspace:publish</span><h3>Handoff committed feature work</h3><p>Refuses dirty, diverged or protected-branch publication before a machine/IDE handoff.</p></div>
+          </div>
+          <p>The PR explicitly states that these changes did not alter Scout runtime behavior or production application code.</p>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/pull/15" target="_blank" rel="noopener">Source: PR #15 ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="jul17-staging" data-search="july 17 staging isolation ProjectHub dev local widget dev api deterministic sync pr 4">
+          <div class="docs-eyebrow">10 / July 17, 2026 · Staging</div><h2>Staging was isolated from production sources and routing.</h2>
+          <p>PR #4 changed the staging site so it could load its local widget artifact and point chat requests at the development backend rather than accidentally using production behavior. It also replaced the staging sync with a deterministic prepared-tree operation and a source marker.</p>
+          <div class="docs-grid-2">
+            <div class="docs-card"><span class="label">Frontend isolation</span><h3>Local staging widget + dev API</h3><p>The dev host can use <code>./ProjectHub.js</code> and set the development chat API endpoint instead of hardcoding the production widget/API pair.</p></div>
+            <div class="docs-card"><span class="label">Provenance</span><h3>Prepared staging tree</h3><p>The sync process writes a <code>STAGING-SOURCE.json</code> marker and staging-specific Pages/instruction files so the deployment target is traceable back to canonical <code>develop</code>.</p></div>
+          </div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/pull/4" target="_blank" rel="noopener">Source: PR #4 ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="jul17-ci" data-search="july 17 ci hardening build freshness secret scan knowledge json retrieval recall threshold 0.90 pr 5">
+          <div class="docs-eyebrow">11 / July 17, 2026 · CI</div><h2>CI added artifact, knowledge, secret and retrieval gates.</h2>
+          <p>PR #5 expanded the Test and Verify workflow with checks that can fail the branch rather than simply report information.</p>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Gate added</th><th>Recorded behavior</th></tr></thead><tbody>
+            <tr><td>Analytics bundle freshness</td><td>Build and compare <code>analytics/dist</code> to committed output.</td></tr>
+            <tr><td>Knowledge JSON validation</td><td>Parse JSON and require core knowledge sections.</td></tr>
+            <tr><td>Committed-secret scan</td><td>Search source files for several API-key token patterns.</td></tr>
+            <tr><td>Staging routing check</td><td>Reject a staging page that points only at the production widget route.</td></tr>
+            <tr><td>Retrieval quality gate</td><td>Fail if Recall@6 falls below 0.90.</td></tr>
+          </tbody></table></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/pull/5" target="_blank" rel="noopener">Source: PR #5 ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="jul17-deploy" data-search="july 17 deploy safety branch guard backup rollback health smoke pr 6 gcp">
+          <div class="docs-eyebrow">12 / July 17, 2026 · Deployment</div><h2>Deployment scripts gained branch guards, backups, health checks and rollback.</h2>
+          <p>PR #6 hardened both production and development GCP deploy scripts.</p>
+          <div class="docs-flow">
+            <div class="docs-flow-step"><div><strong>Source guard.</strong><span>Production deploy requires <code>master</code>; development deploy requires <code>develop</code>; dirty working trees are blocked.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Versioned release + backup.</strong><span>The scripts record the source SHA, use release directories, and preserve the previous server/lib/config state.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Post-restart verification.</strong><span>Health and grounded-chat smoke checks run after restart; startup/health failure triggers automatic rollback.</span></div></div>
+          </div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/pull/6" target="_blank" rel="noopener">Source: PR #6 ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="jul17-release" data-search="july 17 coordinated production releases pages manual backend verification pr 7 workflow">
+          <div class="docs-eyebrow">13 / July 17, 2026 · Release coordination</div><h2>Frontend publication was gated behind backend verification.</h2>
+          <p>PR #7 removed the automatic production Pages trigger on <code>master</code> and changed the intended release order so the backend could be deployed and verified before the matching frontend was published.</p>
+          <div class="docs-flow">
+            <div class="docs-flow-step"><div><strong>Merge release PR to <code>master</code>.</strong><span>Source promotion happens first.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Deploy and health-check backend.</strong><span>The production backend is verified before the web client is published.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Publish Pages frontend.</strong><span>The workflow was made manual with a production environment gate in this PR.</span></div></div>
+          </div>
+          <div class="docs-callout warning"><strong>Current-workflow note:</strong> later executable workflow behavior may differ from this July change. This entry records what PR #7 changed at that time; it is not used as a claim about today's Pages trigger.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/pull/7" target="_blank" rel="noopener">Source: PR #7 ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="evaluation-history" data-search="evaluation history retrieval recall 1.000 strict scorer false positive 73.6 historical quality gate">
+          <div class="docs-eyebrow">14 / Evaluation history</div><h2>Evaluation results are attached to the code/scorer that produced them.</h2>
+          <p>The changelog does not collapse historical measurements into one “accuracy” number. The project has changed both the engine and the evaluator, so results need their scope.</p>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Measurement</th><th>Context</th><th>How this changelog treats it</th></tr></thead><tbody>
+            <tr><td>114/115 + 40/40 old acceptance results</td><td>Pre-strict scorer accepted false positives later identified in raw outputs.</td><td>Historical only; not a release-quality claim.</td></tr>
+            <tr><td>131/178 · 73.6%</td><td>Offline strict re-score baseline recorded by <code>e013a32</code>.</td><td>Historical correction baseline, not current production quality.</td></tr>
+            <tr><td>Recall@6 1.000 on 40-query retrieval set</td><td>Retrieval-specific evaluator/golden set, separate from conversational answer quality.</td><td>Can be reported only as the scoped retrieval benchmark and rerun with the repository evaluator.</td></tr>
+          </tbody></table></div>
+          <div class="docs-callout"><strong>Different evaluator, different claim.</strong> A retrieval ranking metric, a strict semantic answer scorer, and a live conversation acceptance suite measure different failure modes and should not be combined into one percentage.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/commit/e013a320d0495b56bd5cde0cee993d848f4323ec" target="_blank" rel="noopener">Source: strict re-score baseline ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/data/eval-golden.json" target="_blank" rel="noopener">Source: retrieval golden set ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/scripts/eval-retrieval.js" target="_blank" rel="noopener">Source: retrieval evaluator ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="how-to-read" data-search="how to read changelog released integration historical source citations dates status">
+          <div class="docs-eyebrow">15 / Reading rules</div><h2>How entries are classified.</h2>
+          <div class="docs-grid-3">
+            <div class="docs-card"><span class="label">Production release</span><h3>Reached <code>master</code></h3><p>An entry is called production only when the cited source shows promotion/release into the production line or is itself the production branch state.</p></div>
+            <div class="docs-card"><span class="label">Integration</span><h3>Present on <code>develop</code></h3><p>Integrated changes can be real, tested code without being production. They are labeled separately until promoted.</p></div>
+            <div class="docs-card"><span class="label">Historical</span><h3>Preserved for provenance</h3><p>Old architecture, workflows and scores stay useful for explaining how the system changed, but are not silently converted into current behavior.</p></div>
+          </div>
+          <p>Dates are based on the cited commit/PR records. Branch-head and ahead/behind values are snapshots captured when this page was rebuilt and can change after new repository activity.</p>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/PROJECTHUB-DEVELOPMENT-AND-RELEASE-SPEC.md" target="_blank" rel="noopener">Source: branch/release roles ↗</a></div>
+        </section>
+      </article>
+    </div>
   </main>
 
   <footer class="site-footer"><div class="shell"><div><strong>Scout</strong><span> · ProjectHub runtime</span></div><a href="https://www.linkedin.com/in/bradmatera" target="_blank" rel="noopener">LinkedIn ↗</a></div></footer>
   <script type="module" src="./scene.js"></script>
   <script src="./site.js" defer></script>
+  <script src="./docs.js" defer></script>
 </body>
 </html>
