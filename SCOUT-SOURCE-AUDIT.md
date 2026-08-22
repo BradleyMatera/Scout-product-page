@@ -1,6 +1,17 @@
 # Scout Source Audit — 2026-08-22
 
-This audit records the evidence used to rebuild the public Scout product page. It exists to keep product claims tied to the actual ProjectHub repositories instead of conversation memory or future architecture ideas.
+This file records the repository evidence used by the Scout implementation-status page. It separates released behavior, integrated development behavior, historical evaluation results, and planned productization.
+
+## Source priority
+
+When sources disagree, use this order:
+
+1. current executable source and workflows
+2. `ProjectHub:master` for released production behavior
+3. `ProjectHub:develop` for integrated but potentially unreleased behavior
+4. current staging provenance from `ProjectHub-dev:main:STAGING-SOURCE.json`
+5. dated reports and historical evaluation artifacts for the runtime/scorer they describe
+6. roadmap documents only for planned work
 
 ## Repositories
 
@@ -10,7 +21,7 @@ Canonical source repository.
 
 - `master` = released production line
 - `develop` = protected integration/development line
-- ProjectHub frontend + Scout backend + tests + evals + docs + release automation live here
+- contains the ProjectHub frontend, Scout backend, tests, evals, documentation, workflows, deployment scripts, Docker configuration, and analytics
 
 At the time of this audit:
 
@@ -19,13 +30,15 @@ At the time of this audit:
 - `develop` tip: `f56b7688de8d89de9d692acd261f95764dc48e1b` (`fix(rag): avoid skill-framing for role targets, strengthen UNKNOWN/NO answer instructions`)
 - both `master` and `develop` are protected and require `Test and Verify / verify`
 
-`master` and `develop` are currently diverged. The integrated branch contains post-release RAG/contract/validation work that is not necessarily in production yet.
+`master` and `develop` were diverged at audit time. `develop` contained post-release RAG/contract/validation work that was not necessarily in production.
 
 ### `BradleyMatera/ProjectHub-dev`
 
-Staging deployment mirror, not a second source repository.
+Staging deployment mirror.
 
-Its `STAGING-SOURCE.json` identifies the canonical `ProjectHub/develop` commit used to generate the staging tree. At audit time it pointed to `a2415db33c1d98a65387bfa4158215d6e44d245f`.
+`STAGING-SOURCE.json` records the canonical `ProjectHub/develop` commit used to generate the staging tree. At audit time it pointed to:
+
+`a2415db33c1d98a65387bfa4158215d6e44d245f`
 
 The current `sync-staging.yml` prepares a staging-specific tree, writes provenance metadata, and pushes it to `ProjectHub-dev:main`.
 
@@ -33,7 +46,7 @@ The current `sync-staging.yml` prepares a staging-specific tree, writes provenan
 
 `ProjectHub` had 25 visible branches during the audit.
 
-Most old feature/chore/release branches contain **zero unique commits ahead of current `develop`** and now function as historical pointers. This includes:
+Most old feature/chore/release branches contained zero unique commits ahead of current `develop` and functioned as historical pointers. Examples:
 
 - `feat/agent-systems-network`
 - `feat/architecture-refactor`
@@ -48,58 +61,53 @@ Most old feature/chore/release branches contain **zero unique commits ahead of c
 - `release/public-refresh-2026-08-20`
 - older Git/workspace/doc/revert/archive branches
 
-Two stale ChatGPT experiment branches each retain one unique patch script but are roughly 90 commits behind `develop`:
+Two stale ChatGPT experiment branches each retained one unique patch script while being roughly 90 commits behind `develop`:
 
 - `chatgpt/scout-negative-memory-20260820`
 - `chatgpt/scout-strict-followup-20260820`
 
-These are not treated as integrated Scout capabilities.
+Those scripts are not treated as integrated Scout capabilities.
 
-The active Dependabot branch only changes dependency lock data and is not a product capability.
+The active Dependabot branch only changed dependency lock data.
 
 ## Current runtime architecture
 
-Current source, README, AGENTS instructions and runtime knowledge agree on the core architecture:
+Current source, README, AGENTS instructions, and runtime knowledge agree on these points:
 
-- Scout is the intelligence/orchestration engine.
-- ProjectHub Recruiter Alpha is the current application powered by Scout.
+- Scout is the orchestration/intelligence layer used by ProjectHub Recruiter Alpha.
 - Production and staging generation use Cloudflare Workers AI.
 - Current configured production model: `@cf/meta/llama-3.1-8b-instruct-fast`.
 - Ollama `qwen2.5:1.5b` is the current development/evaluation model.
-- Ollama production fallback is not enabled merely because the code path exists. Cloudflare fallback requires explicit enablement and a qualification flag.
+- Cloudflare-to-Ollama production fallback requires explicit enablement and a qualification flag.
 - Browser/WebGPU inference is experimental.
-- Substantive questions use RAG-first evidence preparation.
+- Substantive questions use a RAG-first path.
 - Local Okapi BM25 performs retrieval.
-- Contextual follow-ups can fuse multiple BM25 rankings with RRF (`k=60`).
-- The backend owns structured per-session conversation state.
+- Contextual follow-ups can fuse BM25 rankings with RRF (`k=60`).
+- The backend owns structured per-session state.
 - Five recent compact turns are retained in server state.
-- Tools are allowlisted and read-only in the public recruiter application.
-- Tools can enrich evidence; they are not the primary replacement for retrieved RAG evidence.
+- Current public tools are allowlisted and read-only.
+- Tools can add evidence but are not the primary replacement for retrieved RAG evidence.
 - Generated output is validated after inference.
-- Normal chatbot prose is generative; deterministic code owns routing, evidence, contracts and validation rather than freely authoring ordinary conversational answers.
-- Canonical direct knowledge paths can emit `DIRECT_KB`; normal model output is `MODEL_GENERATION`; infrastructure/validation failure can emit `TECHNICAL_ERROR`.
-- The architecture operates under a 15-second end-to-end response budget.
+- Normal conversational prose is generative; deterministic code controls routing, evidence, contracts, and validation.
+- Canonical direct knowledge paths can emit `DIRECT_KB`; model output is `MODEL_GENERATION`; infrastructure/validation failure can emit `TECHNICAL_ERROR`.
+- The documented end-to-end request budget is 15 seconds.
 
 ## Current application scope
 
-This is the largest correction made to the product page.
+`data/scout-runtime-knowledge.json` on current `develop` states that the current Scout application is not a general-purpose assistant. Its allowed scope is Bradley Matera's projects, skills, experience, education, certifications, career goals, public contact information, and Scout's own runtime/architecture.
 
-`data/scout-runtime-knowledge.json` on current `develop` explicitly says the current Scout application is **not a general-purpose assistant**. Its allowed scope is Bradley Matera's projects, skills, experience, education, certifications, career goals, public contact information, and Scout's own runtime/architecture.
-
-Therefore the product page must not advertise the following as currently shipped:
+The implementation-status page therefore does not label these as shipped capabilities:
 
 - general-purpose no-KB Scout
-- arbitrary customer/domain packs
-- any-industry specialization without core work
+- arbitrary customer/domain packages
+- any-industry specialization without core changes
 - finished multi-tenant SaaS
 - production browser/WebGPU inference
-- automatically qualified local Ollama production fallback
-
-Those belong in the productization roadmap.
+- automatic qualified local Ollama production fallback
 
 ## Current evidence tools
 
-`lib/agent-tools.js` currently defines recruiter-specific, allowlisted functions such as:
+`lib/agent-tools.js` currently defines recruiter-specific, allowlisted functions including:
 
 - `search_portfolio`
 - `get_project`
@@ -109,11 +117,11 @@ Those belong in the productization roadmap.
 - `get_skill_evidence`
 - `build_recruiter_brief`
 
-This is evidence that the *tool boundary* is reusable, but the current shipped tool catalog itself is tenant/domain-specific.
+The current tool catalog is tenant/domain-specific even though the execution boundary can be generalized later.
 
 ## Session state
 
-`lib/session-state.js` makes the backend authoritative for conversation state. It tracks items including:
+`lib/session-state.js` tracks:
 
 - current topic
 - current projects
@@ -125,82 +133,79 @@ This is evidence that the *tool boundary* is reusable, but the current shipped t
 - visitor name
 - five recent compact turns
 
-State is in-memory with a two-hour TTL and bounded session capacity for the public widget.
+Current constants also set a two-hour in-memory state TTL and a 250-session cap for the public widget process.
 
 ## Grounding and validation
 
-`lib/grounding-validator.js` includes multiple layers beyond a simple answer/KB similarity check, including:
+`lib/grounding-validator.js` includes checks for:
 
-- overclaim detection
+- overclaim patterns
 - entity grounding
 - number grounding
 - content-word overlap
 - question relevance
 - answer length/structure
-- evidence-strength upgrade detection
-- claim-level negation-aware validation
+- evidence-strength upgrades
+- negation-aware claim validation
 - relationship validation
-- project/technology provenance checks
-- professional/seniority inflation controls
+- project/technology provenance
+- professional/seniority inflation
 
-The newest `develop` commits continue strengthening future/hypothetical role handling and UNKNOWN/negative-answer behavior.
+Post-release `develop` commits continued changing future/hypothetical-role and UNKNOWN/negative-answer handling.
 
-## Test and CI evidence
+## Tests and CI
 
 Current engineering instructions describe:
 
 - six legacy API suites
-- dozens of checked-in Node tests
+- checked-in Node test suites
 - a 61-request local API evaluation
-- a 132-input conversation regression (126 retained production inputs plus a six-turn unknown-technology repair regression)
+- a 132-input conversation regression: 126 retained production inputs plus a six-turn unknown-technology repair regression
 - a 40-query retrieval golden set
 
 Current documented retrieval result:
 
 - Recall@6 = `1.000` on the 40-query golden set
 
-Current CI (`.github/workflows/test.yml`) includes checks for:
+Current CI (`.github/workflows/test.yml`) includes:
 
-- dependency install / high-severity production audit
+- dependency install and high-severity production dependency audit
 - analytics build
-- committed analytics build freshness
-- generated `ProjectHub.js` freshness
-- JavaScript syntax
+- committed analytics build freshness check
+- generated `ProjectHub.js` freshness check
+- JavaScript syntax checks
 - cost ledger tests
 - retrieval unit tests
 - retrieval evaluation
 - Recall@6 floor of `0.90`
-- required knowledge JSON structure
+- required knowledge JSON structure validation
 - common secret-pattern scanning
-- staging routing isolation
-- metered backend fetch call sites
+- staging routing isolation check
+- metered backend fetch-site check
 
-## Qualification history and why old percentages are not marketing claims
+## Evaluation/scorer correction history
 
-The repository contains an unusually useful example of self-correction.
+Earlier August 19 live runs were summarized by the original scorer as `114/115` plus a focused `40/40` run.
 
-Earlier August 19 live runs looked extremely strong under the original acceptance scorer (including `114/115` and a focused `40/40`). A later raw-output audit proved the scorer had false positives.
+A later raw-output audit identified false positives. Recorded examples include:
 
-Examples recorded in the repository:
-
-- a Google employment question received a definitive closed-world negative when the evidence only justified UNKNOWN
+- a Google employment question received a definitive closed-world negative when the evidence state should have remained UNKNOWN
 - `Could he learn COBOL?` was scored GOOD even though the visible answer began with the wrong denial
-- a future senior-role question carried a FALSE/NO contract when the evidence state should have been UNKNOWN
-- a Rust claim drifted onto a project whose canonical technology list did not include Rust
+- a future senior-role question carried FALSE/NO contract state where the evidence state should have been UNKNOWN
+- a Rust claim was attributed to a project whose canonical technology list did not include Rust
 
-The project then:
+The repository then added a stricter semantic scorer and re-scored the preserved pre-strict artifacts.
 
-1. explicitly invalidated the old release-gate interpretation
-2. added a stricter semantic scorer
-3. re-scored stored raw artifacts
-4. exposed a much weaker strict baseline
-5. changed intent / response-contract / recovery / grounding behavior based on the failures
+Commit `e013a320d0495b56bd5cde0cee993d848f4323ec` records an offline strict baseline of:
 
-For this reason the public page does not claim a global accuracy percentage.
+- `131/178`
+- `73.6%`
 
-## Release / operations history
+That result is historical. Later model, contract, routing, RAG, and validation changes mean it should not be presented as a current production quality percentage.
 
-Merged PR history shows implemented work for:
+## Release and operations history
+
+Merged PR history includes implemented work for:
 
 - staging isolation
 - CI hardening
@@ -210,44 +215,49 @@ Merged PR history shows implemented work for:
 - GitHub-first source-of-truth guardrails
 - multi-PC / multi-IDE / multi-agent workspace safety
 
-One important drift was found during this audit:
+One documentation/workflow mismatch was found during this audit:
 
 - older release documentation describes production Pages as manual after backend verification
-- current `.github/workflows/pages.yml` actually triggers on pushes to `master` **and** supports manual dispatch
+- current `.github/workflows/pages.yml` triggers on pushes to `master` and also supports manual dispatch
 
-The public product page follows current executable workflow behavior rather than repeating stale documentation.
+The implementation-status page follows the current workflow file for this behavior.
 
-## Deployment reality
+## Deployment state
 
-Current ProjectHub runtime knowledge says:
+Current ProjectHub runtime knowledge states:
 
 - public frontend: GitHub Pages
-- chat backend: separate backend running on a free-tier GCP VM
+- chat backend: separate backend on a free-tier GCP VM
 - normal generation: Cloudflare Workers AI
 
-Dockerfiles and production-parity concepts exist in the repository, but the canonical release documentation still identifies the current SCP-style GCP deployment scripts as legacy infrastructure intended to be replaced by image-based Docker deployment after qualification.
+Dockerfiles and production-parity assets exist in the repository, but the canonical release documentation still identifies the SCP-style GCP deployment path as legacy infrastructure intended to be replaced by image-based deployment after qualification.
 
-The product page therefore does not claim that the current production backend is already fully migrated to an image-based deployment workflow.
+The page therefore does not claim that production is already fully image-deployed.
 
-## Productization direction represented on the page
+## Planned productization represented on the page
 
-The page labels these as roadmap/productization work rather than current capability:
+The page labels these as not implemented yet:
 
-- stabilize current Scout behavior first
-- reduce branch/repository clutter after preserving meaningful history
-- extract recruiter/customer assumptions from core orchestration
-- support an intentional empty/no-KB Scout mode
-- define validated knowledge/policy/workflow/tool/extension package contracts
-- prove portability against unrelated domains without changing Scout Core
-- improve documentation, configuration validation, deployment, security, licensing/IP inventory and handoff quality
+- tenant-neutral core boundaries
+- supported empty/no-KB mode
+- validated customer/domain package schemas
+- generalized tool/workflow extension interfaces
+- unrelated-domain portability tests
+- product-level deployment/config validation, documentation, security review, licensing/IP inventory, and operator handoff
 
-## Audit rule for future page changes
+## Retest references
 
-When marketing copy conflicts with source evidence:
+Useful current commands from `package.json` and release documentation include:
 
-1. current executable source/workflow wins over stale prose
-2. `master` describes released production behavior
-3. `develop` describes integrated but potentially unreleased behavior
-4. `ProjectHub-dev` is staging evidence, not an independent source
-5. historical evals must retain their date/model/scorer context
-6. roadmap ideas must be visibly labeled as roadmap ideas
+```bash
+npm test
+npm run test:retrieval
+npm run eval-retrieval
+npm run eval:local-api
+npm run eval:conversation
+npm run eval:production-conversations
+npm run build
+node --check server-gemini.js
+```
+
+Historical results should be reproduced against the matching historical commit if exact comparison is required. Current-state claims should be re-run against current `develop` or the current deployed target.
