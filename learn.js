@@ -74,17 +74,17 @@
   }
 
   // Clarify the two token-estimation schemes. The generic context-packet helper
-  // uses chars/4, while the active RAG-primary agent estimates telemetry from
-  // word and punctuation counts and uses a separate char budget for prompt size.
+  // uses chars/4, while the active RAG-primary agent uses word and matched
+  // separator/symbol counts and a separate char budget for prompt size.
   const context = document.getElementById('context');
   if (context && !context.querySelector('[data-current-rag-token-math]')) {
     const block = document.createElement('div');
     block.dataset.currentRagTokenMath = 'true';
     block.innerHTML = `
       <h3>Current RAG-primary estimator</h3>
-      <p>The current <code>rag-agent.js</code> path does not use only the <code>chars / 4</code> estimate shown above. It has a second telemetry estimator based on words and punctuation:</p>
+      <p>The current <code>rag-agent.js</code> path does not use only the <code>chars / 4</code> estimate shown above. It has a second telemetry estimator based on word count plus a regex count of punctuation, symbols, and separators. The current regex also matches spaces, so “punctuationCount” would be an overly neat description of what the code actually counts.</p>
       <div class="equation"><span class="eq-title">RAG-primary estimated input tokens</span><code>estimatedInputTokens(text)
-= ceil( (wordCount × 1.3 + punctuationCount × 0.5) × 1.15 )</code></div>
+= ceil( (wordCount × 1.3 + matchedSeparatorSymbolCount × 0.5) × 1.15 )</code></div>
       <p>At the same time, prompt construction uses a character budget derived from <code>RAG_MAX_TOKENS × 4</code>. With the default <code>RAG_MAX_TOKENS = 400</code>, the nominal character budget is <code>1,600</code> characters, split approximately 90% to the system side and 10% to the user side before additional truncation rules. Default RAG evidence is capped to 8 selected items and 1,100 characters; requested generation defaults to 220 output tokens.</p>
       <div class="docs-callout warning"><strong>Why two estimates?</strong> These are engineering heuristics for budgeting and telemetry. Neither is an exact tokenizer. The provider's returned token counts, when present, are better measurements of actual model usage.</div>
       <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-agent.js" target="_blank" rel="noopener">Source: active RAG token/budget math ↗</a></div>`;
