@@ -1,21 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-  <title id="title">Scout runtime architecture</title>
-  <desc id="desc">Scout runtime, architecture, tests and limits with a technical system map.</desc>
+  <title id="title">Scout runtime, architecture, tests and limits</title>
+  <desc id="desc">Scout implementation status page with abstract technical grid artwork.</desc>
   <defs>
-    <linearGradient id="g" x1="745" y1="115" x2="1050" y2="510" gradientUnits="userSpaceOnUse"><stop stop-color="#79EAB3"/><stop offset="1" stop-color="#6DA9FF"/></linearGradient>
-    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#253345" stroke-opacity=".28"/></pattern>
-    <filter id="glow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <linearGradient id="accent" x1="660" y1="80" x2="1110" y2="570" gradientUnits="userSpaceOnUse"><stop stop-color="#79EAB3"/><stop offset="1" stop-color="#6DA9FF"/></linearGradient>
+    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#79EAB3" stop-opacity="0"/><stop offset=".5" stop-color="#79EAB3" stop-opacity=".72"/><stop offset="1" stop-color="#6DA9FF" stop-opacity="0"/></linearGradient>
+    <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse"><path d="M42 0H0V42" fill="none" stroke="#273647" stroke-opacity=".28"/></pattern>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="12"/></filter>
   </defs>
   <rect width="1200" height="630" fill="#070A0F"/><rect width="1200" height="630" fill="url(#grid)"/>
+  <circle cx="1020" cy="110" r="180" fill="#79EAB3" opacity=".045" filter="url(#glow)"/><circle cx="860" cy="540" r="210" fill="#6DA9FF" opacity=".04" filter="url(#glow)"/>
+  <g transform="translate(720 95)" fill="none" stroke="url(#accent)" stroke-opacity=".42">
+    <path d="M0 365 C90 300 95 175 185 118 S365 118 425 22" stroke-width="2"/>
+    <path d="M8 430 C115 365 120 240 220 180 S380 150 445 78" stroke-width="1.5" opacity=".55"/>
+    <path d="M-18 300 C75 250 120 80 255 80 S370 92 455 2" stroke-width="1" opacity=".35"/>
+    <g stroke-opacity=".22"><path d="M40 25V470"/><path d="M110 25V470"/><path d="M180 25V470"/><path d="M250 25V470"/><path d="M320 25V470"/><path d="M390 25V470"/><path d="M0 80H460"/><path d="M0 150H460"/><path d="M0 220H460"/><path d="M0 290H460"/><path d="M0 360H460"/><path d="M0 430H460"/></g>
+  </g>
+  <rect x="700" y="310" width="460" height="2" fill="url(#fade)"/>
   <text x="68" y="88" fill="#79EAB3" font-family="ui-monospace,monospace" font-size="17" font-weight="700" letter-spacing="4">SCOUT / CURRENT IMPLEMENTATION</text>
   <text x="68" y="206" fill="#F0F5F8" font-family="Inter,system-ui,sans-serif" font-size="78" font-weight="800" letter-spacing="-5">Runtime.</text>
   <text x="68" y="286" fill="#F0F5F8" font-family="Inter,system-ui,sans-serif" font-size="78" font-weight="800" letter-spacing="-5">Architecture.</text>
   <text x="68" y="366" fill="#92A4B3" font-family="Inter,system-ui,sans-serif" font-size="78" font-weight="800" letter-spacing="-5">Tests. Limits.</text>
   <text x="70" y="430" fill="#99A8B5" font-family="Inter,system-ui,sans-serif" font-size="22">BM25/RRF · response contracts · Cloudflare 8B generation</text>
   <text x="70" y="466" fill="#99A8B5" font-family="Inter,system-ui,sans-serif" font-size="22">grounding validation · server-owned session state</text>
-  <g transform="translate(905 315)" filter="url(#glow)"><circle r="142" fill="#091018" stroke="#293A4A" stroke-width="2"/><circle r="96" fill="#0B141A" stroke="url(#g)" stroke-width="3"/><circle r="44" fill="#081015" stroke="#79EAB3" stroke-width="2"/><text y="7" text-anchor="middle" fill="#F0F5F8" font-family="ui-monospace,monospace" font-size="18" font-weight="700">SCOUT</text>
-  <g fill="#071019" stroke-width="3"><circle cx="0" cy="-142" r="9" stroke="#79EAB3"/><circle cx="123" cy="-71" r="9" stroke="#6DA9FF"/><circle cx="123" cy="71" r="9" stroke="#79EAB3"/><circle cx="0" cy="142" r="9" stroke="#79EAB3"/><circle cx="-123" cy="71" r="9" stroke="#79EAB3"/><circle cx="-123" cy="-71" r="9" stroke="#8195A7"/></g>
-  </g>
   <rect x="68" y="535" width="1064" height="1" fill="#263544"/>
   <text x="68" y="575" fill="#6F8191" font-family="ui-monospace,monospace" font-size="15">bradleymatera.github.io/Scout-product-page</text>
 </svg>
