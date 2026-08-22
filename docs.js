@@ -27,6 +27,38 @@
     }
   }
 
+  // Teaching-guide clarification: active retrieval is lexical BM25/RRF. RAG is
+  // an architectural pattern and does not imply embeddings or a vector database.
+  if (/learn\.html$/i.test(location.pathname)) {
+    const mental = document.getElementById('mental-model');
+    if (mental && !mental.querySelector('[data-vector-clarification]')) {
+      const note = document.createElement('div');
+      note.dataset.vectorClarification = 'true';
+      note.className = 'docs-callout production';
+      note.innerHTML = '<strong>Scout does not currently need a vector database for its active retrieval path.</strong> The executable path traced in this guide builds plain-text chunks and ranks them with BM25/RRF. “RAG” only means retrieval is used to augment generation; RAG can be implemented with lexical search, vector search, hybrid search, databases, APIs, or other retrieval systems. A legacy-looking <code>hash-vector-local</code> label still appears in health metadata, but the current retrieval implementation documented here is BM25/RRF. <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-chunks.js" target="_blank" rel="noopener">Source: chunk corpus ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/bm25.js" target="_blank" rel="noopener">Source: active lexical index ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rrf.js" target="_blank" rel="noopener">Source: rank fusion ↗</a></div>';
+      mental.appendChild(note);
+    }
+
+    const glossary = document.querySelector('#glossary .glossary-grid');
+    if (glossary) {
+      const additions = [
+        ['Embedding', 'A numeric vector representation of data, often produced by a neural model so semantically related items have nearby vectors. Scout’s active BM25/RRF retrieval path does not require embeddings.'],
+        ['Vector search', 'Retrieval by comparing numeric vectors with a similarity or distance function such as cosine similarity, dot product, or Euclidean distance. This is different from Scout’s current lexical BM25 ranking.'],
+        ['Vector database', 'A database/index specialized for storing vectors and retrieving nearest neighbors. A RAG system may use one, but RAG does not require one and Scout’s current retrieval path does not depend on one.'],
+        ['Semantic search', 'Search intended to match meaning rather than only exact words. Embedding-based vector retrieval is one approach. Scout instead improves lexical retrieval with normalization, aliases, context rewriting, BM25, RRF, and deterministic re-ranking.'],
+        ['Deterministic', 'Given the same inputs and configuration, ordinary code follows the same defined rules and calculations. BM25, RRF, tool functions, contracts, and most validators are deterministic.'],
+        ['Generative', 'Produces new output rather than only selecting stored values. In Scout, the language-model call is the main generative component.']
+      ];
+      for (const [term, definition] of additions) {
+        if ([...glossary.querySelectorAll('dt')].some(dt => dt.textContent === term)) continue;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'glossary-term';
+        wrapper.innerHTML = `<dt>${term}</dt><dd>${definition}</dd>`;
+        glossary.appendChild(wrapper);
+      }
+    }
+  }
+
   const byId = new Map(navLinks.map(link => [link.getAttribute('href').slice(1), link]));
 
   function setActive(id) {
