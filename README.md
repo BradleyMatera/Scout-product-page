@@ -17,20 +17,18 @@ https://bradleymatera.github.io/Scout-product-page/
 
 ## Site implementation
 
-The product page is a zero-build GitHub Pages project with progressive 3D enhancement.
+The product page is a zero-build GitHub Pages project with progressive Three.js enhancement.
 
-- `index.html` — page structure and source-linked implementation content
-- `styles.css` — responsive visual system
-- `scene.css` — Three.js label/HUD interaction styling
-- `scene.js` — interactive Scout system map using pinned Three.js `0.185.1`
-- `site.js` — reveal, navigation, and section-to-scene synchronization
+- `index.html` — factual implementation/status content and source links
+- `styles.css` — responsive layout, glass/depth effects, animated pipeline, ticker, runtime panel, tables, timeline, and motion system
+- `scene.js` — pinned Three.js `0.185.1` ambient renderer
+- `site.js` — reveal effects, card perspective/lighting, metric counters, scroll progress, timeline progress, and navigation behavior
 - `assets/scout-mark.svg` — Scout vector mark
-- `assets/scout-system.svg` — static architecture fallback when 3D rendering is unavailable
 - `assets/scout-og.svg` — social/share graphic
 - `site.webmanifest` — installable-site metadata
 - `SCOUT-SOURCE-AUDIT.md` — source audit behind page claims
 
-The Three.js renderer is progressive enhancement. The page content, architecture information, links, and verification table remain available without WebGL or if the CDN module does not load.
+Three.js is used only as progressive visual enhancement behind the content. It renders a low-contrast perspective grid, sparse depth particles, edge light ribbons, and slow scroll/pointer-reactive lighting. It does not replace or represent the Scout architecture itself. If WebGL or the CDN module is unavailable, the factual content and all source-linked verification remain usable.
 
 ## Content rule
 
