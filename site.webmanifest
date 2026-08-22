@@ -1,0 +1,16 @@
+{
+  "name": "Scout Runtime and Architecture",
+  "short_name": "Scout",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#070a0f",
+  "theme_color": "#070a0f",
+  "icons": [
+    {
+      "src": "./assets/scout-mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
