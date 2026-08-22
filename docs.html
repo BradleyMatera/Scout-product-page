@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#03080d" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="description" content="Scout documentation index for runtime facts, architecture, retrieval, validation, release controls, QA reports, and source history." />
+  <meta property="og:title" content="Scout Docs" />
+  <meta property="og:description" content="Source-linked documentation for the current Scout / ProjectHub implementation." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://bradleymatera.dev/scout/docs.html" />
+  <meta property="og:image" content="https://bradleymatera.dev/scout/assets/scout-og.svg" />
+  <link rel="canonical" href="https://bradleymatera.dev/scout/docs.html" />
+  <link rel="icon" href="./assets/scout-mark.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./styles.css" />
+  <title>Scout Docs</title>
+</head>
+<body class="product-subpage">
+  <canvas id="ambient-three" aria-hidden="true"></canvas>
+  <div class="page-grid" aria-hidden="true"></div>
+  <div class="scan-line" aria-hidden="true"></div>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+  <header class="site-header"><div class="shell nav-shell"></div></header>
+
+  <main>
+    <section class="subpage-hero">
+      <div class="shell reveal">
+        <div class="subpage-kicker">Scout / Documentation</div>
+        <h1>Docs that point back to <span>source.</span></h1>
+        <p>This page indexes the checked-in documents and runtime files used to understand Scout. When prose and executable behavior disagree, current runtime configuration and source code are treated as the stronger evidence.</p>
+        <div class="subpage-actions">
+          <a class="button primary" href="https://github.com/BradleyMatera/ProjectHub" target="_blank" rel="noopener">Open ProjectHub source ↗</a>
+          <a class="button" href="./api.html">API reference</a>
+          <a class="button" href="./changelog.html">Changelog</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="product-section">
+      <div class="shell">
+        <header class="product-section-head reveal">
+          <div class="index">01 / Start here</div>
+          <div><h2>Current implementation references.</h2><p>The runtime facts file is the shortest current description of what the released Scout configuration is actually doing. The architecture and handoff documents provide broader context around the same codebase.</p></div>
+        </header>
+        <div class="doc-grid">
+          <article class="product-card" data-tilt="3"><div class="code">Runtime / master</div><h3>Scout runtime facts</h3><p>Current model, provider, RAG-first request path, Cloudflare allocation behavior, rate controls, telemetry, and hosting facts verified in the production branch.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">scout-runtime-knowledge.json ↗</a></article>
+          <article class="product-card" data-tilt="3"><div class="code">Architecture / develop</div><h3>Architecture overview</h3><p>High-level system structure, request flow, frontend/backend responsibilities, retrieval components, session state, and operational constraints.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/docs/architecture-overview.md" target="_blank" rel="noopener">architecture-overview.md ↗</a></article>
+          <article class="product-card" data-tilt="3"><div class="code">Continuation / develop</div><h3>Current feature handoff</h3><p>Current development state and continuation notes for work that follows the released production line.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/docs/current-feature-handoff.md" target="_blank" rel="noopener">current-feature-handoff.md ↗</a></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="product-section alt">
+      <div class="shell">
+        <header class="product-section-head reveal">
+          <div class="index">02 / Quality and release</div>
+          <div><h2>Qualification, release, and hardening records.</h2><p>These documents record test interpretation, release controls, QA findings, RAG hardening work, and the release process used around ProjectHub.</p></div>
+        </header>
+        <div class="doc-grid">
+          <article class="product-card" data-tilt="3"><div class="code">Release process</div><h3>Development and release spec</h3><p>Branch roles, staging flow, release checks, promotion rules, and deployment expectations for ProjectHub.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/PROJECTHUB-DEVELOPMENT-AND-RELEASE-SPEC.md" target="_blank" rel="noopener">release spec ↗</a></article>
+          <article class="product-card" data-tilt="3"><div class="code">Hardening</div><h3>RAG-first hardening report</h3><p>Engineering report covering the move toward retrieval-first evidence, model context construction, and grounding behavior.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/docs/rag-first-hardening-report.md" target="_blank" rel="noopener">rag-first-hardening-report.md ↗</a></article>
+          <article class="product-card" data-tilt="3"><div class="code">QA</div><h3>Scout development QA report</h3><p>Checked-in QA record for Scout development behavior and qualification findings.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/docs/scout-dev-final-qa-report.md" target="_blank" rel="noopener">scout-dev-final-qa-report.md ↗</a></article>
+          <article class="product-card" data-tilt="3"><div class="code">Audit</div><h3>Accepted-answer audit</h3><p>Stored audit material used to inspect previously accepted answers and scoring behavior.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/data/accepted-answer-audit.md" target="_blank" rel="noopener">accepted-answer-audit.md ↗</a></article>
+          <article class="product-card" data-tilt="3"><div class="code">Release record</div><h3>Release manifest</h3><p>A dated release manifest describing the Scout release candidate state and associated artifacts.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/docs/scout-release-manifest-2026-08-16.md" target="_blank" rel="noopener">release manifest ↗</a></article>
+          <article class="product-card" data-tilt="3"><div class="code">Rules</div><h3>Repository engineering instructions</h3><p>Project-level instructions and invariants for working in the Scout / ProjectHub source tree.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/AGENTS.md" target="_blank" rel="noopener">AGENTS.md ↗</a></article>
+        </div>
+        <p class="notice" style="margin-top:18px">Documentation is versioned with the repository and can temporarily lag executable configuration. The production runtime facts file and current source are used on this product site when older prose describes a superseded model or route.</p>
+      </div>
+    </section>
+
+    <section class="product-section">
+      <div class="shell">
+        <header class="product-section-head reveal">
+          <div class="index">03 / Implementation</div>
+          <div><h2>Primary source files.</h2><p>Direct paths for the components described on the Scout overview page.</p></div>
+        </header>
+        <div class="doc-grid">
+          <article class="product-card"><div class="code">Query</div><h3>Query understanding</h3><p>Normalization, protected terms, intent handling, typo correction, and contextual rewriting.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/query-understanding.js" target="_blank" rel="noopener">query-understanding.js ↗</a></article>
+          <article class="product-card"><div class="code">Retrieval</div><h3>BM25 + RRF</h3><p>Local lexical scoring and reciprocal-rank fusion for contextual retrieval.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/bm25.js" target="_blank" rel="noopener">bm25.js ↗</a> · <a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rrf.js" target="_blank" rel="noopener">rrf.js ↗</a></article>
+          <article class="product-card"><div class="code">Generation</div><h3>RAG agent</h3><p>RAG-first evidence context and model-generation path with structured enrichment.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-agent.js" target="_blank" rel="noopener">rag-agent.js ↗</a></article>
+          <article class="product-card"><div class="code">Contract</div><h3>Response contract</h3><p>Fact state, answer polarity, required entities, evidence boundaries, and output requirements.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/response-contract.js" target="_blank" rel="noopener">response-contract.js ↗</a></article>
+          <article class="product-card"><div class="code">Tools</div><h3>Evidence tools</h3><p>Read-only project, profile, role-match, skill-evidence, and comparison helpers.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/agent-tools.js" target="_blank" rel="noopener">agent-tools.js ↗</a></article>
+          <article class="product-card"><div class="code">Validation</div><h3>Grounding validator</h3><p>Entity, number, relationship, provenance, negation-aware, polarity, and overclaim checks.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/grounding-validator.js" target="_blank" rel="noopener">grounding-validator.js ↗</a></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="shell"><div><strong>Scout</strong><span> · ProjectHub runtime</span></div><a href="https://www.linkedin.com/in/bradmatera" target="_blank" rel="noopener">LinkedIn ↗</a></div></footer>
+  <script type="module" src="./scene.js"></script>
+  <script src="./site.js" defer></script>
+</body>
+</html>
