@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://bradleymatera.github.io/Scout-product-page/</loc>
+    <loc>https://bradleymatera.dev/scout/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://bradleymatera.github.io/Scout-product-page/pricing.html</loc>
+    <loc>https://bradleymatera.dev/scout/docs.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://bradleymatera.dev/scout/api.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://bradleymatera.dev/scout/changelog.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bradleymatera.dev/scout/pricing.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
