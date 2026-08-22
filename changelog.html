@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#03080d" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="description" content="Scout changelog with selected ProjectHub release, validation, RAG, deployment, and repository-control milestones." />
+  <meta property="og:title" content="Scout Changelog" />
+  <meta property="og:description" content="Selected source-linked Scout and ProjectHub development milestones." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://bradleymatera.dev/scout/changelog.html" />
+  <meta property="og:image" content="https://bradleymatera.dev/scout/assets/scout-og.svg" />
+  <link rel="canonical" href="https://bradleymatera.dev/scout/changelog.html" />
+  <link rel="icon" href="./assets/scout-mark.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./styles.css" />
+  <title>Scout Changelog</title>
+</head>
+<body class="product-subpage">
+  <canvas id="ambient-three" aria-hidden="true"></canvas>
+  <div class="page-grid" aria-hidden="true"></div>
+  <div class="scan-line" aria-hidden="true"></div>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+  <header class="site-header"><div class="shell nav-shell"></div></header>
+
+  <main>
+    <section class="subpage-hero">
+      <div class="shell reveal">
+        <div class="subpage-kicker">Scout / Changelog</div>
+        <h1>Changes tied to <span>history.</span></h1>
+        <p>This is a selected development history, not a marketing release feed. Entries below point to merged pull requests, commits, branch state, or checked-in reports that can be inspected directly.</p>
+        <div class="subpage-actions">
+          <a class="button primary" href="https://github.com/BradleyMatera/ProjectHub/commits/develop" target="_blank" rel="noopener">Develop history ↗</a>
+          <a class="button" href="https://github.com/BradleyMatera/ProjectHub/commits/master" target="_blank" rel="noopener">Master history ↗</a>
+          <a class="button" href="./docs.html">Docs</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="product-section">
+      <div class="shell">
+        <header class="product-section-head reveal">
+          <div class="index">Current state</div>
+          <div><h2>Released and integrated work are separated.</h2><p><code>master</code> is the production source line. <code>develop</code> is the integrated development line and can contain changes that have not yet been promoted to production.</p></div>
+        </header>
+        <div class="doc-grid">
+          <article class="product-card"><div class="code">Released</div><h3>ProjectHub:master</h3><p>Production source for the public ProjectHub widget and released Scout backend behavior.</p><a href="https://github.com/BradleyMatera/ProjectHub/tree/master" target="_blank" rel="noopener">open master ↗</a></article>
+          <article class="product-card"><div class="code">Integration</div><h3>ProjectHub:develop</h3><p>Integrated development source for newer RAG, contract, evidence-selection, negative-claim, and conversation changes.</p><a href="https://github.com/BradleyMatera/ProjectHub/tree/develop" target="_blank" rel="noopener">open develop ↗</a></article>
+          <article class="product-card"><div class="code">Staging</div><h3>ProjectHub-dev</h3><p>Staging deployment mirror generated from the integrated development source rather than a second independent Scout codebase.</p><a href="https://github.com/BradleyMatera/ProjectHub-dev" target="_blank" rel="noopener">open staging mirror ↗</a></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="product-section alt">
+      <div class="shell">
+        <header class="product-section-head reveal">
+          <div class="index">Selected history</div>
+          <div><h2>Repository milestones.</h2><p>The dates and descriptions below are the same milestones used on the Scout overview, expanded into a dedicated history page.</p></div>
+        </header>
+
+        <div class="change-entry reveal"><div class="change-date">August 21–22, 2026</div><div><h3>Post-release develop hardening</h3><p>The integrated branch continued changing evidence selection, role framing, negative claims, follow-up handling, and UNKNOWN-state behavior after the production release. Inspect the <a href="https://github.com/BradleyMatera/ProjectHub/commits/develop" target="_blank" rel="noopener">develop commit history ↗</a>.</p></div></div>
+
+        <div class="change-entry reveal"><div class="change-date">August 21, 2026</div><div><h3>Cloudflare Llama 3.1 8B Fast configuration</h3><p>Runtime configuration and documentation were updated for <code>@cf/meta/llama-3.1-8b-instruct-fast</code>. <a href="https://github.com/BradleyMatera/ProjectHub/commit/d32b75e945578f9b4261cc1decd2766b7e111873" target="_blank" rel="noopener">commit d32b75e ↗</a></p></div></div>
+
+        <div class="change-entry reveal"><div class="change-date">August 20, 2026</div><div><h3>Validated develop release promoted</h3><p>A 93-commit release pull request moved the validated development line to <code>master</code>. <a href="https://github.com/BradleyMatera/ProjectHub/pull/19" target="_blank" rel="noopener">PR #19 ↗</a></p></div></div>
+
+        <div class="change-entry reveal"><div class="change-date">August 19, 2026</div><div><h3>Strict scorer replaced earlier release-gate interpretation</h3><p>Stored outputs were re-scored after false positives were identified in the earlier scorer, changing how the preserved evaluation results were interpreted. <a href="https://github.com/BradleyMatera/ProjectHub/commit/e013a320d0495b56bd5cde0cee993d848f4323ec" target="_blank" rel="noopener">strict scorer commit ↗</a></p></div></div>
+
+        <div class="change-entry reveal"><div class="change-date">August 2026</div><div><h3>Conversation, contract, tool, and grounding layers expanded</h3><p>During the local-agent phase, conversation resolution, completeness checks, response contracts, read-only tool selection, retrieval evaluation, and generated-answer grounding were developed and tested. Related reports remain in <a href="https://github.com/BradleyMatera/ProjectHub/tree/develop/docs" target="_blank" rel="noopener">docs/ ↗</a>.</p></div></div>
+
+        <div class="change-entry reveal"><div class="change-date">August 12, 2026</div><div><h3>Git source-of-truth and workspace guardrails</h3><p>Repository protections were added after a stale-workspace merge problem, followed by multi-PC / IDE / agent workspace checks. <a href="https://github.com/BradleyMatera/ProjectHub/pull/13" target="_blank" rel="noopener">PR #13</a>, <a href="https://github.com/BradleyMatera/ProjectHub/pull/14" target="_blank" rel="noopener">#14</a>, <a href="https://github.com/BradleyMatera/ProjectHub/pull/15" target="_blank" rel="noopener">#15 ↗</a></p></div></div>
+
+        <div class="change-entry reveal"><div class="change-date">July 17, 2026</div><div><h3>Staging and release controls</h3><p>Staging isolation, CI hardening, deployment rollback / health checks, and coordinated release work were merged. <a href="https://github.com/BradleyMatera/ProjectHub/pull/4" target="_blank" rel="noopener">PR #4</a>, <a href="https://github.com/BradleyMatera/ProjectHub/pull/5" target="_blank" rel="noopener">#5</a>, <a href="https://github.com/BradleyMatera/ProjectHub/pull/6" target="_blank" rel="noopener">#6</a>, <a href="https://github.com/BradleyMatera/ProjectHub/pull/7" target="_blank" rel="noopener">#7 ↗</a></p></div></div>
+
+        <div class="change-entry reveal"><div class="change-date">Earlier ProjectHub</div><div><h3>Embeddable recruiter / portfolio chatbot</h3><p>ProjectHub began around a browser-embeddable recruiter assistant, verified portfolio knowledge, provider routing, analytics, and the Scout chat experience. Later work moved more behavior into explicit retrieval, state, contracts, tools, and validation.</p></div></div>
+      </div>
+    </section>
+
+    <section class="product-section">
+      <div class="shell">
+        <header class="product-section-head reveal">
+          <div class="index">Evaluation history</div>
+          <div><h2>Measurements are versioned too.</h2><p>The project does not treat every historical score as current. The strict-scorer work exists because earlier evaluation logic produced false-positive acceptance results.</p></div>
+        </header>
+        <div class="doc-grid">
+          <article class="product-card"><div class="code">Retrieval</div><h3>40-query golden set</h3><p>The current product page reports the documented Recall@6 result alongside the exact golden-set and evaluator paths.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/data/eval-golden.json" target="_blank" rel="noopener">golden set ↗</a></article>
+          <article class="product-card"><div class="code">Acceptance</div><h3>61-request local API evaluation</h3><p>The checked-in engineering documentation describes a local API evaluation covering a bounded request set rather than a generic accuracy percentage.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/AGENTS.md" target="_blank" rel="noopener">engineering instructions ↗</a></article>
+          <article class="product-card"><div class="code">Conversation</div><h3>132-input regression set</h3><p>The current engineering instructions describe retained production conversation inputs plus a targeted unknown-technology repair regression.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/AGENTS.md" target="_blank" rel="noopener">regression instructions ↗</a></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="shell"><div><strong>Scout</strong><span> · ProjectHub runtime</span></div><a href="https://www.linkedin.com/in/bradmatera" target="_blank" rel="noopener">LinkedIn ↗</a></div></footer>
+  <script type="module" src="./scene.js"></script>
+  <script src="./site.js" defer></script>
+</body>
+</html>
