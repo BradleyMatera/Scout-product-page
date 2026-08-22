@@ -17,18 +17,21 @@ https://bradleymatera.github.io/Scout-product-page/
 
 ## Site implementation
 
-The product page is a zero-build GitHub Pages project with progressive Three.js enhancement.
+The page is a zero-build GitHub Pages project. Three.js is used as part of the visual system around the existing HTML interface, not as a separate 3D product demo.
 
 - `index.html` — factual implementation/status content and source links
-- `styles.css` — responsive layout, glass/depth effects, animated pipeline, ticker, runtime panel, tables, timeline, and motion system
+- `styles.css` — primary responsive layout and component styles
+- `enhancements.css` — final visual layer for panel lighting, active section accents, card depth, table/UI polish, and architecture motion
 - `scene.js` — pinned Three.js `0.185.1` ambient renderer
-- `site.js` — reveal effects, card perspective/lighting, metric counters, scroll progress, timeline progress, and navigation behavior
+- `site.js` — reveal effects, card perspective/lighting, metric counters, active navigation, scroll/timeline progress, and enhancement loading
 - `assets/scout-mark.svg` — Scout vector mark
 - `assets/scout-og.svg` — social/share graphic
 - `site.webmanifest` — installable-site metadata
 - `SCOUT-SOURCE-AUDIT.md` — source audit behind page claims
 
-Three.js is used only as progressive visual enhancement behind the content. It renders a low-contrast perspective grid, sparse depth particles, edge light ribbons, and slow scroll/pointer-reactive lighting. It does not replace or represent the Scout architecture itself. If WebGL or the CDN module is unavailable, the factual content and all source-linked verification remain usable.
+The Three.js scene is deliberately non-semantic. It renders low-contrast perspective grids, sparse depth particles, edge wire geometry, and slow scroll/pointer-reactive movement behind the normal document. Section visibility can shift the ambient accent between the existing green, blue, and amber status colors. The actual interface remains HTML: the runtime panel, request-path boxes, component cards, verification table, scope panels, regression rows, timeline, repository state, roadmap, and limits.
+
+If WebGL or the CDN module is unavailable, the full page content and source-linked verification remain usable.
 
 ## Content rule
 
