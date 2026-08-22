@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://bradleymatera.github.io/Scout-product-page/sitemap.xml
+Sitemap: https://bradleymatera.dev/scout/sitemap.xml
