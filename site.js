@@ -1,3 +1,8 @@
+const enhancementSheet = document.createElement('link');
+enhancementSheet.rel = 'stylesheet';
+enhancementSheet.href = './enhancements.css';
+document.head.appendChild(enhancementSheet);
+
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const revealObserver = new IntersectionObserver(entries => {
@@ -13,7 +18,7 @@ document.querySelectorAll('.reveal, .metric-card').forEach(el => {
   else revealObserver.observe(el);
 });
 
-// Count metrics only when they enter view. Values remain deterministic and come from the page markup.
+// Count only the deterministic values already present in page markup.
 const countObserver = new IntersectionObserver(entries => {
   for (const entry of entries) {
     if (!entry.isIntersecting) continue;
@@ -38,10 +43,10 @@ const countObserver = new IntersectionObserver(entries => {
 }, { threshold: 0.7 });
 document.querySelectorAll('[data-count]').forEach(el => countObserver.observe(el));
 
-// Subtle card perspective: depth effect only, no semantic 3D object.
+// Card depth stays attached to the existing boxes. It does not replace or obscure content.
 if (!reduceMotion && matchMedia('(pointer:fine)').matches) {
-  document.querySelectorAll('.fx-card').forEach(card => {
-    const max = Number(card.dataset.tilt || 4);
+  document.querySelectorAll('.fx-card, .component-card, .scope-card, .repo-card, .limit-card').forEach(card => {
+    const max = Number(card.dataset.tilt || 3.5);
     card.addEventListener('pointermove', event => {
       const rect = card.getBoundingClientRect();
       const x = (event.clientX - rect.left) / rect.width;
@@ -50,7 +55,7 @@ if (!reduceMotion && matchMedia('(pointer:fine)').matches) {
       const rx = (0.5 - y) * max * 2;
       card.style.setProperty('--mx', `${x * 100}%`);
       card.style.setProperty('--my', `${y * 100}%`);
-      card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(4px)`;
+      card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(3px)`;
     }, { passive: true });
     card.addEventListener('pointerleave', () => {
       card.style.transform = '';
@@ -88,6 +93,27 @@ function updateScrollState() {
 addEventListener('scroll', updateScrollState, { passive: true });
 addEventListener('resize', updateScrollState, { passive: true });
 updateScrollState();
+
+const navLinks = [...document.querySelectorAll('.nav-links a[href^="#"]')];
+const navSections = navLinks
+  .map(link => ({ link, target: document.querySelector(link.getAttribute('href')) }))
+  .filter(item => item.target);
+
+if (navSections.length) {
+  const navObserver = new IntersectionObserver(entries => {
+    const visible = entries.filter(entry => entry.isIntersecting);
+    if (!visible.length) return;
+    visible.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+    const id = `#${visible[0].target.id}`;
+    navLinks.forEach(link => {
+      const active = link.getAttribute('href') === id;
+      link.classList.toggle('active', active);
+      if (active) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    });
+  }, { threshold: [0.15, 0.35, 0.6], rootMargin: '-18% 0px -58% 0px' });
+  navSections.forEach(item => navObserver.observe(item.target));
+}
 
 for (const link of document.querySelectorAll('a[href^="#"]')) {
   link.addEventListener('click', event => {
