@@ -3,6 +3,20 @@ enhancementSheet.rel = 'stylesheet';
 enhancementSheet.href = './enhancements.css';
 document.head.appendChild(enhancementSheet);
 
+// Keep Pricing visible in the top navigation on the main product page.
+// pricing.html already declares its own Pricing link, so this does not duplicate it there.
+const navShell = document.querySelector('.nav-shell');
+if (navShell && !navShell.querySelector('[data-pricing-link]')) {
+  const pricingLink = document.createElement('a');
+  pricingLink.className = 'nav-source nav-pricing';
+  pricingLink.dataset.pricingLink = 'true';
+  pricingLink.href = './pricing.html';
+  pricingLink.textContent = 'Pricing';
+  const sourceLink = navShell.querySelector('.nav-source');
+  if (sourceLink) navShell.insertBefore(pricingLink, sourceLink);
+  else navShell.appendChild(pricingLink);
+}
+
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const revealObserver = new IntersectionObserver(entries => {
