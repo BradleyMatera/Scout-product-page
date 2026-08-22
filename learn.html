@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#03080d" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="description" content="Learn how Scout actually works, from text normalization and BM25/RRF retrieval through context packing, inference, validation, evaluation metrics, cost math, and runtime limits." />
+  <meta property="og:title" content="Learn Scout — Engineering Guide" />
+  <meta property="og:description" content="A source-cited teaching guide to the algorithms, math, data flow, and engineering decisions in Scout." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://bradleymatera.dev/scout/learn.html" />
+  <meta property="og:image" content="https://bradleymatera.dev/scout/assets/scout-og.svg" />
+  <link rel="canonical" href="https://bradleymatera.dev/scout/learn.html" />
+  <link rel="icon" href="./assets/scout-mark.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./docs.css" />
+  <link rel="stylesheet" href="./learn.css" />
+  <title>Learn Scout — Engineering Guide</title>
+</head>
+<body class="product-subpage docs-page learn-page">
+  <canvas id="ambient-three" aria-hidden="true"></canvas>
+  <div class="page-grid" aria-hidden="true"></div>
+  <div class="scan-line" aria-hidden="true"></div>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+  <header class="site-header"><div class="shell nav-shell"></div></header>
+
+  <main>
+    <section class="subpage-hero">
+      <div class="shell reveal">
+        <div class="subpage-kicker">Scout / Learn</div>
+        <h1>How Scout works, from strings and ranks to <span>generated answers.</span></h1>
+        <p>This is the teaching guide for the current Scout implementation inside ProjectHub. It assumes basic JavaScript, arrays, objects, functions, and high-school algebra. Every mathematical section shows the actual equation used by the code, a worked example, the implementation choice, and the limitation. Deterministic rules are labeled as rules instead of being presented as machine-learning math.</p>
+        <div class="subpage-actions">
+          <a class="button primary" href="#mental-model">Start from the beginning</a>
+          <a class="button" href="./docs.html">Runtime docs</a>
+          <a class="button" href="./api.html">API reference</a>
+        </div>
+        <div class="learn-roadmap">
+          <a href="#retrieval"><strong>1. Retrieval</strong>How text becomes ranked evidence.</a>
+          <a href="#generation"><strong>2. Generation</strong>What the language model does and does not do.</a>
+          <a href="#validation"><strong>3. Validation</strong>How generated claims are checked.</a>
+          <a href="#glossary"><strong>4. Glossary</strong>Definitions for the technical vocabulary used across the site.</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="shell docs-mobile-nav"><label><span class="sr-only">Learning section</span><select aria-label="Learning section">
+      <option value="mental-model">Mental model</option><option value="data">Knowledge and chunks</option><option value="text-processing">Text processing</option><option value="edit-distance">Typo correction math</option><option value="bm25">BM25 math</option><option value="rrf">RRF math</option><option value="retrieval">Full retrieval path</option><option value="retrieval-eval">Recall and MRR</option><option value="context">Context packing</option><option value="generation">Generation</option><option value="cost-math">Provider cost math</option><option value="time-math">Time, cache and rate limits</option><option value="state-tools">State and tools</option><option value="contracts">Response contracts</option><option value="validation">Grounding and validation</option><option value="client-local">Browser-local path</option><option value="end-to-end">Worked request</option><option value="complexity">Complexity and scaling</option><option value="not-ml">What is not machine learning</option><option value="glossary">Glossary</option>
+    </select></label></div>
+
+    <div class="shell docs-shell">
+      <aside class="docs-sidebar" aria-label="Learning guide sections">
+        <div class="docs-sidebar-head"><div class="docs-sidebar-title"><span>Learn Scout</span><span>20 topics</span></div><input class="docs-search" type="search" placeholder="Search the guide…" aria-label="Search learning guide" /></div>
+        <nav class="docs-nav">
+          <div class="docs-nav-group"><span class="docs-nav-label">Start here</span>
+            <a href="#mental-model"><span class="nav-code">01</span>Mental model</a>
+            <a href="#data"><span class="nav-code">02</span>Knowledge and chunks</a>
+            <a href="#text-processing"><span class="nav-code">03</span>Text processing</a>
+            <a href="#edit-distance"><span class="nav-code">04</span>Typo correction math</a>
+          </div>
+          <div class="docs-nav-group"><span class="docs-nav-label">Retrieval math</span>
+            <a href="#bm25"><span class="nav-code">05</span>BM25</a>
+            <a href="#rrf"><span class="nav-code">06</span>RRF</a>
+            <a href="#retrieval"><span class="nav-code">07</span>Full retrieval path</a>
+            <a href="#retrieval-eval"><span class="nav-code">08</span>Recall and MRR</a>
+          </div>
+          <div class="docs-nav-group"><span class="docs-nav-label">Model path</span>
+            <a href="#context"><span class="nav-code">09</span>Context packing</a>
+            <a href="#generation"><span class="nav-code">10</span>Generation</a>
+            <a href="#cost-math"><span class="nav-code">11</span>Provider cost math</a>
+            <a href="#time-math"><span class="nav-code">12</span>Time/cache/rate math</a>
+          </div>
+          <div class="docs-nav-group"><span class="docs-nav-label">Correctness</span>
+            <a href="#state-tools"><span class="nav-code">13</span>State and tools</a>
+            <a href="#contracts"><span class="nav-code">14</span>Response contracts</a>
+            <a href="#validation"><span class="nav-code">15</span>Grounding validation</a>
+            <a href="#client-local"><span class="nav-code">16</span>Browser-local path</a>
+          </div>
+          <div class="docs-nav-group"><span class="docs-nav-label">Put it together</span>
+            <a href="#end-to-end"><span class="nav-code">17</span>Worked request</a>
+            <a href="#complexity"><span class="nav-code">18</span>Complexity/scaling</a>
+            <a href="#not-ml"><span class="nav-code">19</span>What is not ML</a>
+            <a href="#glossary"><span class="nav-code">20</span>Glossary</a>
+          </div>
+        </nav>
+      </aside>
+
+      <article class="docs-content">
+        <div class="docs-empty">No learning-guide sections match that search.</div>
+
+        <section class="docs-section" id="mental-model" data-search="mental model architecture pipeline deterministic generative rag retrieval validation">
+          <div class="docs-eyebrow">01 · Mental model</div>
+          <h2>Scout is mostly ordinary software wrapped around one generative step.</h2>
+          <p class="docs-lede">A useful way to understand Scout is to stop thinking of it as one giant AI model. The application is a pipeline. JavaScript prepares facts, ranks evidence, tracks conversation state, applies rules, calls a language model for wording, and checks the result afterward.</p>
+          <div class="layer-diagram">
+            <div class="layer-row"><strong>Knowledge</strong><span>Structured JSON contains identity, experience, projects, skills, rules, direct answers, writing records, and runtime facts.</span></div>
+            <div class="layer-row"><strong>Retrieval</strong><span>Local code converts that knowledge to text chunks, then BM25 and RRF rank the chunks relevant to a question.</span></div>
+            <div class="layer-row"><strong>Planning</strong><span>Deterministic code classifies the request, builds a semantic response contract, resolves conversation references, and decides which read-only evidence tool can help.</span></div>
+            <div class="layer-row"><strong>Generation</strong><span>A hosted language model receives the selected facts and writes the natural-language answer.</span></div>
+            <div class="layer-row"><strong>Validation</strong><span>Local code checks claims, entities, numbers, relationships, negation, provenance, and overclaim patterns before the answer is accepted.</span></div>
+            <div class="layer-row"><strong>Runtime</strong><span>State, caching, telemetry, rate limits, deadlines, and failure handling wrap the request.</span></div>
+          </div>
+          <div class="docs-callout no-math"><strong>Important:</strong> BM25 and RRF are information-retrieval algorithms. They are not neural networks. The response-contract system is mostly rules and structured data. The language model is only one component of the pipeline.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: request pipeline · server-gemini.js ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-agent.js" target="_blank" rel="noopener">Source: RAG agent · rag-agent.js ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="data" data-search="knowledge json chunk corpus rag chunks facts runtime data">
+          <div class="docs-eyebrow">02 · Knowledge and chunks</div>
+          <h2>The search engine does not search the raw JSON directly.</h2>
+          <p>The knowledge file is structured for software, but a lexical search algorithm needs searchable text documents. <code>buildRagChunks()</code> turns the structured records into a small corpus of text chunks. A project becomes a sentence containing its name, description, technologies, and links. Experience becomes a sentence containing role, company, dates, and summary. Skill groups, certifications, FAQ records, rules, blog records, and Scout runtime facts become their own chunks.</p>
+          <div class="worked-example"><h4>Conceptual example</h4><div class="step"><b>1</b><span>JSON record: <code>{ name: "ProjectHub", tech: ["JavaScript", "BM25"] }</code></span></div><div class="step"><b>2</b><span>Chunk builder emits text similar to: <code>Project ProjectHub: ... Tech: JavaScript, BM25.</code></span></div><div class="step"><b>3</b><span>BM25 tokenizes and indexes the resulting text.</span></div><div class="step"><b>4</b><span>The original metadata/tag remains attached so later code knows what kind of evidence was retrieved.</span></div></div>
+          <p>This is what <strong>RAG</strong> means here: retrieval selects outside evidence first, then generation receives that evidence. The model does not need to memorize the portfolio.</p>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-chunks.js" target="_blank" rel="noopener">Source: chunk construction · rag-chunks.js ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="text-processing" data-search="tokenize token stemming stopwords normalization lowercase punctuation query terms">
+          <div class="docs-eyebrow">03 · Text processing</div>
+          <h2>Before BM25 sees text, Scout simplifies it.</h2>
+          <p>For BM25, the tokenizer lowercases text, replaces non-alphanumeric characters with spaces, splits on whitespace, removes common stopwords, drops one-character tokens, and applies a small suffix stemmer. The stemmer removes endings such as <code>ing</code>, <code>ed</code>, <code>ly</code>, plural <code>s/es</code>, and sometimes a doubled consonant.</p>
+          <div class="docs-grid-2">
+            <div class="docs-card"><span class="label">Input</span><h3>"Debugging projects quickly"</h3><p>After lowercasing, punctuation cleanup, stopword filtering and stemming, terms may reduce to forms such as <code>debug</code>, <code>project</code>, <code>quick</code>.</p></div>
+            <div class="docs-card"><span class="label">Why</span><h3>Reduce surface differences</h3><p><code>debug</code>, <code>debugged</code>, and <code>debugging</code> should have a better chance of matching the same evidence without a large NLP dependency.</p></div>
+          </div>
+          <div class="docs-callout warning"><strong>Real limitation:</strong> the BM25 tokenizer removes punctuation with <code>/[^a-z0-9\s]/g</code>. That is simple and fast, but programming-language names such as <code>C++</code> or <code>C#</code> lose their punctuation and can become poor lexical tokens. Other Scout layers preserve technology names more carefully, but the BM25 tokenizer itself has this limitation.</div>
+          <p><span class="complexity">Build: O(total corpus tokens)</span> The index counts every token once to build per-document term frequencies and global document frequencies.</p>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/bm25.js" target="_blank" rel="noopener">Source: tokenizer + stemmer · bm25.js ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="edit-distance" data-search="damerau levenshtein optimal string alignment edit distance typo correction dynamic programming matrix">
+          <div class="docs-eyebrow">04 · Typo correction math</div>
+          <h2>Edit distance measures how many small edits separate two words.</h2>
+          <p>Scout uses a dynamic-programming edit-distance function for vocabulary-based typo correction. The code calls it Damerau-Levenshtein. More precisely, the recurrence implemented is the adjacent-transposition/restricted variant commonly called <strong>Optimal String Alignment distance</strong>: insertions, deletions, substitutions, and one adjacent swap each cost 1.</p>
+          <div class="equation"><span class="eq-title">Base cases</span><code>D(i,0) = i
+D(0,j) = j</code></div>
+          <div class="equation"><span class="eq-title">Main recurrence</span><code>cost = 0 if a[i-1] = b[j-1], otherwise 1
+
+D(i,j) = min(
+  D(i-1,j)   + 1,      // delete
+  D(i,j-1)   + 1,      // insert
+  D(i-1,j-1) + cost    // substitute / match
+)
+
+If adjacent characters are transposed:
+D(i,j) = min(D(i,j), D(i-2,j-2) + 1)</code></div>
+          <div class="worked-example"><h4>Example: <code>porject</code> → <code>project</code></h4><div class="step"><b>1</b><span>The strings differ mainly because <code>o</code> and <code>r</code> are adjacent and swapped.</span></div><div class="step"><b>2</b><span>The transposition rule allows that swap to cost 1 rather than two separate substitutions.</span></div><div class="step"><b>3</b><span>Scout only searches for vocabulary corrections within a maximum distance of 2 for unknown words longer than three characters.</span></div></div>
+          <p>Vocabulary terms come from the current RAG chunks. A protected set prevents absent but legitimate technology names such as COBOL, Rust, Kubernetes, Terraform, and others from being “corrected” into a nearby corpus word.</p>
+          <p><span class="complexity">Per pair: O(m × n)</span> for word lengths <code>m</code> and <code>n</code>. Because an unknown query word can be compared against many vocabulary terms, the rough correction cost is <code>O(V × m × n)</code> per unknown word, where <code>V</code> is vocabulary size. The corpus is small enough that this remains practical.</p>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/query-understanding.js" target="_blank" rel="noopener">Source: typo correction · query-understanding.js ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="bm25" data-search="bm25 okapi tf term frequency idf inverse document frequency k1 b document length normalization equation math">
+          <div class="docs-eyebrow">05 · BM25</div>
+          <h2>BM25 ranks documents by term usefulness, not just term count.</h2>
+          <p>BM25 answers a practical question: “Given this query, which chunks contain useful matching terms?” Scout uses Okapi BM25 with <code>k1 = 1.2</code> and <code>b = 0.75</code>. Three ideas matter: rare terms are more informative, repeated terms help but saturate, and unusually long documents get normalized.</p>
+          <div class="equation"><span class="eq-title">Scout's IDF</span><code>IDF(t) = ln( ((N - df(t) + 0.5) / (df(t) + 0.5)) + 1 )</code></div>
+          <div class="math-variables"><div class="math-variable"><code>N</code><span>Total number of indexed chunks.</span></div><div class="math-variable"><code>df(t)</code><span>Document frequency: how many chunks contain term <code>t</code> at least once.</span></div></div>
+          <p>If a term occurs in only 5 of 100 chunks, Scout's formula gives an IDF of about <strong>2.9104</strong>. If it occurs in 50 of 100 chunks, IDF falls to about <strong>0.6931</strong>. The rarer term contributes much more because it distinguishes documents better.</p>
+          <div class="equation"><span class="eq-title">Per-term BM25 contribution</span><code>score(t,D) = IDF(t) ×
+             f(t,D) × (k1 + 1)
+             ─────────────────────────────────────────────
+             f(t,D) + k1 × (1 - b + b × |D| / avgdl)
+
+Scout: k1 = 1.2, b = 0.75</code></div>
+          <div class="math-variables"><div class="math-variable"><code>f(t,D)</code><span>How many times term <code>t</code> appears in document/chunk <code>D</code>.</span></div><div class="math-variable"><code>|D|</code><span>Number of indexed tokens in the chunk.</span></div><div class="math-variable"><code>avgdl</code><span>Average chunk length across the corpus.</span></div><div class="math-variable"><code>k1, b</code><span>Tuning constants controlling term-frequency saturation and document-length normalization.</span></div></div>
+          <div class="worked-example"><h4>Worked numeric example using Scout's constants</h4><div class="step"><b>1</b><span>Assume <code>N=100</code>, the term appears in <code>df=5</code> chunks, this chunk contains it <code>f=2</code> times, chunk length is <code>80</code>, and average length is <code>100</code>.</span></div><div class="step"><b>2</b><span>IDF ≈ <code>2.9104</code>.</span></div><div class="step"><b>3</b><span>The term-frequency/length factor is ≈ <code>1.4570</code>.</span></div><div class="step"><b>4</b><span>Contribution ≈ <code>2.9104 × 1.4570 = 4.2403</code>.</span></div></div>
+          <p><strong>Saturation:</strong> if frequency rises from 2 to 4 in the same 80-token document, the factor rises from roughly 1.457 to 1.753, not to 2.914. Saying a term four times is not treated as four times the evidence.</p>
+          <p><strong>Length normalization:</strong> if the same rare term occurs once in a 200-token chunk while average length is 100, the contribution is about 2.0654. A match buried in a very long chunk receives less weight than an equally rare match in a concise chunk.</p>
+          <p>The final document score is the sum of these contributions for query terms. It is a ranking score, not a probability and not a confidence percentage.</p>
+          <div class="docs-callout warning"><strong>Implementation nuance:</strong> Scout iterates the tokenized query array directly. Repeated query terms can therefore contribute more than once. It does not implement a separate BM25 query-term-frequency saturation factor.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/bm25.js" target="_blank" rel="noopener">Source: BM25 implementation · bm25.js ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="rrf" data-search="rrf reciprocal rank fusion smoothing rank multiple queries normalized expanded rewritten equation">
+          <div class="docs-eyebrow">06 · Reciprocal Rank Fusion</div>
+          <h2>RRF combines rankings without pretending their raw scores are comparable.</h2>
+          <p>Scout can search multiple views of the same question: normalized wording, alias-expanded wording, and conversation-aware rewritten wording. Each BM25 search produces its own ordered list. Reciprocal Rank Fusion combines those lists using only positions.</p>
+          <div class="equation"><span class="eq-title">Scout's RRF score</span><code>RRF(d) = Σ 1 / (60 + rankᵢ(d))</code></div>
+          <p>The constant <code>60</code> is the smoothing value used by the implementation. Rank 1 contributes <code>1/61 ≈ 0.016393</code>; rank 2 contributes <code>1/62 ≈ 0.016129</code>. A document appearing in several lists accumulates contributions.</p>
+          <div class="worked-example"><h4>Consensus example</h4><div class="step"><b>A</b><span>Chunk A ranks <code>[1, 4, 2]</code>. RRF ≈ <code>1/61 + 1/64 + 1/62 = 0.048147</code>.</span></div><div class="step"><b>B</b><span>Chunk B ranks <code>[2, 1, 5]</code>. RRF ≈ <code>0.047907</code>.</span></div><div class="step"><b>→</b><span>A wins by a small amount because its combined rank evidence is slightly stronger.</span></div></div>
+          <p>A chunk that is rank 1 in only one list scores about <code>0.016393</code>. A chunk that is rank 10 in three lists scores about <code>3/70 = 0.042857</code>. This illustrates the point of fusion: consistent relevance across different query views can outrank a one-view spike.</p>
+          <p>Scout de-duplicates identical query strings before searching. Unless overridden, candidate depth is <code>max(limit × 3, 12)</code>. The fused results are sorted by RRF score, with best individual rank as the tie-breaker.</p>
+          <div class="docs-callout"><strong>RRF is not normalization.</strong> It does not turn BM25 into probabilities. It deliberately avoids comparing BM25 score magnitudes across separate searches and combines ranks instead.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rrf.js" target="_blank" rel="noopener">Source: RRF implementation · rrf.js ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="retrieval" data-search="retrieval pipeline normalized expanded rewritten bm25 rrf candidate evidence rag">
+          <div class="docs-eyebrow">07 · Full retrieval path</div>
+          <h2>A question is transformed into several search views before evidence reaches the model.</h2>
+          <div class="docs-flow">
+            <div class="docs-flow-step"><div><strong>Normalize</strong><span>Lowercase, remove punctuation for query normalization, apply known typo mappings, and collapse whitespace.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Vocabulary typo correction</strong><span>Unknown words can be corrected using edit distance against terms found in the current knowledge chunks.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Alias expansion</strong><span>Common phrases add locally useful terms. For example, “tech stack” expands toward skills/languages/frameworks/databases/tools.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Intent classification</strong><span>Regex rules classify broad intent such as contact, role fit, weaknesses, experience, factual lookup, small talk, or Scout/runtime questions.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Context rewrite</strong><span>Short follow-ups can borrow salient words from recent user/assistant turns so “what about that one?” is searchable.</span></div></div>
+            <div class="docs-flow-step"><div><strong>BM25 search</strong><span>The lexical index ranks chunks against the query views.</span></div></div>
+            <div class="docs-flow-step"><div><strong>RRF fusion</strong><span>When multiple views are used, ranks are fused into one ordered candidate list.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Evidence filtering</strong><span>The RAG agent selects evidence appropriate to the request intent and caps how much text is sent to generation.</span></div></div>
+          </div>
+          <p>The current integrated chat path retrieves up to 10 BM25/RRF candidates for the RAG-primary agent. Structured tools can add evidence afterward; they are supplemental rather than replacements for retrieval.</p>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/query-understanding.js" target="_blank" rel="noopener">Source: query understanding ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-agent.js" target="_blank" rel="noopener">Source: evidence selection · rag-agent.js ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: server retrieval path ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="retrieval-eval" data-search="recall mrr mean reciprocal rank golden set evaluation metrics recall at 6">
+          <div class="docs-eyebrow">08 · Retrieval evaluation</div>
+          <h2>Recall@6 asks “did the right evidence show up?” MRR asks “how high did it rank?”</h2>
+          <p>The offline retrieval evaluator uses a golden set of questions. For each question it searches the BM25 index and checks whether one of the first six results matches an expected tag or keyword.</p>
+          <div class="equation"><span class="eq-title">Recall@6</span><code>Recall@6 = number of golden queries with a relevant result in top 6
+           ─────────────────────────────────────────────────────────
+                         total golden queries</code></div>
+          <p>If 38 of 40 queries retrieve something relevant in the first six results, Recall@6 = <code>38/40 = 0.95</code>.</p>
+          <div class="equation"><span class="eq-title">Mean Reciprocal Rank at 6</span><code>MRR@6 = (1/n) × Σ reciprocal_rankᵢ
+
+reciprocal_rankᵢ = 1/rank of first relevant result
+                    or 0 if no relevant result appears in top 6</code></div>
+          <div class="worked-example"><h4>Three-query MRR example</h4><div class="step"><b>1</b><span>Relevant result at rank 1 → reciprocal rank = <code>1</code>.</span></div><div class="step"><b>2</b><span>Relevant result at rank 2 → reciprocal rank = <code>1/2 = 0.5</code>.</span></div><div class="step"><b>3</b><span>No relevant result in top 6 → reciprocal rank = <code>0</code>.</span></div><div class="step"><b>Σ</b><span>MRR = <code>(1 + 0.5 + 0) / 3 = 0.5</code>.</span></div></div>
+          <p>The checked-in evaluator fails CI if Recall@6 is below <code>0.90</code>. MRR is reported but is not the gate in that script.</p>
+          <div class="docs-callout warning"><strong>Metric limitation:</strong> this evaluator defines relevance through expected tags/keywords in a finite golden set. A perfect score means “all of these test queries retrieved the expected evidence under this matcher,” not “retrieval is universally perfect.”</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/scripts/eval-retrieval.js" target="_blank" rel="noopener">Source: retrieval evaluator ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/data/eval-golden.json" target="_blank" rel="noopener">Source: golden set ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="context" data-search="context packet tokens estimate four chars per token truncation evidence limits prompt">
+          <div class="docs-eyebrow">09 · Context packing</div>
+          <h2>Retrieved evidence still has to fit into a small prompt.</h2>
+          <p>The context-packet code deliberately caps evidence and tool observations. It renders only fields needed by the model, removes duplicate rendered items, limits item counts, truncates text, and serializes compact conversation state.</p>
+          <div class="equation"><span class="eq-title">Scout's token estimate</span><code>estimated_tokens = ceil(number_of_characters / 4)</code></div>
+          <p>This is a <strong>heuristic</strong>, not the model's real tokenizer. Four characters per token is a useful rough estimate for English-like text, but actual tokenization varies by language, punctuation, code, URLs, and model tokenizer.</p>
+          <div class="docs-grid-2"><div class="docs-card"><span class="label">Default reasoning packet</span><h3>5 evidence items</h3><p>Default per-evidence rendering cap is 220 characters for the reasoning packet.</p></div><div class="docs-card"><span class="label">Synthesis packet</span><h3>4 evidence items</h3><p>Default per-item cap is 200 characters; tool observations default to a 400-character cap.</p></div></div>
+          <p>These values are configurable through environment variables. The purpose is engineering, not statistical optimization: smaller packets reduce latency and keep irrelevant text away from a small model.</p>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/context-packet.js" target="_blank" rel="noopener">Source: context-packet.js ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="generation" data-search="llm generation cloudflare model llama provider inference temperature top p max tokens generative">
+          <div class="docs-eyebrow">10 · Generation</div>
+          <h2>The model writes the prose; it does not choose the evidence corpus.</h2>
+          <p>In the current production configuration, the provider adapter sends messages to Cloudflare Workers AI using <code>@cf/meta/llama-3.1-8b-instruct-fast</code>. Retrieval, state, response contracts, and validation run in Scout's backend process. The provider receives the prepared prompt and returns generated text.</p>
+          <p>The Cloudflare adapter defaults to temperature <code>0.2</code>, top-p <code>0.9</code>, and clamps requested output to at most 512 tokens. These are sampling/runtime parameters, not proof of factual correctness. Correctness comes from limiting input evidence and validating output claims.</p>
+          <div class="docs-callout no-math"><strong>Temperature is not “creativity percentage.”</strong> In language models, temperature rescales token logits before sampling. Lower values generally make the probability distribution sharper and output less variable. Scout's adapter simply passes the configured value to the provider; the application does not calculate model logits itself.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/lib/cloudflare-provider.js" target="_blank" rel="noopener">Source: production provider adapter ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-agent.js" target="_blank" rel="noopener">Source: prompt/evidence path ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="cost-math" data-search="cloudflare neuron cost token rates free daily capacity estimate math 4119 34868">
+          <div class="docs-eyebrow">11 · Provider usage math</div>
+          <h2>Scout estimates Cloudflare usage from token counts and published neuron rates.</h2>
+          <p>For the current 8B Fast model, the adapter contains rates of <code>4,119</code> neurons per million input tokens and <code>34,868</code> neurons per million output tokens. If Cloudflare returns an actual neuron count, telemetry can keep it. Otherwise Scout can estimate.</p>
+          <div class="equation"><span class="eq-title">Estimated neurons</span><code>neurons ≈ (input_tokens / 1,000,000) × 4,119
+        + (output_tokens / 1,000,000) × 34,868</code></div>
+          <div class="worked-example"><h4>Example: 500 input tokens + 100 output tokens</h4><div class="step"><b>1</b><span>Input: <code>500 / 1,000,000 × 4,119 = 2.0595</code> neurons.</span></div><div class="step"><b>2</b><span>Output: <code>100 / 1,000,000 × 34,868 = 3.4868</code> neurons.</span></div><div class="step"><b>3</b><span>Total estimate ≈ <code>5.5463</code> neurons.</span></div><div class="step"><b>4</b><span>At a 10,000-neuron daily allocation, a naive constant-size capacity estimate is <code>floor(10,000 / 5.5463) = 1,803</code> such requests.</span></div></div>
+          <p>That final number is only a planning estimate. Real prompts vary in length, outputs vary, retries/repairs can add calls, provider accounting can return actual usage, and free-tier policy can change independently of Scout.</p>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/lib/cloudflare-provider.js" target="_blank" rel="noopener">Source: neuron rates + estimate functions ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="time-math" data-search="deadline timeout rate limit cache ttl 15 seconds 20 minute 30 minutes">
+          <div class="docs-eyebrow">12 · Time, cache and rate limits</div>
+          <h2>Several simple clocks bound the runtime.</h2>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Control</th><th>Current code behavior</th><th>Meaning</th></tr></thead><tbody>
+            <tr><td>Request deadline</td><td><code>min(env REQUEST_DEADLINE_MS, 15000)</code></td><td>The chat handler will not allow an end-to-end request deadline above 15 seconds.</td></tr>
+            <tr><td>Generation timeout</td><td>Server defaults around 12.5 seconds; provider call also clamps its own timeout.</td><td>Generation must leave enough time for retrieval, validation, shaping, and transport.</td></tr>
+            <tr><td>Chat rate limit</td><td>60-second window, default max 20 requests per IP.</td><td>A fixed application-level request control, configurable by environment.</td></tr>
+            <tr><td>Response cache TTL</td><td>30 minutes</td><td>No-history requests can reuse a recent validated response for the same normalized query.</td></tr>
+            <tr><td>Response cache size</td><td>200 entries</td><td>Oldest inserted entry is removed when the map grows beyond the limit.</td></tr>
+            <tr><td>Client packet TTL</td><td>60 seconds</td><td>Browser-local evidence packets expire quickly before server validation.</td></tr>
+          </tbody></table></div>
+          <p>These are deterministic limits. There is no learned scheduler deciding them. The chat deadline uses an <code>AbortController</code> so outstanding inference can be cancelled when time expires.</p>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: deadlines, rate limits, cache and packet TTL ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="state-tools" data-search="session state tools search portfolio get project compare match role read only deterministic">
+          <div class="docs-eyebrow">13 · State and tools</div>
+          <h2>Conversation state is structured data, and tools are ordinary functions.</h2>
+          <p>Scout keeps server-owned state such as current topic, named projects, job/company context, active comparison, unresolved references, recent turns, and visitor identity state. This makes references such as “that project” resolvable without asking the language model to infer everything from a long transcript.</p>
+          <p>The current tool set is allowlisted and read-only:</p>
+          <div class="docs-grid-2"><div class="docs-card"><span class="label">Search</span><h3><code>search_portfolio</code></h3><p>Broad evidence search.</p></div><div class="docs-card"><span class="label">Project</span><h3><code>get_project</code></h3><p>One named project's verified data.</p></div><div class="docs-card"><span class="label">Compare</span><h3><code>compare_projects</code></h3><p>Structured comparison of two to four projects.</p></div><div class="docs-card"><span class="label">Role</span><h3><code>match_role</code></h3><p>Matches job requirements against verified evidence and gaps.</p></div><div class="docs-card"><span class="label">Profile</span><h3><code>get_candidate_profile</code></h3><p>Returns one allowed profile section.</p></div><div class="docs-card"><span class="label">Skill</span><h3><code>get_skill_evidence</code></h3><p>Finds direct/project/work/certification/adjacent evidence for a technology.</p></div><div class="docs-card"><span class="label">Brief</span><h3><code>build_recruiter_brief</code></h3><p>Assembles a structured recruiter-facing brief.</p></div></div>
+          <div class="docs-callout no-math"><strong>No hidden tool intelligence:</strong> these are JavaScript functions over the knowledge object. The model may be told which tools exist, but the tool implementation itself is deterministic code.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/agent-tools.js" target="_blank" rel="noopener">Source: tool definitions and implementations ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/session-state.js" target="_blank" rel="noopener">Source: session state ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="contracts" data-search="response contract true false unknown open world claim ceiling intent subintent policy evidence strength">
+          <div class="docs-eyebrow">14 · Response contracts</div>
+          <h2>Before prose is accepted, Scout represents what kind of claim the answer is allowed to make.</h2>
+          <p>A response contract can carry fields such as intent, sub-intent, policy mode, direct answer, fact state, evidence strength, claim ceiling, requested role/topic, boundaries, and forbidden claims. The important concept is that the system tries to decide the <em>semantic shape</em> of the answer separately from the wording.</p>
+          <table class="truth-table"><thead><tr><th>State</th><th>Meaning in an open-world evidence system</th><th>Example</th></tr></thead><tbody><tr><td>TRUE</td><td>Scout has evidence supporting the claim.</td><td>A project explicitly lists JavaScript.</td></tr><tr><td>FALSE</td><td>Scout has authoritative evidence that the claim is false.</td><td>A stored boundary explicitly rules out a senior-level claim.</td></tr><tr><td>UNKNOWN</td><td>Scout lacks enough evidence to confirm or deny it.</td><td>No record mentions whether the candidate knows an unrelated technology.</td></tr></tbody></table>
+          <p>This is different from a closed-world database assumption. “Not found” does not automatically mean “false.” That distinction is why unknown-skill and future-capability questions need different handling from explicit false-premise questions.</p>
+          <div class="docs-callout no-math"><strong>This is symbolic logic, not probability.</strong> <code>UNKNOWN</code> does not mean “50% likely.” The current system is representing evidence state, not a Bayesian posterior.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/response-contract.js" target="_blank" rel="noopener">Source: response-contract.js ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/recovery-contract.js" target="_blank" rel="noopener">Source: recovery contracts ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="validation" data-search="grounding validation hallucination overlap entities numbers relationships provenance polarity negation overclaim repair">
+          <div class="docs-eyebrow">15 · Grounding and validation</div>
+          <h2>Validation is a stack of checks, not one “confidence score.”</h2>
+          <p>The grounding validator splits generated text into claims/sentences/clauses and applies multiple deterministic checks. The current code describes checks for overclaim language, entity grounding, number grounding, content-word overlap, question relevance, length/structure, claim upgrades, claim-level support, cross-project provenance, technology relations, negation scope, and relationship consistency.</p>
+          <div class="docs-grid-2"><div class="docs-card"><span class="label">Entity</span><h3>Did this named thing come from evidence?</h3><p>Project names, employers, technologies, and other entities are normalized and checked against evidence/entity registries.</p></div><div class="docs-card"><span class="label">Number</span><h3>Are numeric claims grounded?</h3><p>A number appearing in the answer should be traceable to the evidence rather than invented by the model.</p></div><div class="docs-card"><span class="label">Relationship</span><h3>Are entities connected correctly?</h3><p>A technology belonging to Project A should not be silently attached to Project B.</p></div><div class="docs-card"><span class="label">Negation</span><h3>Is the answer denying or asserting?</h3><p>“He did not work at X” must not be treated the same as “He worked at X.” Clause-level negation prevents that category error.</p></div><div class="docs-card"><span class="label">Overclaim</span><h3>Did the wording upgrade the evidence?</h3><p>“Used in a project” should not become “expert,” “production owner,” or “senior engineer” without evidence.</p></div><div class="docs-card"><span class="label">Provenance</span><h3>Did facts stay attached to their source?</h3><p>Project-specific roles, technologies, or context are checked against the project they are attributed to.</p></div></div>
+          <p>When primary generated output fails validation, the RAG agent can attempt generative repair or constrained recovery. If reliable generation is unavailable, current code has typed failure paths rather than treating unsupported prose as valid.</p>
+          <div class="docs-callout warning"><strong>Do not read “validated” as mathematical proof.</strong> These validators encode specific invariants and known failure patterns. Passing means the answer passed those implemented checks against the supplied evidence. It does not prove every sentence is universally true.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/grounding-validator.js" target="_blank" rel="noopener">Source: grounding-validator.js ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/relationship-validator.js" target="_blank" rel="noopener">Source: relationship-validator.js ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-agent.js" target="_blank" rel="noopener">Source: repair/recovery path ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="client-local" data-search="webgpu onnx browser local qwen transformers client packet validation experimental">
+          <div class="docs-eyebrow">16 · Browser-local experimental path</div>
+          <h2>The browser-local experiment separates evidence preparation from browser inference.</h2>
+          <p>Current integrated server code exposes <code>/api/client-packet</code>, <code>/api/client-validate</code>, and <code>/api/client-status</code>. The server prepares a client-safe compact packet, keeps the full validation evidence server-side for 60 seconds, the browser can generate an answer locally, then the server validates that answer against the same evidence.</p>
+          <div class="docs-flow"><div class="docs-flow-step"><div><strong>Packet</strong><span>Server retrieves evidence, rewrites the query, selects a deterministic tool, compresses the result, and returns only the client-safe prompt packet plus a <code>runId</code>.</span></div></div><div class="docs-flow-step"><div><strong>Browser generation</strong><span>The status route currently describes Qwen2.5-0.5B-Instruct in ONNX/q4 form using Transformers.js v4 + WebGPU.</span></div></div><div class="docs-flow-step"><div><strong>Validation</strong><span>The browser submits the generated answer and <code>runId</code>; the server validates it against stored evidence and forbidden-claim rules.</span></div></div></div>
+          <p><strong>ONNX</strong> is a model exchange/runtime format. <strong>WebGPU</strong> exposes GPU compute capabilities to web applications. <strong>q4</strong> generally denotes a four-bit quantized model representation, reducing model memory relative to higher-precision weights. This path is experimental and is not the normal production generation path.</p>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: client-local endpoints ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="end-to-end" data-search="worked request example end to end request what project demonstrates debugging">
+          <div class="docs-eyebrow">17 · End-to-end worked request</div>
+          <h2>Follow one question through the complete system.</h2>
+          <p>Suppose the visitor asks: <strong>“Which project best demonstrates debugging?”</strong></p>
+          <div class="docs-flow">
+            <div class="docs-flow-step"><div><strong>Request intake</strong><span>The server bounds the message to 600 characters, reads the session id/history, starts the request deadline, and loads knowledge.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Policy and references</strong><span>Deterministic policy code classifies the turn. If it were a follow-up such as “what about that one?”, structured state and rewrite logic could resolve the reference before retrieval.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Query understanding</strong><span>The text is normalized, typo-corrected where appropriate, alias-expanded if a rule matches, and rewritten with context if needed.</span></div></div>
+            <div class="docs-flow-step"><div><strong>BM25/RRF</strong><span>Relevant project/experience/skill chunks are ranked. Multiple query views can be fused with RRF.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Evidence selection</strong><span>The RAG agent receives the top candidates and renders a bounded evidence block. A tool may supplement the evidence if structured lookup helps.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Response contract</strong><span>Scout records the semantic intent and evidence boundary so generation is not free to convert project evidence into unsupported professional claims.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Generation</strong><span>The current hosted provider writes a concise natural-language answer from the supplied evidence.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Validation</strong><span>Entities, numbers, relationships, provenance, polarity, overclaim patterns and other claim checks are evaluated. A failed answer can trigger repair/recovery.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Shape and return</strong><span>Formatting constraints are applied without inventing new content. The response returns with provider/model/pipeline/contract metadata where available.</span></div></div>
+            <div class="docs-flow-step"><div><strong>State and telemetry</strong><span>The accepted turn updates session state, recent memory, cache eligibility, request counters, provider metrics and logs.</span></div></div>
+          </div>
+          <p>No individual step is especially mysterious. The behavior comes from the composition of small retrieval, state, rule, generation, and validation components.</p>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: chat handler ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-agent.js" target="_blank" rel="noopener">Source: RAG-primary agent ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="complexity" data-search="big o complexity scaling bm25 rrf typo memory corpus performance">
+          <div class="docs-eyebrow">18 · Complexity and scaling</div>
+          <h2>The current design is optimized for a small local corpus, not internet-scale search.</h2>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Component</th><th>Rough complexity</th><th>What that means here</th></tr></thead><tbody>
+            <tr><td>BM25 index build</td><td><code>O(total corpus tokens)</code></td><td>Tokenize documents, count term frequency and document frequency.</td></tr>
+            <tr><td>BM25 query</td><td>Approximately <code>O(N × |Q|)</code> in this implementation</td><td>The implementation maps across all chunks and checks query terms using frequency-map lookups. Fine for hundreds of chunks; not how a large search engine would index millions of documents.</td></tr>
+            <tr><td>RRF</td><td><code>O(L × D + R log R)</code></td><td><code>L</code> ranked lists, depth <code>D</code>, then sort <code>R</code> unique fused results.</td></tr>
+            <tr><td>Edit correction</td><td>Roughly <code>O(V × m × n)</code> per unknown word</td><td>Compare against candidate vocabulary words with a dynamic-programming matrix.</td></tr>
+            <tr><td>Session maps/cache</td><td>Mostly expected <code>O(1)</code> map operations</td><td>Bounded in-memory state is intentionally simple.</td></tr>
+            <tr><td>LLM generation</td><td>Provider/model dependent</td><td>Scout does not implement transformer inference mathematics in the backend; it sends a bounded request to the provider.</td></tr>
+          </tbody></table></div>
+          <p>If Scout's corpus grew from hundreds of chunks to millions, the current “score every chunk” BM25 search would stop being appropriate. A production search system at that scale would normally use an inverted index or external search engine so query work is proportional to postings for query terms rather than every document.</p>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/bm25.js" target="_blank" rel="noopener">Source: BM25 data structures ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rrf.js" target="_blank" rel="noopener">Source: RRF data structures ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="not-ml" data-search="not machine learning deterministic rules regex logic no confidence probabilities">
+          <div class="docs-eyebrow">19 · What is not machine learning</div>
+          <h2>Do not attribute every Scout behavior to “AI.”</h2>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Behavior</th><th>What it actually is</th></tr></thead><tbody>
+            <tr><td>BM25</td><td>A deterministic lexical ranking formula from information retrieval.</td></tr>
+            <tr><td>RRF</td><td>A deterministic rank-fusion formula.</td></tr>
+            <tr><td>Typo correction</td><td>Dynamic-programming edit distance plus hand-maintained/protected vocabulary rules.</td></tr>
+            <tr><td>Intent classification in query-understanding</td><td>Ordered regular-expression rules with a default category.</td></tr>
+            <tr><td>Tools</td><td>Normal JavaScript functions operating on verified structured data.</td></tr>
+            <tr><td>Response contract</td><td>Rule-based semantic planning and evidence-state representation.</td></tr>
+            <tr><td>Grounding checks</td><td>String/entity/relationship/negation/provenance validation rules.</td></tr>
+            <tr><td>Language generation</td><td>The actual neural language-model component.</td></tr>
+          </tbody></table></div>
+          <div class="docs-callout no-math"><strong>No model confidence score is being hidden.</strong> The current architecture does not compute a single statistically calibrated probability that an answer is correct. It has retrieval scores, rank scores, categorical contracts, and validator verdicts. Those are different quantities and should not be merged into an invented “95% confidence.”</div>
+        </section>
+
+        <section class="docs-section" id="glossary" data-search="glossary definitions terminology bm25 rrf rag token chunk corpus idf tf ttl inference grounding">
+          <div class="docs-eyebrow">20 · Glossary</div>
+          <h2>Terms used throughout the Scout site.</h2>
+          <dl class="glossary-grid">
+            <div class="glossary-term"><dt>RAG</dt><dd><strong>Retrieval-Augmented Generation.</strong> Retrieve relevant external evidence first, then provide it to a generative model for the answer.</dd></div>
+            <div class="glossary-term"><dt>Corpus</dt><dd>The collection of searchable documents/chunks. Scout's corpus is built from verified knowledge and runtime facts.</dd></div>
+            <div class="glossary-term"><dt>Chunk</dt><dd>A small searchable text record derived from structured knowledge, such as one project, experience record, certification, or runtime fact.</dd></div>
+            <div class="glossary-term"><dt>Token</dt><dd>A unit of text. In Scout's BM25 code, tokens are simple normalized words/stems. In an LLM, tokens are model-specific subword units. Those are not the same tokenizer.</dd></div>
+            <div class="glossary-term"><dt>Stopword</dt><dd>A common word removed from lexical retrieval because it usually carries little search value, such as “the” or “and.”</dd></div>
+            <div class="glossary-term"><dt>Stemming</dt><dd>Reducing related word forms toward a common stem, such as <code>debugging → debug</code>. Scout uses a lightweight hand-written suffix stemmer, not Porter/Snowball.</dd></div>
+            <div class="glossary-term"><dt>TF</dt><dd><strong>Term Frequency.</strong> How many times a search term occurs in one document.</dd></div>
+            <div class="glossary-term"><dt>DF</dt><dd><strong>Document Frequency.</strong> How many documents in the corpus contain a term at least once.</dd></div>
+            <div class="glossary-term"><dt>IDF</dt><dd><strong>Inverse Document Frequency.</strong> A weight that makes rare terms count more than terms appearing everywhere.</dd></div>
+            <div class="glossary-term"><dt>BM25</dt><dd><strong>Best Matching 25 / Okapi BM25.</strong> A lexical relevance formula combining IDF, saturated term frequency, and document-length normalization.</dd></div>
+            <div class="glossary-term"><dt><code>k1</code></dt><dd>BM25 parameter controlling term-frequency saturation. Scout uses 1.2.</dd></div>
+            <div class="glossary-term"><dt><code>b</code></dt><dd>BM25 parameter controlling document-length normalization. Scout uses 0.75.</dd></div>
+            <div class="glossary-term"><dt>RRF</dt><dd><strong>Reciprocal Rank Fusion.</strong> Combines multiple ranked lists using reciprocal rank rather than their incompatible raw scores.</dd></div>
+            <div class="glossary-term"><dt>Candidate depth</dt><dd>How many results each individual search contributes before rank fusion. Scout defaults to at least 12 or three times the requested final limit.</dd></div>
+            <div class="glossary-term"><dt>Edit distance</dt><dd>The minimum number of allowed character edits required to transform one string into another.</dd></div>
+            <div class="glossary-term"><dt>Optimal String Alignment distance</dt><dd>The restricted adjacent-transposition edit-distance variant implemented by Scout's typo code, although the function is named Damerau-Levenshtein.</dd></div>
+            <div class="glossary-term"><dt>Anaphora</dt><dd>A reference such as “it,” “that project,” or “the first one” whose meaning depends on prior conversation.</dd></div>
+            <div class="glossary-term"><dt>Intent</dt><dd>A category describing what the user is trying to do, such as factual lookup, role fit, contact, weakness assessment, or small talk.</dd></div>
+            <div class="glossary-term"><dt>Evidence</dt><dd>Retrieved or tool-returned data that is allowed to support factual claims in the answer.</dd></div>
+            <div class="glossary-term"><dt>Response contract</dt><dd>A structured semantic plan describing the allowed answer state, evidence boundary, requested topic/role, and forbidden claims before or around generation.</dd></div>
+            <div class="glossary-term"><dt>Open-world assumption</dt><dd>Missing evidence does not automatically make a claim false. It can remain UNKNOWN unless authoritative negative evidence exists.</dd></div>
+            <div class="glossary-term"><dt>Grounding</dt><dd>Connecting generated factual claims to supplied evidence rather than allowing unsupported invention.</dd></div>
+            <div class="glossary-term"><dt>Provenance</dt><dd>Where a fact came from and which entity/project it belongs to.</dd></div>
+            <div class="glossary-term"><dt>Inference</dt><dd>Running a trained model to produce output. In Scout production, hosted Workers AI performs normal generative inference.</dd></div>
+            <div class="glossary-term"><dt>Provider</dt><dd>The runtime service or adapter that actually executes model inference, such as Cloudflare Workers AI or a local Ollama path.</dd></div>
+            <div class="glossary-term"><dt>Context / context packet</dt><dd>The bounded instructions, state, evidence, and tool observations supplied to the language model for one turn.</dd></div>
+            <div class="glossary-term"><dt>Temperature</dt><dd>A language-model sampling parameter that rescales logits before token sampling. Lower generally means a sharper, less variable distribution.</dd></div>
+            <div class="glossary-term"><dt>Top-p</dt><dd>Nucleus sampling parameter. Sampling is limited to the smallest high-probability set of tokens whose cumulative probability reaches the chosen threshold.</dd></div>
+            <div class="glossary-term"><dt>Neuron</dt><dd>Cloudflare Workers AI's usage-accounting unit. Scout estimates neurons from input/output token counts using model-specific rates when necessary.</dd></div>
+            <div class="glossary-term"><dt>TTL</dt><dd><strong>Time To Live.</strong> How long cached or temporary data remains valid before expiring.</dd></div>
+            <div class="glossary-term"><dt>Rate limit</dt><dd>A cap on how many requests a client may make during a time window.</dd></div>
+            <div class="glossary-term"><dt>Liveness</dt><dd>A health check answering “is the process alive?”</dd></div>
+            <div class="glossary-term"><dt>Readiness</dt><dd>A health check answering “is the service initialized enough to receive real traffic?”</dd></div>
+            <div class="glossary-term"><dt>Golden set</dt><dd>A fixed set of test questions with expected retrieval/behavior used to measure regressions.</dd></div>
+            <div class="glossary-term"><dt>Recall@k</dt><dd>Fraction of test queries for which a relevant result appears somewhere in the first <code>k</code> results.</dd></div>
+            <div class="glossary-term"><dt>MRR@k</dt><dd><strong>Mean Reciprocal Rank.</strong> Average of <code>1/rank</code> for the first relevant result, with zero for misses inside the cutoff.</dd></div>
+            <div class="glossary-term"><dt>Regression test</dt><dd>A test retained because a behavior broke before or is important enough that future changes must not silently break it.</dd></div>
+            <div class="glossary-term"><dt>Fail closed</dt><dd>When a required safety/correctness condition fails, return an error or constrained result instead of pretending success.</dd></div>
+            <div class="glossary-term"><dt>WebGPU</dt><dd>Browser API exposing modern GPU rendering/compute capabilities. Scout has an experimental browser-local inference path that can use it.</dd></div>
+            <div class="glossary-term"><dt>ONNX</dt><dd>An open format/ecosystem for representing and running machine-learning models across runtimes.</dd></div>
+            <div class="glossary-term"><dt>Quantization / q4</dt><dd>Representing model weights at lower numeric precision to reduce memory and compute. “q4” generally denotes a four-bit quantized representation; exact packing/quantization scheme depends on the model/runtime artifact.</dd></div>
+          </dl>
+          <div class="docs-callout production"><strong>Source-first rule:</strong> when this teaching guide and executable code ever disagree, the code should be treated as the current implementation and the guide should be corrected. The purpose of this page is to expose the mechanism, not create a second hidden specification.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/bm25.js" target="_blank" rel="noopener">Source: BM25 ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rrf.js" target="_blank" rel="noopener">Source: RRF ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/query-understanding.js" target="_blank" rel="noopener">Source: query understanding ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/context-packet.js" target="_blank" rel="noopener">Source: context math ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/grounding-validator.js" target="_blank" rel="noopener">Source: validation ↗</a></div>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer"><div class="shell"><div><strong>Scout</strong><span> · Engineering teaching guide</span></div><a href="https://www.linkedin.com/in/bradmatera" target="_blank" rel="noopener">LinkedIn ↗</a></div></footer>
+  <script type="module" src="./scene.js"></script>
+  <script src="./site.js" defer></script>
+  <script src="./learn.js" defer></script>
+  <script src="./docs.js" defer></script>
+</body>
+</html>
