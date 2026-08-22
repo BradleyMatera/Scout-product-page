@@ -6,6 +6,27 @@
   const content = document.querySelector('.docs-content');
   const mobileSelect = document.querySelector('.docs-mobile-nav select');
 
+  // The Docs landing page points new readers to the separate engineering teaching
+  // guide. API/Changelog/Learn reuse this script but should not receive the extra CTA.
+  if (/docs\.html$/i.test(location.pathname)) {
+    const actions = document.querySelector('.subpage-actions');
+    if (actions && !actions.querySelector('[href="./learn.html"]')) {
+      const learnLink = document.createElement('a');
+      learnLink.className = 'button';
+      learnLink.href = './learn.html';
+      learnLink.textContent = 'Learn how Scout works';
+      actions.insertBefore(learnLink, actions.lastElementChild || null);
+    }
+
+    const sidebarHead = document.querySelector('.docs-sidebar-head');
+    if (sidebarHead && !sidebarHead.querySelector('[href="./learn.html"]')) {
+      const row = document.createElement('div');
+      row.className = 'docs-source-row';
+      row.innerHTML = '<a href="./learn.html">Start with the teaching guide →</a>';
+      sidebarHead.appendChild(row);
+    }
+  }
+
   const byId = new Map(navLinks.map(link => [link.getAttribute('href').slice(1), link]));
 
   function setActive(id) {
