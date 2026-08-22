@@ -1,3 +1,8 @@
+const sceneStyle = document.createElement('link');
+sceneStyle.rel = 'stylesheet';
+sceneStyle.href = './scene.css';
+document.head.appendChild(sceneStyle);
+
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const revealObserver = new IntersectionObserver(entries => {
