@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#080b0f" />
-  <meta name="description" content="Scout is the RAG-first intelligence engine powering ProjectHub Recruiter Alpha: local BM25/RRF retrieval, server-owned conversation state, read-only evidence tools, Cloudflare Workers AI generation, and strict grounded validation." />
-  <meta property="og:title" content="Scout — Grounded Intelligence Engine" />
-  <meta property="og:description" content="Portable architecture. Recruiter deployment today. Evidence-first generation under active hardening." />
+  <meta name="description" content="Current Scout implementation, architecture, tests, deployment status, historical evaluation results, and known limits, with direct links to the ProjectHub source used to verify each claim." />
+  <meta property="og:title" content="Scout — Current Implementation and Verification" />
+  <meta property="og:description" content="ProjectHub Recruiter Alpha runtime architecture, reproducible tests, release state, evaluation history, and current limits." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://bradleymatera.github.io/Scout-product-page/" />
-  <title>Scout — Grounded Intelligence Engine</title>
+  <title>Scout — Current Implementation and Verification</title>
   <style>
     :root {
       --bg: #080b0f;
@@ -22,12 +22,11 @@
       --muted: #9aa8b5;
       --muted-2: #6f7f8e;
       --green: #6ee7ad;
-      --green-strong: #39c881;
-      --green-dim: rgba(110, 231, 173, .11);
+      --green-dim: rgba(110, 231, 173, .1);
       --blue: #73a7ff;
-      --blue-dim: rgba(115, 167, 255, .11);
+      --blue-dim: rgba(115, 167, 255, .1);
       --amber: #efc76e;
-      --amber-dim: rgba(239, 199, 110, .11);
+      --amber-dim: rgba(239, 199, 110, .1);
       --red: #ff8a8a;
       --max: 1220px;
       --shadow: 0 26px 90px rgba(0,0,0,.36);
@@ -39,8 +38,8 @@
       margin: 0;
       color: var(--text);
       background:
-        radial-gradient(circle at 82% 8%, rgba(57,200,129,.08), transparent 28%),
-        radial-gradient(circle at 10% 20%, rgba(115,167,255,.06), transparent 24%),
+        radial-gradient(circle at 82% 8%, rgba(57,200,129,.07), transparent 28%),
+        radial-gradient(circle at 10% 20%, rgba(115,167,255,.05), transparent 24%),
         var(--bg);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.6;
@@ -48,13 +47,14 @@
     }
 
     a { color: inherit; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
     .shell { width: min(calc(100% - 40px), var(--max)); margin: 0 auto; }
 
     .site-header {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(8,11,15,.82);
+      background: rgba(8,11,15,.84);
       backdrop-filter: blur(18px);
       border-bottom: 1px solid rgba(255,255,255,.06);
     }
@@ -87,12 +87,12 @@
       font: 900 .8rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
     }
 
-    .nav-links { display: flex; align-items: center; gap: 22px; font-size: .9rem; color: var(--muted); }
+    .nav-links { display: flex; align-items: center; gap: 20px; font-size: .89rem; color: var(--muted); }
     .nav-links a { text-decoration: none; transition: color .2s ease; }
     .nav-links a:hover { color: var(--text); }
     .nav-links .nav-cta { padding: 9px 13px; border: 1px solid rgba(110,231,173,.35); color: var(--text); background: var(--green-dim); }
 
-    .hero { padding: 96px 0 72px; }
+    .hero { padding: 94px 0 72px; }
     .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 64px; align-items: center; }
 
     .eyebrow {
@@ -100,7 +100,7 @@
       align-items: center;
       gap: 9px;
       color: var(--green);
-      font: 800 .75rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      font: 800 .74rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
       text-transform: uppercase;
       letter-spacing: .12em;
       margin-bottom: 22px;
@@ -109,17 +109,17 @@
 
     h1 {
       margin: 0;
-      font-size: clamp(3.25rem, 7.5vw, 6.8rem);
-      line-height: .94;
-      letter-spacing: -.065em;
-      max-width: 880px;
+      font-size: clamp(3.1rem, 7.2vw, 6.5rem);
+      line-height: .95;
+      letter-spacing: -.06em;
+      max-width: 900px;
     }
     .outline { color: transparent; -webkit-text-stroke: 1px rgba(242,246,248,.62); }
 
-    .hero-copy { margin: 28px 0 0; max-width: 760px; color: var(--muted); font-size: clamp(1.04rem, 2vw, 1.22rem); }
+    .hero-copy { margin: 28px 0 0; max-width: 780px; color: var(--muted); font-size: clamp(1.03rem, 2vw, 1.2rem); }
     .hero-copy strong { color: var(--text); }
-
     .hero-actions { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 34px; }
+
     .button {
       min-height: 48px;
       padding: 0 19px;
@@ -137,7 +137,6 @@
     .button:hover { transform: translateY(-2px); border-color: #445468; }
     .button.primary { background: var(--green); color: #041009; border-color: var(--green); }
     .button.primary:hover { background: #8aefbf; }
-
     .hero-footnote { margin-top: 18px; color: var(--muted-2); font-size: .82rem; }
 
     .runtime-card {
@@ -157,40 +156,55 @@
     .runtime-value small { display: block; color: var(--muted); font-weight: 500; margin-top: 3px; }
     .runtime-note { margin-top: 15px; padding: 13px 14px; border-left: 2px solid var(--amber); background: var(--amber-dim); color: #dfd0a8; font-size: .82rem; }
 
-    .truth-strip { border-top: 1px solid rgba(255,255,255,.055); border-bottom: 1px solid rgba(255,255,255,.055); background: rgba(255,255,255,.012); }
-    .truth-grid { display: grid; grid-template-columns: repeat(3,1fr); }
-    .truth { padding: 24px 25px; border-right: 1px solid var(--line-soft); }
-    .truth:last-child { border-right: 0; }
-    .truth-label { font: 800 .7rem/1 ui-monospace, monospace; text-transform: uppercase; letter-spacing: .12em; }
-    .truth-label.live-label { color: var(--green); }
-    .truth-label.dev-label { color: var(--blue); }
-    .truth-label.road-label { color: var(--amber); }
-    .truth strong { display: block; margin-top: 10px; font-size: 1.05rem; }
-    .truth p { margin: 6px 0 0; color: var(--muted); font-size: .87rem; }
+    .status-strip { border-top: 1px solid rgba(255,255,255,.055); border-bottom: 1px solid rgba(255,255,255,.055); background: rgba(255,255,255,.012); }
+    .status-grid { display: grid; grid-template-columns: repeat(3,1fr); }
+    .status-block { padding: 24px 25px; border-right: 1px solid var(--line-soft); }
+    .status-block:last-child { border-right: 0; }
+    .status-label { font: 800 .7rem/1 ui-monospace, monospace; text-transform: uppercase; letter-spacing: .12em; }
+    .status-label.prod { color: var(--green); }
+    .status-label.dev { color: var(--blue); }
+    .status-label.plan { color: var(--amber); }
+    .status-block strong { display: block; margin-top: 10px; font-size: 1.04rem; }
+    .status-block p { margin: 6px 0 0; color: var(--muted); font-size: .87rem; }
 
     .section { padding: 88px 0; border-bottom: 1px solid rgba(255,255,255,.055); }
     .section-heading { display: grid; grid-template-columns: .58fr 1.42fr; gap: 62px; margin-bottom: 48px; }
     .section-number { color: var(--green); font: 800 .72rem/1 ui-monospace, monospace; text-transform: uppercase; letter-spacing: .13em; padding-top: 8px; }
-    h2 { margin: 0; font-size: clamp(2.1rem, 4.7vw, 4.25rem); line-height: 1; letter-spacing: -.05em; }
-    .section-intro { margin: 18px 0 0; color: var(--muted); max-width: 800px; font-size: 1.04rem; }
+    h2 { margin: 0; font-size: clamp(2rem, 4.5vw, 4rem); line-height: 1; letter-spacing: -.048em; }
+    .section-intro { margin: 18px 0 0; color: var(--muted); max-width: 820px; font-size: 1.02rem; }
 
-    .architecture { border: 1px solid var(--line); background: #0b1015; padding: 24px; overflow: hidden; }
-    .arch-flow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px; align-items: stretch; }
-    .arch-node { min-height: 112px; padding: 14px 11px; display: flex; flex-direction: column; justify-content: center; border: 1px solid var(--line-soft); background: rgba(255,255,255,.016); text-align: center; }
+    .architecture { border: 1px solid var(--line); background: #0b1015; padding: 24px; }
+    .arch-flow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px; }
+    .arch-node { min-height: 116px; padding: 14px 10px; display: flex; flex-direction: column; justify-content: center; border: 1px solid var(--line-soft); background: rgba(255,255,255,.016); text-align: center; }
     .arch-node.core { border-color: rgba(110,231,173,.33); background: var(--green-dim); }
     .arch-node.model { border-color: rgba(115,167,255,.32); background: var(--blue-dim); }
     .arch-step { color: var(--muted-2); font: 700 .68rem/1 ui-monospace, monospace; margin-bottom: 7px; }
-    .arch-node strong { font-size: .84rem; line-height: 1.3; }
-    .arch-node span { margin-top: 5px; color: var(--muted-2); font-size: .7rem; line-height: 1.35; }
+    .arch-node strong { font-size: .83rem; line-height: 1.3; }
+    .arch-node span { margin-top: 5px; color: var(--muted-2); font-size: .69rem; line-height: 1.35; }
     .arch-detail { margin-top: 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .arch-detail div { border: 1px solid var(--line-soft); padding: 14px; color: var(--muted); font-size: .82rem; }
     .arch-detail strong { color: var(--text); display: block; margin-bottom: 4px; }
 
+    .verify-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .verify-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      border: 1px solid var(--line-soft);
+      color: #b8c5d0;
+      text-decoration: none;
+      font: 700 .7rem/1.2 ui-monospace, monospace;
+      background: rgba(255,255,255,.015);
+    }
+    .verify-link:hover { border-color: var(--blue); color: var(--text); }
+
     .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
-    .feature { min-height: 240px; padding: 25px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(255,255,255,.012); }
+    .feature { min-height: 270px; padding: 25px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(255,255,255,.012); display: flex; flex-direction: column; }
     .feature-code { color: var(--green); font: 800 .73rem/1 ui-monospace, monospace; }
     .feature h3 { margin: 16px 0 8px; font-size: 1.12rem; }
     .feature p { margin: 0; color: var(--muted); font-size: .9rem; }
+    .feature .verify-row { margin-top: auto; padding-top: 18px; }
 
     .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .scope-card { border: 1px solid var(--line); padding: 27px; background: var(--bg-2); }
@@ -203,10 +217,18 @@
     .scope-card p { color: var(--muted); }
     .checklist { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 10px; }
     .checklist li { display: grid; grid-template-columns: 20px 1fr; gap: 8px; color: #cbd5dd; font-size: .9rem; }
-    .checklist li::before { content: "✓"; color: var(--green); font-weight: 900; }
-    .future .checklist li::before { content: "→"; color: var(--amber); }
+    .checklist li::before { content: "•"; color: var(--green); font-weight: 900; }
+    .future .checklist li::before { color: var(--amber); }
 
-    .evidence-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 14px; }
+    .verification-table { width: 100%; border-collapse: collapse; border: 1px solid var(--line); background: var(--bg-2); }
+    .verification-table th, .verification-table td { padding: 15px 16px; border-bottom: 1px solid var(--line-soft); vertical-align: top; text-align: left; }
+    .verification-table th { color: var(--muted-2); font: 800 .7rem/1.3 ui-monospace, monospace; text-transform: uppercase; letter-spacing: .08em; background: rgba(255,255,255,.015); }
+    .verification-table td { color: var(--muted); font-size: .86rem; }
+    .verification-table td strong { color: var(--text); }
+    .verification-table tr:last-child td { border-bottom: 0; }
+    .verification-table code { color: #dbe7ef; font-size: .8rem; }
+
+    .evidence-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 14px; margin-top: 18px; }
     .metric-board { border: 1px solid var(--line); background: var(--bg-2); padding: 26px; }
     .metric { padding: 19px 0; border-bottom: 1px solid var(--line-soft); }
     .metric:first-child { padding-top: 0; }
@@ -215,88 +237,76 @@
     .metric-value span { color: var(--green); }
     .metric p { margin: 4px 0 0; color: var(--muted); font-size: .85rem; }
     .evidence-copy { border: 1px solid var(--line); background: linear-gradient(180deg, rgba(110,231,173,.025), transparent); padding: 27px; }
-    .evidence-copy h3 { margin: 0 0 12px; font-size: 1.45rem; }
+    .evidence-copy h3 { margin: 0 0 12px; font-size: 1.35rem; }
     .evidence-copy p { color: var(--muted); }
-    .audit-callout { margin-top: 20px; padding: 17px; border-left: 2px solid var(--blue); background: var(--blue-dim); color: #c8d9f6; font-size: .9rem; }
+    .audit-callout { margin-top: 20px; padding: 17px; border-left: 2px solid var(--blue); background: var(--blue-dim); color: #c8d9f6; font-size: .88rem; }
 
     .pipeline { display: grid; gap: 9px; }
-    .pipe-row { display: grid; grid-template-columns: 150px 1fr auto; gap: 18px; align-items: center; border: 1px solid var(--line-soft); padding: 16px 18px; background: rgba(255,255,255,.012); }
-    .pipe-state { font: 800 .69rem/1 ui-monospace, monospace; text-transform: uppercase; letter-spacing: .09em; }
+    .pipe-row { display: grid; grid-template-columns: 145px 1fr auto; gap: 18px; align-items: center; border: 1px solid var(--line-soft); padding: 16px 18px; background: rgba(255,255,255,.012); }
+    .pipe-state { font: 800 .68rem/1 ui-monospace, monospace; text-transform: uppercase; letter-spacing: .08em; }
     .pipe-state.done { color: var(--green); }
     .pipe-state.active { color: var(--blue); }
     .pipe-state.next { color: var(--amber); }
     .pipe-row strong { font-size: .94rem; }
-    .pipe-row p { margin: 3px 0 0; color: var(--muted); font-size: .82rem; }
-    .pipe-meta { color: var(--muted-2); font: .72rem/1.3 ui-monospace, monospace; text-align: right; }
+    .pipe-row p { margin: 4px 0 0; color: var(--muted); font-size: .84rem; }
+    .pipe-meta { color: var(--muted-2); font: .69rem/1 ui-monospace, monospace; }
 
-    .timeline { border-left: 1px solid var(--line); margin-left: 9px; }
+    .timeline { border-left: 1px solid var(--line); margin-left: 8px; }
     .timeline-item { position: relative; padding: 0 0 34px 34px; }
     .timeline-item:last-child { padding-bottom: 0; }
-    .timeline-item::before { content: ""; position: absolute; left: -6px; top: 5px; width: 11px; height: 11px; background: var(--bg); border: 2px solid var(--green); }
-    .timeline-date { color: var(--muted-2); font: 700 .7rem/1 ui-monospace, monospace; text-transform: uppercase; letter-spacing: .1em; }
-    .timeline-item h3 { margin: 7px 0 5px; font-size: 1.05rem; }
-    .timeline-item p { margin: 0; color: var(--muted); max-width: 850px; font-size: .9rem; }
+    .timeline-item::before { content: ""; position: absolute; left: -5px; top: 5px; width: 9px; height: 9px; background: var(--bg); border: 1px solid var(--green); }
+    .timeline-date { color: var(--muted-2); font: 800 .69rem/1 ui-monospace, monospace; text-transform: uppercase; letter-spacing: .08em; }
+    .timeline-item h3 { margin: 8px 0 6px; font-size: 1.08rem; }
+    .timeline-item p { margin: 0; color: var(--muted); font-size: .89rem; max-width: 900px; }
+    .timeline-item a { color: #bdd3ff; }
 
-    .repo-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
-    .repo-card { border: 1px solid var(--line); background: var(--bg-2); padding: 25px; }
-    .repo-card h3 { margin: 0; font-size: 1.25rem; }
-    .repo-role { display: inline-block; margin-top: 9px; color: var(--green); font: 700 .72rem/1 ui-monospace, monospace; text-transform: uppercase; letter-spacing: .08em; }
-    .repo-card p { color: var(--muted); font-size: .9rem; }
-    .repo-card a { color: #cfe0ff; text-decoration-color: rgba(207,224,255,.35); }
-    .branch-table { margin-top: 22px; border: 1px solid var(--line-soft); }
-    .branch-row { display: grid; grid-template-columns: 130px 1fr; border-bottom: 1px solid var(--line-soft); }
-    .branch-row:last-child { border-bottom: 0; }
-    .branch-row > div { padding: 12px 14px; font-size: .84rem; }
-    .branch-name { color: var(--green); font-family: ui-monospace, monospace; border-right: 1px solid var(--line-soft); }
-    .branch-desc { color: var(--muted); }
+    .repo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .repo-card { border: 1px solid var(--line); padding: 27px; background: var(--bg-2); }
+    .repo-card h3 { margin: 0; font-size: 1.35rem; }
+    .repo-role { display: inline-block; margin-top: 8px; color: var(--green); font: 800 .68rem/1 ui-monospace, monospace; text-transform: uppercase; letter-spacing: .08em; }
+    .repo-card p { color: var(--muted); }
+    .repo-card > a { color: #c6d9ff; text-decoration: none; }
+    .branch-table { margin-top: 20px; border-top: 1px solid var(--line-soft); }
+    .branch-row { display: grid; grid-template-columns: 110px 1fr; gap: 15px; padding: 12px 0; border-bottom: 1px solid var(--line-soft); }
+    .branch-name { color: var(--text); font: 750 .78rem/1.4 ui-monospace, monospace; }
+    .branch-desc { color: var(--muted); font-size: .82rem; }
 
-    .limitations { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
-    .limitation { padding: 19px; border: 1px solid var(--line-soft); background: rgba(239,199,110,.025); }
-    .limitation strong { display: block; margin-bottom: 5px; color: #f1dbad; }
-    .limitation p { margin: 0; color: var(--muted); font-size: .86rem; }
+    .limitations { display: grid; grid-template-columns: repeat(2,1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+    .limitation { padding: 23px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .limitation strong { display: block; margin-bottom: 6px; }
+    .limitation p { margin: 0; color: var(--muted); font-size: .87rem; }
 
-    .cta { padding: 90px 0; }
-    .cta-box { position: relative; overflow: hidden; border: 1px solid rgba(110,231,173,.32); background: linear-gradient(135deg, rgba(110,231,173,.09), rgba(115,167,255,.04) 60%, transparent); padding: clamp(30px, 7vw, 70px); }
-    .cta-box::after { content: "SCOUT"; position: absolute; right: -20px; bottom: -45px; color: rgba(255,255,255,.022); font-size: clamp(6rem, 18vw, 15rem); font-weight: 950; letter-spacing: -.08em; pointer-events: none; }
+    .cta { padding: 78px 0; }
+    .cta-box { border: 1px solid var(--line); padding: 38px; background: linear-gradient(135deg, rgba(110,231,173,.055), rgba(115,167,255,.025)); }
     .cta-box h2 { max-width: 850px; }
-    .cta-box p { max-width: 760px; color: var(--muted); font-size: 1.04rem; }
+    .cta-box p { color: var(--muted); max-width: 820px; }
 
-    footer { border-top: 1px solid rgba(255,255,255,.055); padding: 30px 0 44px; color: var(--muted-2); font-size: .8rem; }
-    .footer-row { display: flex; justify-content: space-between; gap: 22px; flex-wrap: wrap; }
+    footer { border-top: 1px solid rgba(255,255,255,.055); padding: 30px 0 42px; color: var(--muted-2); font-size: .8rem; }
+    .footer-row { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
     .footer-links { display: flex; flex-wrap: wrap; gap: 16px; }
-    .footer-links a { color: var(--muted); }
+    .footer-links a { text-decoration: none; }
 
-    .reveal { opacity: 0; transform: translateY(16px); transition: opacity .55s ease, transform .55s ease; }
+    .reveal { opacity: 0; transform: translateY(14px); transition: opacity .55s ease, transform .55s ease; }
     .reveal.visible { opacity: 1; transform: none; }
 
-    @media (max-width: 1020px) {
-      .hero-grid, .section-heading, .evidence-grid { grid-template-columns: 1fr; gap: 38px; }
-      .arch-flow { grid-template-columns: repeat(4, 1fr); }
+    @media (max-width: 980px) {
+      .hero-grid, .section-heading, .evidence-grid { grid-template-columns: 1fr; gap: 30px; }
       .feature-grid { grid-template-columns: repeat(2,1fr); }
-      .section-number { padding-top: 0; }
-    }
-
-    @media (max-width: 760px) {
-      .shell { width: min(calc(100% - 26px), var(--max)); }
-      .nav-links a:not(.nav-cta) { display: none; }
-      .hero { padding-top: 68px; }
-      .truth-grid, .scope-grid, .repo-grid, .limitations, .arch-detail { grid-template-columns: 1fr; }
-      .truth { border-right: 0; border-bottom: 1px solid var(--line-soft); }
-      .truth:last-child { border-bottom: 0; }
-      .feature-grid { grid-template-columns: 1fr; }
       .arch-flow { grid-template-columns: repeat(2,1fr); }
-      .pipe-row { grid-template-columns: 1fr; gap: 7px; }
-      .pipe-meta { text-align: left; }
-      .runtime-line { grid-template-columns: 1fr; gap: 4px; }
-      .branch-row { grid-template-columns: 105px 1fr; }
+      .arch-detail, .status-grid { grid-template-columns: 1fr; }
+      .status-block { border-right: 0; border-bottom: 1px solid var(--line-soft); }
+      .status-block:last-child { border-bottom: 0; }
+      .verification-table { display: block; overflow-x: auto; }
     }
 
-    @media (max-width: 480px) {
-      h1 { font-size: clamp(2.9rem, 16vw, 4.2rem); }
-      .arch-flow { grid-template-columns: 1fr; }
-      .button { width: 100%; }
-      .runtime-head { flex-direction: column; }
-      .section { padding: 72px 0; }
+    @media (max-width: 720px) {
+      .nav-links a:not(.nav-cta) { display: none; }
+      .hero { padding-top: 72px; }
+      .runtime-line, .pipe-row, .branch-row { grid-template-columns: 1fr; gap: 5px; }
+      .feature-grid, .scope-grid, .repo-grid, .limitations, .arch-flow { grid-template-columns: 1fr; }
+      .pipe-meta { margin-top: 5px; }
+      .shell { width: min(calc(100% - 28px), var(--max)); }
+      .cta-box { padding: 26px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -312,10 +322,10 @@
       <a class="brand" href="#top" aria-label="Scout home"><span class="brand-mark">S</span> Scout</a>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#architecture">Architecture</a>
-        <a href="#evidence">Evidence</a>
-        <a href="#roadmap">Roadmap</a>
-        <a href="#truth">Repo truth</a>
-        <a class="nav-cta" href="https://bradleymatera.github.io/ProjectHub/" target="_blank" rel="noopener">Try production ↗</a>
+        <a href="#verification">Verification</a>
+        <a href="#history">History</a>
+        <a href="#status">Status</a>
+        <a class="nav-cta" href="https://github.com/BradleyMatera/ProjectHub" target="_blank" rel="noopener">Source ↗</a>
       </nav>
     </div>
   </header>
@@ -324,37 +334,41 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div>
-          <div class="eyebrow">Production system · active hardening</div>
-          <h1>Grounded AI.<br><span class="outline">Small-model discipline.</span></h1>
-          <p class="hero-copy"><strong>Scout is the intelligence and orchestration engine behind ProjectHub Recruiter Alpha.</strong> Today it answers recruiter questions from verified evidence using local BM25/RRF retrieval, server-owned conversation state, bounded evidence tools, Cloudflare Workers AI generation, and strict post-generation validation.</p>
+          <div class="eyebrow">Current implementation · audited August 22, 2026</div>
+          <h1>Scout runtime.<br><span class="outline">Architecture, tests, limits.</span></h1>
+          <p class="hero-copy"><strong>Scout is the orchestration layer used by ProjectHub Recruiter Alpha.</strong> The current production configuration combines local BM25/RRF retrieval, server-owned conversation state, allowlisted read-only evidence tools, Cloudflare Workers AI generation, and post-generation validation.</p>
           <div class="hero-actions">
-            <a class="button primary" href="https://bradleymatera.github.io/ProjectHub/" target="_blank" rel="noopener">Use live Scout ↗</a>
-            <a class="button" href="https://github.com/BradleyMatera/ProjectHub" target="_blank" rel="noopener">Inspect source ↗</a>
-            <a class="button" href="https://bradleymatera.github.io/ProjectHub-dev/" target="_blank" rel="noopener">Open staging ↗</a>
+            <a class="button primary" href="https://bradleymatera.github.io/ProjectHub/" target="_blank" rel="noopener">Production ↗</a>
+            <a class="button" href="https://bradleymatera.github.io/ProjectHub-dev/" target="_blank" rel="noopener">Staging ↗</a>
+            <a class="button" href="https://github.com/BradleyMatera/ProjectHub" target="_blank" rel="noopener">Repository ↗</a>
           </div>
-          <p class="hero-footnote">Current commercial status: not a generally available multi-tenant SaaS product. The deployed recruiter assistant is real; broader productization is the next engineering phase.</p>
+          <p class="hero-footnote">This page separates released behavior, integrated development behavior, historical measurements, and planned productization. Claims link back to source where practical.</p>
         </div>
 
-        <aside class="runtime-card" aria-label="Current Scout runtime snapshot">
-          <div class="runtime-head"><span>scout.runtime / production</span><span class="live">released</span></div>
+        <aside class="runtime-card" aria-label="Current production runtime snapshot">
+          <div class="runtime-head"><span>ProjectHub / production configuration</span><span class="live">master</span></div>
           <div class="runtime-body">
-            <div class="runtime-line"><div class="runtime-key">Application</div><div class="runtime-value">ProjectHub Recruiter Alpha<small>Embeddable recruiter / portfolio assistant</small></div></div>
+            <div class="runtime-line"><div class="runtime-key">Application</div><div class="runtime-value">ProjectHub Recruiter Alpha<small>Current deployed Scout application</small></div></div>
             <div class="runtime-line"><div class="runtime-key">Generation</div><div class="runtime-value">Cloudflare Workers AI<small>@cf/meta/llama-3.1-8b-instruct-fast</small></div></div>
-            <div class="runtime-line"><div class="runtime-key">Retrieval</div><div class="runtime-value">Local BM25 + contextual RRF<small>Verified bundled knowledge; small selected evidence context</small></div></div>
+            <div class="runtime-line"><div class="runtime-key">Retrieval</div><div class="runtime-value">Local BM25 + contextual RRF<small>Verified bundled knowledge</small></div></div>
             <div class="runtime-line"><div class="runtime-key">State</div><div class="runtime-value">Server-owned session state<small>Five recent compact turns plus topic/referent state</small></div></div>
-            <div class="runtime-line"><div class="runtime-key">Validation</div><div class="runtime-value">Grounding + contract checks<small>Entity, number, relationship, polarity, provenance and overclaim controls</small></div></div>
-            <div class="runtime-line"><div class="runtime-key">Budget</div><div class="runtime-value">15-second response contract<small>Resource-aware routing and deadline-bound generation</small></div></div>
-            <div class="runtime-note">This is a snapshot of the current ProjectHub deployment, not a promise that every future Scout customer will use the same model, host, knowledge schema, or limits.</div>
+            <div class="runtime-line"><div class="runtime-key">Tools</div><div class="runtime-value">Allowlisted and read-only<small>Recruiter evidence retrieval and comparison functions</small></div></div>
+            <div class="runtime-line"><div class="runtime-key">Deadline</div><div class="runtime-value">15 seconds<small>Configured end-to-end response contract</small></div></div>
+            <div class="runtime-note">Ollama is present as a development/evaluation path. Cloudflare-to-Ollama production fallback requires explicit enablement and a qualification flag; it is not automatic.</div>
+            <div class="verify-row">
+              <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/master/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">runtime facts ↗</a>
+              <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/local-model-router.js" target="_blank" rel="noopener">model router ↗</a>
+            </div>
           </div>
         </aside>
       </div>
     </section>
 
-    <section class="truth-strip" aria-label="Scout status">
-      <div class="shell truth-grid">
-        <div class="truth"><div class="truth-label live-label">Live today</div><strong>Recruiter-specific Scout is in production.</strong><p>Production is released from ProjectHub <code>master</code> and served through GitHub Pages plus a separate chat backend.</p></div>
-        <div class="truth"><div class="truth-label dev-label">In development</div><strong><code>develop</code> is newer than production.</strong><p>Current work is tightening RAG evidence, semantic contracts, unknown/negative claims, follow-ups and validation before the next promotion.</p></div>
-        <div class="truth"><div class="truth-label road-label">Product direction</div><strong>Portable, customer-neutral Scout is the goal.</strong><p>Empty/no-KB operation, domain packs and arbitrary customer specialization are productization targets, not shipped claims.</p></div>
+    <section class="status-strip" aria-label="Current source state">
+      <div class="shell status-grid">
+        <div class="status-block"><div class="status-label prod">Released</div><strong><code>ProjectHub:master</code></strong><p>Production source line for the public widget and backend release.</p></div>
+        <div class="status-block"><div class="status-label dev">Integration</div><strong><code>ProjectHub:develop</code></strong><p>Contains post-release RAG, contract, evidence-selection, negative-claim, and follow-up changes not necessarily present in production.</p></div>
+        <div class="status-block"><div class="status-label plan">Not shipped</div><strong>Customer-neutral Scout Core</strong><p>Empty/no-KB operation, generalized domain packages, and unrelated-domain portability tests remain productization work.</p></div>
       </div>
     </section>
 
@@ -362,44 +376,52 @@
       <div class="shell">
         <div class="section-heading reveal">
           <div class="section-number">01 / Architecture</div>
-          <div><h2>The model writes. Scout controls the conditions.</h2><p class="section-intro">Scout is deliberately more than a prompt wrapped around an LLM. Deterministic code owns query handling, retrieval, state, evidence contracts, tool boundaries and validation. Generative inference is used to produce natural language inside those constraints.</p></div>
+          <div><h2>Current request path.</h2><p class="section-intro">The backend separates retrieval, state, tool execution, inference, and answer validation. The model produces conversational text; deterministic code controls the evidence and checks the result.</p></div>
         </div>
 
         <div class="architecture reveal">
           <div class="arch-flow">
             <div class="arch-node"><div class="arch-step">01</div><strong>Browser widget</strong><span>GitHub Pages · vanilla JS</span></div>
-            <div class="arch-node core"><div class="arch-step">02</div><strong>Query understanding</strong><span>normalize · typo repair · intent · contextual rewrite</span></div>
-            <div class="arch-node core"><div class="arch-step">03</div><strong>BM25 / RRF</strong><span>local evidence retrieval and conversational fusion</span></div>
-            <div class="arch-node core"><div class="arch-step">04</div><strong>Contract + tools</strong><span>fact state · required evidence · bounded enrichment</span></div>
-            <div class="arch-node model"><div class="arch-step">05</div><strong>8B generation</strong><span>Cloudflare Workers AI</span></div>
-            <div class="arch-node core"><div class="arch-step">06</div><strong>Validation / repair</strong><span>grounding · entities · numbers · relationships · overclaim</span></div>
-            <div class="arch-node"><div class="arch-step">07</div><strong>Reply + telemetry</strong><span>source · model calls · evidence · latency · usage</span></div>
+            <div class="arch-node core"><div class="arch-step">02</div><strong>Query understanding</strong><span>normalization · typo correction · intent · rewrite</span></div>
+            <div class="arch-node core"><div class="arch-step">03</div><strong>BM25 / RRF</strong><span>local retrieval · contextual rank fusion</span></div>
+            <div class="arch-node core"><div class="arch-step">04</div><strong>Contract + tools</strong><span>fact state · required evidence · read-only enrichment</span></div>
+            <div class="arch-node model"><div class="arch-step">05</div><strong>Generation</strong><span>Cloudflare Workers AI · Llama 3.1 8B Fast</span></div>
+            <div class="arch-node core"><div class="arch-step">06</div><strong>Validation / repair</strong><span>grounding · entities · numbers · relationships · polarity</span></div>
+            <div class="arch-node"><div class="arch-step">07</div><strong>Reply + telemetry</strong><span>source · calls · evidence · latency · usage</span></div>
           </div>
           <div class="arch-detail">
-            <div><strong>Control turns are cheaper.</strong>Greetings, thanks, user-profile updates and other conversational control intents can bypass RAG and use compact fact-free generation packets.</div>
-            <div><strong>Substantive turns are RAG-first.</strong>Relevant local evidence is retrieved before generation. Structured tools may enrich evidence; they are not supposed to replace the primary RAG context.</div>
-            <div><strong>Failure closes down, not outward.</strong>Unsupported generation is rejected, repaired or constrained. Unknown evidence is represented explicitly instead of forcing a confident yes/no answer.</div>
+            <div><strong>Control intents</strong>Greetings, thanks, user-profile updates, and related conversational control turns can use a compact path without normal RAG retrieval.</div>
+            <div><strong>Substantive questions</strong>The integrated path builds retrieved evidence before generation. Structured tools can add evidence but do not replace the RAG evidence context.</div>
+            <div><strong>Unsupported output</strong>Generated output can be rejected and regenerated under tighter constraints. UNKNOWN is represented separately from TRUE and FALSE in claim handling.</div>
+          </div>
+          <div class="verify-row">
+            <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/query-understanding.js" target="_blank" rel="noopener">query understanding ↗</a>
+            <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/bm25.js" target="_blank" rel="noopener">BM25 ↗</a>
+            <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rrf.js" target="_blank" rel="noopener">RRF ↗</a>
+            <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-agent.js" target="_blank" rel="noopener">RAG agent ↗</a>
+            <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/response-contract.js" target="_blank" rel="noopener">response contract ↗</a>
+            <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/grounding-validator.js" target="_blank" rel="noopener">validator ↗</a>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="current">
+    <section class="section" id="implementation">
       <div class="shell">
         <div class="section-heading reveal">
-          <div class="section-number">02 / What exists</div>
-          <div><h2>Current capabilities, not brochure fiction.</h2><p class="section-intro">These are capabilities present in the integrated Scout code line today. They are recruiter-focused because ProjectHub Recruiter Alpha is the current production application.</p></div>
+          <div class="section-number">02 / Implemented components</div>
+          <div><h2>Code paths present in the integrated branch.</h2><p class="section-intro">These items are taken from current <code>develop</code>. They should not be read as claims that every integrated change has already been promoted to <code>master</code>.</p></div>
         </div>
         <div class="feature-grid reveal">
-          <article class="feature"><div class="feature-code">RAG.01</div><h3>Local lexical retrieval</h3><p>Okapi BM25 retrieves verified fact chunks locally. Conversational follow-ups can fuse literal, alias-expanded and context-rewritten rankings using dependency-free RRF.</p></article>
-          <article class="feature"><div class="feature-code">CTX.02</div><h3>Structured conversation state</h3><p>The backend, not the browser, owns compact session state for topic, projects, job context, comparisons, user name, unresolved references and the latest five turns.</p></article>
-          <article class="feature"><div class="feature-code">CNT.03</div><h3>Semantic response contracts</h3><p>Scout builds intent, fact-state, polarity, required-entity and evidence boundaries before generation so the model is not asked to invent the rules of the answer.</p></article>
-          <article class="feature"><div class="feature-code">TOOL.04</div><h3>Allowlisted read-only tools</h3><p>Current tools search verified portfolio evidence, retrieve projects and profiles, compare projects, find skill evidence, match roles and assemble recruiter briefs. Unknown tools fail closed.</p></article>
-          <article class="feature"><div class="feature-code">VAL.05</div><h3>Post-generation grounding</h3><p>Generated answers are checked for unsupported entities, numbers, tech/project relationships, provenance drift, polarity errors, inflated seniority/expertise and other unsupported claims.</p></article>
-          <article class="feature"><div class="feature-code">GEN.06</div><h3>Provider abstraction</h3><p>Cloudflare Workers AI is the production primary. Ollama is the development/evaluation runtime and a gated fallback architecture. Provider/model selection sits behind an inference router.</p></article>
-          <article class="feature"><div class="feature-code">OBS.07</div><h3>Runtime telemetry</h3><p>Scout can expose safe metadata for prose source, provider/model, calls, token/neuron estimates, latency, repairs, retrieval candidates and selected evidence without exposing raw private knowledge.</p></article>
-          <article class="feature"><div class="feature-code">OPS.08</div><h3>Protected release path</h3><p><code>master</code> and <code>develop</code> are protected. CI checks builds, retrieval quality, dependencies, knowledge validity, staging isolation, secret patterns and other release invariants.</p></article>
-          <article class="feature"><div class="feature-code">UX.09</div><h3>Embeddable frontend</h3><p>The public chat widget remains vanilla JavaScript and GitHub Pages-friendly. The live analytics area separately uses Vite and Carbon components while keeping the widget lightweight.</p></article>
+          <article class="feature"><div class="feature-code">RAG.01</div><h3>BM25 retrieval + RRF</h3><p>Okapi BM25 indexes verified fact chunks. Contextual follow-ups can combine literal, alias-expanded, and rewritten rankings using reciprocal rank fusion.</p><div class="verify-row"><a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/bm25.js" target="_blank" rel="noopener">bm25.js ↗</a><a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rrf.js" target="_blank" rel="noopener">rrf.js ↗</a></div></article>
+          <article class="feature"><div class="feature-code">CTX.02</div><h3>Server session state</h3><p>State tracks the current topic, projects, job context, comparison context, intent, unresolved reference, visitor name, and five recent compact turns. The in-memory state TTL is two hours.</p><div class="verify-row"><a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/session-state.js" target="_blank" rel="noopener">session-state.js ↗</a></div></article>
+          <article class="feature"><div class="feature-code">CNT.03</div><h3>Response contracts</h3><p>Before generation, the engine can derive intent, fact state, direct-answer polarity, required entities, evidence boundaries, and answer-shape instructions.</p><div class="verify-row"><a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/response-contract.js" target="_blank" rel="noopener">response-contract.js ↗</a></div></article>
+          <article class="feature"><div class="feature-code">TOOL.04</div><h3>Read-only evidence tools</h3><p>The current tool catalog includes portfolio search, project lookup/comparison, role matching, candidate profile lookup, skill evidence, and recruiter brief construction.</p><div class="verify-row"><a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/agent-tools.js" target="_blank" rel="noopener">agent-tools.js ↗</a></div></article>
+          <article class="feature"><div class="feature-code">VAL.05</div><h3>Grounding validator</h3><p>Validation includes entity and number grounding, relationship checks, technology/project provenance, negation-aware claim checks, polarity, and overclaim or seniority inflation rules.</p><div class="verify-row"><a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/grounding-validator.js" target="_blank" rel="noopener">grounding-validator.js ↗</a></div></article>
+          <article class="feature"><div class="feature-code">GEN.06</div><h3>Inference router</h3><p>Cloudflare and Ollama sit behind one inference boundary. Current production selects Cloudflare when configured; Ollama is used for development/evaluation and only becomes a Cloudflare fallback when explicitly enabled and qualified.</p><div class="verify-row"><a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/local-model-router.js" target="_blank" rel="noopener">local-model-router.js ↗</a></div></article>
+          <article class="feature"><div class="feature-code">OBS.07</div><h3>Runtime telemetry</h3><p>The runtime can report prose source, provider, model, model-call count, tokens, neuron estimates, latency, repair attempts, retrieval candidates, selected evidence, and usage totals when available.</p><div class="verify-row"><a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">runtime knowledge ↗</a></div></article>
+          <article class="feature"><div class="feature-code">CI.08</div><h3>CI checks</h3><p>The current workflow builds the analytics bundle, checks generated artifacts, runs cost/retrieval tests, enforces a retrieval threshold, validates knowledge JSON, scans common secret patterns, and checks staging/inference invariants.</p><div class="verify-row"><a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/.github/workflows/test.yml" target="_blank" rel="noopener">test.yml ↗</a></div></article>
+          <article class="feature"><div class="feature-code">REL.09</div><h3>Production and staging separation</h3><p><code>ProjectHub-dev:main</code> is a prepared staging tree derived from <code>ProjectHub:develop</code>. The mirror records its canonical source commit in <code>STAGING-SOURCE.json</code>.</p><div class="verify-row"><a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/.github/workflows/sync-staging.yml" target="_blank" rel="noopener">sync workflow ↗</a><a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub-dev/blob/main/STAGING-SOURCE.json" target="_blank" rel="noopener">current marker ↗</a></div></article>
         </div>
       </div>
     </section>
@@ -408,78 +430,101 @@
       <div class="shell">
         <div class="section-heading reveal">
           <div class="section-number">03 / Scope</div>
-          <div><h2>Portable architecture is not the same as a finished portable product.</h2><p class="section-intro">This is the biggest correction from the original product page. The current deployment is intentionally scoped to Bradley Matera and Scout's own runtime. The generalized commercial layer still has to be extracted and proven.</p></div>
+          <div><h2>Current application scope vs. planned generalization.</h2><p class="section-intro">The runtime knowledge in the current codebase scopes Scout to Bradley Matera's professional information and Scout's own runtime. A customer-neutral, no-KB mode is not the current shipped application.</p></div>
         </div>
-
         <div class="scope-grid reveal">
           <article class="scope-card current">
-            <div class="scope-kicker">Implemented now</div>
+            <div class="scope-kicker">Current application</div>
             <h3>ProjectHub Recruiter Alpha</h3>
-            <p>Scout currently has a real tenant: a recruiter/portfolio assistant grounded in bundled verified knowledge and purpose-built recruiter evidence tools.</p>
+            <p>The deployed application is a recruiter/portfolio assistant with bundled knowledge and recruiter-specific evidence tools.</p>
             <ul class="checklist">
-              <li>Projects, skills, work history, education, certifications and career-goal questions</li>
-              <li>Role matching and project/skill evidence lookup</li>
-              <li>Multi-turn context, referent handling and visitor-name state</li>
-              <li>Runtime/meta questions about Scout itself</li>
-              <li>Grounded yes/no/unknown behavior and adversarial-claim handling</li>
-              <li>Production Cloudflare generation with local retrieval/validation</li>
+              <li>Projects, skills, work history, education, certifications, career goals, and public contact information</li>
+              <li>Project comparison, skill evidence, profile retrieval, and role matching</li>
+              <li>Conversation state and referent handling</li>
+              <li>Questions about Scout's own runtime and architecture</li>
+              <li>Cloudflare generation with local retrieval and validation</li>
             </ul>
+            <div class="verify-row"><a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">scope facts ↗</a><a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/agent-tools.js" target="_blank" rel="noopener">tool catalog ↗</a></div>
           </article>
-
           <article class="scope-card future">
-            <div class="scope-kicker">Productization direction</div>
+            <div class="scope-kicker">Not implemented as a product mode</div>
             <h3>Customer-neutral Scout Core</h3>
-            <p>The design direction is a reusable engine that works independently of one customer and becomes specialized through swappable knowledge, policy, workflow, tool and extension packages.</p>
+            <p>The current productization direction is to separate tenant-specific data and tool assumptions from reusable retrieval, state, inference, validation, and orchestration code.</p>
             <ul class="checklist">
-              <li>Make no-knowledge / empty-Scout operation a supported tested mode</li>
-              <li>Separate current Bradley-specific data and assumptions from core orchestration</li>
-              <li>Define validated customer/domain package contracts</li>
-              <li>Generalize tool and workflow extension boundaries beyond recruiter use cases</li>
-              <li>Prove portability with unrelated domains without modifying Scout Core</li>
-              <li>Package deployment, documentation, licensing and commercial support for transferability</li>
+              <li>Supported empty/no-knowledge baseline mode</li>
+              <li>Tenant-neutral identity and knowledge contracts</li>
+              <li>Generalized tool and workflow extension interfaces</li>
+              <li>Cross-domain test suites using unrelated domains</li>
+              <li>Deployment/config validation and buyer/operator documentation</li>
             </ul>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section" id="evidence">
+    <section class="section" id="verification">
       <div class="shell">
         <div class="section-heading reveal">
-          <div class="section-number">04 / Evidence</div>
-          <div><h2>The eval history includes the failures.</h2><p class="section-intro">Scout's development record is useful precisely because the flattering numbers were not treated as sacred. When a stricter audit showed the old scorer was accepting semantically wrong answers, those prior scores were explicitly invalidated and the engine/scorer were changed.</p></div>
+          <div class="section-number">04 / Verification</div>
+          <div><h2>Claims with a source or a retest path.</h2><p class="section-intro">The values below are either current configuration facts, checked-in evaluation facts, or historical results labeled with their original context. Commands are taken from the repository scripts and release documentation.</p></div>
+        </div>
+
+        <div class="reveal">
+          <table class="verification-table">
+            <thead><tr><th>Claim</th><th>Evidence</th><th>Retest / inspect</th><th>Source</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Production generation model</strong></td><td><code>@cf/meta/llama-3.1-8b-instruct-fast</code></td><td>Inspect runtime knowledge or production health/configuration.</td><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">runtime knowledge ↗</a></td></tr>
+              <tr><td><strong>Retrieval golden set</strong></td><td>40 queries; current engineering docs record Recall@6 = 1.000.</td><td><code>npm run eval-retrieval</code></td><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/data/eval-golden.json" target="_blank" rel="noopener">golden set ↗</a></td></tr>
+              <tr><td><strong>CI retrieval floor</strong></td><td>CI fails if Recall@6 is below 0.90.</td><td>Read or run the <code>Test and Verify</code> workflow.</td><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/.github/workflows/test.yml" target="_blank" rel="noopener">test.yml ↗</a></td></tr>
+              <tr><td><strong>Local API evaluation</strong></td><td>Repository scripts define a 61-request local API acceptance harness.</td><td><code>npm run eval:local-api</code></td><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/scripts/eval-local-api.js" target="_blank" rel="noopener">eval-local-api.js ↗</a></td></tr>
+              <tr><td><strong>Conversation regression</strong></td><td>Current engineering instructions describe 126 retained production inputs plus a six-turn repair regression: 132 inputs total.</td><td><code>npm run eval:production-conversations</code></td><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/test-production-conversations.py" target="_blank" rel="noopener">runner ↗</a></td></tr>
+              <tr><td><strong>Session memory bound</strong></td><td>Five recent compact turns, two-hour state TTL, 250-session in-memory cap.</td><td>Inspect constants and unit tests around session state.</td><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/session-state.js" target="_blank" rel="noopener">session-state.js ↗</a></td></tr>
+              <tr><td><strong>Staging provenance</strong></td><td>Staging writes the source repository, source branch, and exact source commit into <code>STAGING-SOURCE.json</code>.</td><td>Read the current marker after each sync.</td><td><a href="https://github.com/BradleyMatera/ProjectHub-dev/blob/main/STAGING-SOURCE.json" target="_blank" rel="noopener">current marker ↗</a></td></tr>
+              <tr><td><strong>15-second request contract</strong></td><td>Current README/release configuration documents a 15-second end-to-end budget.</td><td>Inspect environment/release config and run endpoint latency tests.</td><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/README.md" target="_blank" rel="noopener">README ↗</a></td></tr>
+            </tbody>
+          </table>
         </div>
 
         <div class="evidence-grid reveal">
           <div class="metric-board">
-            <div class="metric"><div class="metric-value"><span>1.000</span></div><p>Current documented Recall@6 on the 40-query retrieval golden set. CI independently fails retrieval changes below 0.90.</p></div>
-            <div class="metric"><div class="metric-value">40-query</div><p>Golden retrieval set for BM25/query-understanding regression measurement.</p></div>
-            <div class="metric"><div class="metric-value">61-request</div><p>Local API acceptance harness covering facts, safety, NLP, memory, references, dialogue and unknown-technology behavior.</p></div>
-            <div class="metric"><div class="metric-value">132-input</div><p>Conversation regression described by the current engineering instructions: 126 retained production inputs plus a six-turn repair regression.</p></div>
+            <div class="metric"><div class="metric-value"><span>1.000</span></div><p>Documented Recall@6 on the current 40-query retrieval golden set.</p></div>
+            <div class="metric"><div class="metric-value">0.90</div><p>Minimum Recall@6 accepted by the current CI retrieval gate.</p></div>
+            <div class="metric"><div class="metric-value">61</div><p>Requests in the local API acceptance harness described by the current repository.</p></div>
+            <div class="metric"><div class="metric-value">132</div><p>Inputs in the conversation regression described by the current engineering instructions.</p></div>
           </div>
           <div class="evidence-copy">
-            <h3>Why there is no giant “99.9% accurate” badge here</h3>
-            <p>On August 19, an earlier qualification looked like 114/115 plus a 40/40 focused run under the old scorer. An independent raw-output audit found false positives: closed-world employer denials, future-capability answers with the wrong polarity, incorrect contract states, and technology provenance drift.</p>
-            <p>The repository then added a strict semantic scorer, re-scored the stored outputs, exposed a much weaker baseline, and used those failures to drive upstream intent, response-contract, recovery and grounding fixes. That is more valuable than preserving a pretty number.</p>
-            <div class="audit-callout"><strong>Current rule:</strong> benchmark numbers are evidence only when the scorer itself survives review. Production and <code>develop</code> can also differ, so historical metrics are labeled as historical rather than silently presented as current 8B performance.</div>
+            <h3>Historical scorer correction</h3>
+            <p>On August 19, stored live outputs were initially summarized as 114/115 plus a 40/40 focused run under the older scorer. A later raw-output audit identified semantic false positives, including closed-world employment denials, incorrect future-capability polarity, incorrect contract states, and project/technology provenance errors.</p>
+            <p>Commit <code>e013a320</code> added a stricter semantic scorer and recorded an offline rescore baseline of <strong>131/178 (73.6%)</strong> for the preserved pre-strict artifacts. Later engine changes mean that number is historical; it is not a claim about the current production release.</p>
+            <div class="audit-callout">Historical evaluation results stay labeled with the scorer and runtime they came from. Current quality should be measured by rerunning the current harness against the current target rather than reusing an older percentage.</div>
+            <div class="verify-row">
+              <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/commit/e013a320d0495b56bd5cde0cee993d848f4323ec" target="_blank" rel="noopener">strict scorer commit ↗</a>
+              <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/docs/current-feature-handoff.md" target="_blank" rel="noopener">handoff / qualification notes ↗</a>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="quality">
+    <section class="section" id="regression">
       <div class="shell">
         <div class="section-heading reveal">
-          <div class="section-number">05 / Quality loop</div>
-          <div><h2>Failures become contracts, tests and guardrails.</h2><p class="section-intro">The Git history shows repeated movement away from “the model usually gets it” and toward explicit behavior that can be tested.</p></div>
+          <div class="section-number">05 / Regression controls</div>
+          <div><h2>Implemented controls added after observed failure cases.</h2><p class="section-intro">This section lists concrete mechanisms present in the current integrated code. It does not assign a quality score to the project or the development process.</p></div>
         </div>
         <div class="pipeline reveal">
-          <div class="pipe-row"><div class="pipe-state done">Integrated</div><div><strong>Conversation-aware BM25/RRF</strong><p>Follow-ups can preserve explicit subjects and fuse multiple local retrieval views instead of trusting one rewritten query.</p></div><div class="pipe-meta">retrieval</div></div>
-          <div class="pipe-row"><div class="pipe-state done">Integrated</div><div><strong>RAG-first primary path</strong><p>Retrieved evidence is built first; structured tools are supplemental enrichment rather than a replacement for retrieval context.</p></div><div class="pipe-meta">grounding</div></div>
-          <div class="pipe-row"><div class="pipe-state done">Integrated</div><div><strong>TRUE / FALSE / UNKNOWN claim semantics</strong><p>Open-world claims such as undocumented employment or future capability should remain unknown rather than being converted into unsupported negatives.</p></div><div class="pipe-meta">contracts</div></div>
-          <div class="pipe-row"><div class="pipe-state done">Integrated</div><div><strong>Generative repair and constrained recovery</strong><p>Validation failure can trigger another generation attempt under tighter instructions instead of letting deterministic code casually write normal chatbot prose.</p></div><div class="pipe-meta">recovery</div></div>
-          <div class="pipe-row"><div class="pipe-state active">Active hardening</div><div><strong>Negative claims, role framing and follow-up precision</strong><p>The newest <code>develop</code> changes continue tightening how unknown facts, future roles and documented gaps are represented.</p></div><div class="pipe-meta">develop</div></div>
-          <div class="pipe-row"><div class="pipe-state next">Next phase</div><div><strong>Portable product extraction</strong><p>Preserve the working behavior while separating tenant-specific knowledge/tools from the core and adding cross-domain portability tests.</p></div><div class="pipe-meta">productization</div></div>
+          <div class="pipe-row"><div class="pipe-state done">Integrated</div><div><strong>Conversation-aware BM25/RRF</strong><p>Follow-up retrieval can preserve explicit subjects and combine multiple local retrieval views.</p></div><div class="pipe-meta">retrieval</div></div>
+          <div class="pipe-row"><div class="pipe-state done">Integrated</div><div><strong>RAG-first primary path</strong><p>Retrieved evidence is assembled before generation; structured tools are supplemental evidence.</p></div><div class="pipe-meta">rag-agent.js</div></div>
+          <div class="pipe-row"><div class="pipe-state done">Integrated</div><div><strong>TRUE / FALSE / UNKNOWN semantics</strong><p>Open-world claims such as undocumented employment or future capability can remain UNKNOWN instead of being forced into a negative.</p></div><div class="pipe-meta">contracts</div></div>
+          <div class="pipe-row"><div class="pipe-state done">Integrated</div><div><strong>Generated repair / recovery</strong><p>Validation failure can trigger another model call with tighter constraints instead of immediately accepting the first output.</p></div><div class="pipe-meta">recovery</div></div>
+          <div class="pipe-row"><div class="pipe-state active">Develop</div><div><strong>Negative claims and future-role framing</strong><p>The latest integrated changes continue adjusting evidence selection and answer instructions for unknown facts, documented gaps, and hypothetical roles.</p></div><div class="pipe-meta">Aug 22</div></div>
+        </div>
+        <div class="verify-row reveal">
+          <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/test/acceptance-scorer.test.js" target="_blank" rel="noopener">acceptance scorer tests ↗</a>
+          <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/test/architecture-invariant.test.js" target="_blank" rel="noopener">architecture invariants ↗</a>
+          <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/test/agent-engine.test.js" target="_blank" rel="noopener">agent engine tests ↗</a>
+          <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/test/comparative-claims.test.js" target="_blank" rel="noopener">claim tests ↗</a>
+          <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/test/contract-entity-matrix.test.js" target="_blank" rel="noopener">contract/entity tests ↗</a>
         </div>
       </div>
     </section>
@@ -487,46 +532,43 @@
     <section class="section" id="history">
       <div class="shell">
         <div class="section-heading reveal">
-          <div class="section-number">06 / Development history</div>
-          <div><h2>Scout did not start where it is now.</h2><p class="section-intro">The branch and commit history documents an iterative transition from a portfolio chatbot toward a controlled generative engine.</p></div>
+          <div class="section-number">06 / Repository history</div>
+          <div><h2>Selected changes that altered the current architecture.</h2><p class="section-intro">Dates and descriptions below come from merged pull requests and commits. They are included to show when specific behavior entered the repository.</p></div>
         </div>
         <div class="timeline reveal">
-          <div class="timeline-item"><div class="timeline-date">Earlier ProjectHub</div><h3>Embeddable recruiter/portfolio chatbot</h3><p>The project began around a browser widget and recruiter knowledge. Over time, more answer logic, provider fallback and analytics accumulated around it.</p></div>
-          <div class="timeline-item"><div class="timeline-date">July 2026</div><h3>Release engineering became explicit</h3><p>Staging isolation, CI hardening, deploy rollback/health checks, protected branches, coordinated releases and source-of-truth guardrails were merged into the repository workflow.</p></div>
-          <div class="timeline-item"><div class="timeline-date">August 2026 · local-agent phase</div><h3>Small-model harness exposed architecture problems</h3><p>Conversation resolution, response contracts, tool selection, completeness checks and grounding validators grew while qwen2.5 local models were used for development and evaluation.</p></div>
-          <div class="timeline-item"><div class="timeline-date">August 2026 · architecture correction</div><h3>Deterministic fallback prose was treated as a blocker</h3><p>Earlier evaluations showed too much user-visible fallback text was being authored by deterministic code. Recovery was reworked toward contracts plus generative output so the engine controls evidence without impersonating the language model.</p></div>
-          <div class="timeline-item"><div class="timeline-date">August 19</div><h3>Old qualification numbers were invalidated</h3><p>A stricter audit found semantic false positives in the old scorer. Stored raw responses were re-scored and upstream intent/contract logic became a target instead of merely tweaking prompts.</p></div>
-          <div class="timeline-item"><div class="timeline-date">August 21</div><h3>RAG-first restoration + runtime transparency</h3><p>Knowledge prewarming, META routing, plain-text parsing, evidence propagation, safe per-reply telemetry and Scout self-knowledge were repaired and validated in staging.</p></div>
-          <div class="timeline-item"><div class="timeline-date">August 21–22</div><h3>Cloudflare Llama 3.1 8B Fast qualified and released</h3><p>Production moved to <code>@cf/meta/llama-3.1-8b-instruct-fast</code>, followed by a RAG-first production release and frontend cache refresh.</p></div>
-          <div class="timeline-item"><div class="timeline-date">Now</div><h3>Integrated branch is still being hardened</h3><p><code>develop</code> contains post-release changes around evidence selection, negative assessment, future/hypothetical role framing and honest UNKNOWN behavior that have not all been promoted to production.</p></div>
+          <div class="timeline-item"><div class="timeline-date">July 17, 2026</div><h3>Staging, CI, deployment, and release controls</h3><p>PRs <a href="https://github.com/BradleyMatera/ProjectHub/pull/4" target="_blank" rel="noopener">#4</a> through <a href="https://github.com/BradleyMatera/ProjectHub/pull/11" target="_blank" rel="noopener">#11</a> added staging isolation, CI checks, deployment backup/rollback/health verification, coordinated releases, branch-protection setup, and release documentation.</p></div>
+          <div class="timeline-item"><div class="timeline-date">August 12, 2026</div><h3>Workspace/source-of-truth guardrails and local-agent work</h3><p>PRs <a href="https://github.com/BradleyMatera/ProjectHub/pull/13" target="_blank" rel="noopener">#13</a> through <a href="https://github.com/BradleyMatera/ProjectHub/pull/17" target="_blank" rel="noopener">#17</a> addressed stale-workspace Git problems. The same period contains agent-engine, response-contract, completeness, and validator changes evaluated with local Qwen models.</p></div>
+          <div class="timeline-item"><div class="timeline-date">August 19, 2026</div><h3>Strict semantic scorer added</h3><p>Commit <a href="https://github.com/BradleyMatera/ProjectHub/commit/e013a320d0495b56bd5cde0cee993d848f4323ec" target="_blank" rel="noopener"><code>e013a320</code></a> added the strict scorer, strict eval definitions, offline rescoring, scorer tests, and initial contract changes after the earlier scorer's false positives were documented.</p></div>
+          <div class="timeline-item"><div class="timeline-date">August 21, 2026</div><h3>RAG path and runtime transparency changes</h3><p>Commits repaired META routing, knowledge prewarming, plain-text generation parsing, retrieval-candidate propagation, safe telemetry identifiers, and runtime self-knowledge. Later that day <a href="https://github.com/BradleyMatera/ProjectHub/commit/d32b75e945578f9b4261cc1decd2766b7e111873" target="_blank" rel="noopener"><code>d32b75e</code></a> changed the qualified Cloudflare model to Llama 3.1 8B Instruct Fast.</p></div>
+          <div class="timeline-item"><div class="timeline-date">August 22, 2026</div><h3>8B RAG-first release and post-release integration changes</h3><p><a href="https://github.com/BradleyMatera/ProjectHub/commit/5c49c9a2db915a426ee85dba1943c1bdcb370683" target="_blank" rel="noopener"><code>5c49c9a</code></a> is the production release commit for “Scout 8B Fast + RAG-first + composer fix.” Current <code>develop</code> has additional changes around negative assessments, UNKNOWN handling, and hypothetical-role framing.</p></div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="truth">
+    <section class="section" id="status">
       <div class="shell">
         <div class="section-heading reveal">
-          <div class="section-number">07 / Repository truth</div>
-          <div><h2>Two repositories. One source of truth.</h2><p class="section-intro">The staging repository is intentionally a prepared deployment mirror. Product development belongs in ProjectHub.</p></div>
+          <div class="section-number">07 / Repository state</div>
+          <div><h2>Canonical source, staging mirror, and current branch roles.</h2><p class="section-intro">Project development happens in <code>BradleyMatera/ProjectHub</code>. <code>ProjectHub-dev</code> is a staging deployment target generated from the integration branch.</p></div>
         </div>
         <div class="repo-grid reveal">
           <article class="repo-card">
             <h3>BradleyMatera/ProjectHub</h3><span class="repo-role">Canonical source</span>
-            <p>Contains Scout, the ProjectHub frontend, backend, tests, eval artifacts, release automation, Docker configuration, analytics, development reports and AI-agent/workspace guardrails.</p>
-            <a href="https://github.com/BradleyMatera/ProjectHub" target="_blank" rel="noopener">Open canonical repository ↗</a>
+            <p>Contains the frontend, Scout backend, tests, evaluation artifacts, workflows, deployment scripts, Docker files, analytics, and engineering documentation.</p>
+            <a href="https://github.com/BradleyMatera/ProjectHub" target="_blank" rel="noopener">Open repository ↗</a>
             <div class="branch-table">
-              <div class="branch-row"><div class="branch-name">master</div><div class="branch-desc">Current released production line. Protected.</div></div>
-              <div class="branch-row"><div class="branch-name">develop</div><div class="branch-desc">Integrated development line. Protected and currently newer than production.</div></div>
-              <div class="branch-row"><div class="branch-name">old branches</div><div class="branch-desc">Most named feature/chore/release branches audited are already fully absorbed into develop and now function as historical pointers.</div></div>
+              <div class="branch-row"><div class="branch-name">master</div><div class="branch-desc">Released production line; protected.</div></div>
+              <div class="branch-row"><div class="branch-name">develop</div><div class="branch-desc">Integrated development line; protected; currently contains post-release changes.</div></div>
+              <div class="branch-row"><div class="branch-name">old branches</div><div class="branch-desc">Most audited feature/chore/release branch pointers contain no unique product commits ahead of current develop.</div></div>
             </div>
           </article>
           <article class="repo-card">
-            <h3>BradleyMatera/ProjectHub-dev</h3><span class="repo-role">Staging deploy target</span>
-            <p><code>main</code> is generated/prepared from ProjectHub <code>develop</code>. The sync workflow writes <code>STAGING-SOURCE.json</code> so the deployed tree records which canonical commit produced it.</p>
+            <h3>BradleyMatera/ProjectHub-dev</h3><span class="repo-role">Staging target</span>
+            <p><code>main</code> is prepared from <code>ProjectHub:develop</code>. The sync process writes exact source provenance into <code>STAGING-SOURCE.json</code>.</p>
             <a href="https://github.com/BradleyMatera/ProjectHub-dev" target="_blank" rel="noopener">Open staging repository ↗</a>
             <div class="branch-table">
-              <div class="branch-row"><div class="branch-name">main</div><div class="branch-desc">Prepared staging tree for GitHub Pages, not an independent product code line.</div></div>
-              <div class="branch-row"><div class="branch-name">frontend</div><div class="branch-desc">https://bradleymatera.github.io/ProjectHub-dev/</div></div>
+              <div class="branch-row"><div class="branch-name">main</div><div class="branch-desc">Prepared staging tree, not an independent code line.</div></div>
+              <div class="branch-row"><div class="branch-name">frontend</div><div class="branch-desc">bradleymatera.github.io/ProjectHub-dev/</div></div>
               <div class="branch-row"><div class="branch-name">backend</div><div class="branch-desc">dev.projecthub-chat.bradleymatera.dev</div></div>
             </div>
           </article>
@@ -537,17 +579,16 @@
     <section class="section" id="roadmap">
       <div class="shell">
         <div class="section-heading reveal">
-          <div class="section-number">08 / Productization roadmap</div>
-          <div><h2>Keep the engine. Remove the tenant assumptions.</h2><p class="section-intro">The commercial opportunity is not “sell Bradley's recruiter bot.” It is to preserve the working orchestration and make the customer/domain layer replaceable without weakening the behavior already proven in ProjectHub.</p></div>
+          <div class="section-number">08 / Not implemented yet</div>
+          <div><h2>Productization work that still needs implementation and tests.</h2><p class="section-intro">These are planned directions inferred from the current architecture and project goals. They are intentionally separated from implemented capabilities.</p></div>
         </div>
         <div class="pipeline reveal">
-          <div class="pipe-row"><div class="pipe-state active">Current</div><div><strong>Stabilize the integrated Scout behavior</strong><p>Continue qualifying RAG, contracts, validation, conversation quality and production parity before structural cleanup becomes the main job.</p></div><div class="pipe-meta">behavior first</div></div>
-          <div class="pipe-row"><div class="pipe-state next">Planned</div><div><strong>Repository / branch normalization</strong><p>Archive or remove stale pointers after confirming unique history, leaving an obvious production/integration/feature flow.</p></div><div class="pipe-meta">source control</div></div>
-          <div class="pipe-row"><div class="pipe-state next">Planned</div><div><strong>Extract tenant-neutral core boundaries</strong><p>Separate recruiter data, identity assumptions and recruiter-specific tools from reusable conversation, retrieval, inference, state, validation and orchestration primitives.</p></div><div class="pipe-meta">core</div></div>
-          <div class="pipe-row"><div class="pipe-state next">Planned</div><div><strong>Support empty / no-knowledge Scout</strong><p>Make “no customer KB installed” an intentional tested state rather than assuming required recruiter knowledge keys are always present.</p></div><div class="pipe-meta">baseline mode</div></div>
-          <div class="pipe-row"><div class="pipe-state next">Planned</div><div><strong>Define domain/package contracts</strong><p>Knowledge, identity, policies, workflows, tool declarations and controlled executable extensions need validated interfaces instead of customer-specific core edits.</p></div><div class="pipe-meta">specialization</div></div>
-          <div class="pipe-row"><div class="pipe-state next">Planned</div><div><strong>Prove cross-domain portability</strong><p>Use intentionally unrelated example domains and require the same Scout Core to work without core modifications.</p></div><div class="pipe-meta">evidence</div></div>
-          <div class="pipe-row"><div class="pipe-state next">Planned</div><div><strong>Commercial handoff hardening</strong><p>Documentation, deployment, config validation, security review, license/IP inventory, support boundaries and buyer/operator handoff become first-class release requirements.</p></div><div class="pipe-meta">product</div></div>
+          <div class="pipe-row"><div class="pipe-state active">Current</div><div><strong>Continue integration qualification</strong><p>Re-run current retrieval, contract, validation, conversation, and staging checks as <code>develop</code> changes.</p></div><div class="pipe-meta">qualification</div></div>
+          <div class="pipe-row"><div class="pipe-state next">Planned</div><div><strong>Remove tenant assumptions from core code</strong><p>Separate Bradley/recruiter-specific identity, knowledge keys, and tools from reusable orchestration code.</p></div><div class="pipe-meta">core boundary</div></div>
+          <div class="pipe-row"><div class="pipe-state next">Planned</div><div><strong>Add supported empty/no-KB mode</strong><p>Current code assumes required recruiter knowledge structure in several places; a no-knowledge baseline needs explicit behavior and tests.</p></div><div class="pipe-meta">baseline mode</div></div>
+          <div class="pipe-row"><div class="pipe-state next">Planned</div><div><strong>Define domain package schemas</strong><p>Knowledge, identity, policies, tool declarations, workflows, and extensions need validated interfaces that do not require core edits for each customer.</p></div><div class="pipe-meta">specialization</div></div>
+          <div class="pipe-row"><div class="pipe-state next">Planned</div><div><strong>Run unrelated-domain portability tests</strong><p>Use multiple unrelated example domains and require the same core orchestration to operate without domain-specific core code changes.</p></div><div class="pipe-meta">portability</div></div>
+          <div class="pipe-row"><div class="pipe-state next">Planned</div><div><strong>Package deployment and operator handoff</strong><p>Configuration validation, documentation, security review, licensing/IP inventory, upgrade paths, and support boundaries need product-level definitions.</p></div><div class="pipe-meta">distribution</div></div>
         </div>
       </div>
     </section>
@@ -555,16 +596,21 @@
     <section class="section" id="limits">
       <div class="shell">
         <div class="section-heading reveal">
-          <div class="section-number">09 / Honest boundaries</div>
-          <div><h2>What this page is deliberately not claiming.</h2><p class="section-intro">These limitations are part of the product story because the repository supports them.</p></div>
+          <div class="section-number">09 / Current limits</div>
+          <div><h2>Boundaries supported by the current repository state.</h2><p class="section-intro">These are implementation or deployment limits, not positioning language.</p></div>
         </div>
         <div class="limitations reveal">
-          <div class="limitation"><strong>Scout is not currently a general-purpose assistant.</strong><p>The production runtime knowledge explicitly scopes the current app to Bradley's verified professional information and Scout's own runtime.</p></div>
-          <div class="limitation"><strong>No-KB Scout is not a shipped mode yet.</strong><p>Current CI validates recruiter knowledge keys. Empty-knowledge support is a productization requirement to build and test, not something to pretend already exists.</p></div>
-          <div class="limitation"><strong>Browser/WebGPU inference is experimental.</strong><p>The architecture leaves room for it, but production generation is currently Cloudflare Workers AI.</p></div>
-          <div class="limitation"><strong>Ollama is not a qualified production primary/fallback by default.</strong><p>It is the dev/evaluation runtime and the router requires explicit enablement plus qualification before Cloudflare can fall back to it in production.</p></div>
-          <div class="limitation"><strong>The Docker target is ahead of the current production deploy method.</strong><p>Dockerfiles and production-parity testing exist, while repository release documentation still identifies the current SCP-based GCP production deployment as a legacy path to replace.</p></div>
-          <div class="limitation"><strong>Commercial pricing is not finalized.</strong><p>Scout is being engineered toward a transferable product. This page does not invent a mature SaaS tier structure before the portable customer layer exists.</p></div>
+          <div class="limitation"><strong>Current Scout is recruiter-specific.</strong><p>The runtime knowledge scopes the deployed application to Bradley Matera's professional information and Scout's own runtime.</p></div>
+          <div class="limitation"><strong>No-KB operation is not a supported shipped mode.</strong><p>Current CI and knowledge access paths assume recruiter knowledge structure. Empty operation requires explicit implementation and tests.</p></div>
+          <div class="limitation"><strong>Browser/WebGPU inference is experimental.</strong><p>The current production generation path uses Cloudflare Workers AI.</p></div>
+          <div class="limitation"><strong>Ollama production fallback is gated.</strong><p>Cloudflare-to-Ollama fallback requires explicit enablement and <code>SCOUT_OLLAMA_QUALIFIED=true</code>.</p></div>
+          <div class="limitation"><strong>Production deployment still includes a legacy SCP path.</strong><p>The repository contains Docker production-parity assets, while the release specification still identifies the current SCP-based GCP path as legacy and intended for replacement.</p></div>
+          <div class="limitation"><strong>Historical metrics are runtime/scorer-specific.</strong><p>Old qualification percentages should not be reused as current quality measurements after model, scorer, contract, or pipeline changes.</p></div>
+        </div>
+        <div class="verify-row reveal">
+          <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/PROJECTHUB-DEVELOPMENT-AND-RELEASE-SPEC.md" target="_blank" rel="noopener">release specification ↗</a>
+          <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">runtime scope ↗</a>
+          <a class="verify-link" href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/local-model-router.js" target="_blank" rel="noopener">fallback rules ↗</a>
         </div>
       </div>
     </section>
@@ -572,13 +618,14 @@
     <section class="cta">
       <div class="shell">
         <div class="cta-box reveal">
-          <div class="eyebrow">See the system that exists</div>
-          <h2>Try production. Read the code. Then judge the roadmap.</h2>
-          <p>Scout is already doing real RAG-first recruiter work in ProjectHub. The next challenge is turning that working engine into a clean, customer-neutral product without replacing the parts that made it reliable.</p>
+          <div class="eyebrow">Verification targets</div>
+          <h2>Production, staging, source, and audit notes.</h2>
+          <p>The links below are the shortest paths to check the current public behavior, integration deployment, canonical source, and the source audit used to build this page.</p>
           <div class="hero-actions">
-            <a class="button primary" href="https://bradleymatera.github.io/ProjectHub/" target="_blank" rel="noopener">Launch ProjectHub ↗</a>
-            <a class="button" href="https://github.com/BradleyMatera/ProjectHub" target="_blank" rel="noopener">Read the repository ↗</a>
-            <a class="button" href="https://bradleymatera.dev/" target="_blank" rel="noopener">Bradley Matera ↗</a>
+            <a class="button primary" href="https://bradleymatera.github.io/ProjectHub/" target="_blank" rel="noopener">Production ↗</a>
+            <a class="button" href="https://bradleymatera.github.io/ProjectHub-dev/" target="_blank" rel="noopener">Staging ↗</a>
+            <a class="button" href="https://github.com/BradleyMatera/ProjectHub" target="_blank" rel="noopener">Canonical source ↗</a>
+            <a class="button" href="https://github.com/BradleyMatera/Scout-product-page/blob/main/SCOUT-SOURCE-AUDIT.md" target="_blank" rel="noopener">Source audit ↗</a>
           </div>
         </div>
       </div>
@@ -587,11 +634,11 @@
 
   <footer>
     <div class="shell footer-row">
-      <div>Scout product status page · repository-audited August 22, 2026</div>
+      <div>Scout implementation status page · source audit dated August 22, 2026</div>
       <div class="footer-links">
-        <a href="https://github.com/BradleyMatera/ProjectHub" target="_blank" rel="noopener">ProjectHub source</a>
-        <a href="https://github.com/BradleyMatera/ProjectHub-dev" target="_blank" rel="noopener">Staging mirror</a>
-        <a href="https://bradleymatera.github.io/ProjectHub/" target="_blank" rel="noopener">Production</a>
+        <a href="https://github.com/BradleyMatera/ProjectHub" target="_blank" rel="noopener">ProjectHub</a>
+        <a href="https://github.com/BradleyMatera/ProjectHub-dev" target="_blank" rel="noopener">ProjectHub-dev</a>
+        <a href="https://github.com/BradleyMatera/Scout-product-page/blob/main/SCOUT-SOURCE-AUDIT.md" target="_blank" rel="noopener">Audit</a>
       </div>
     </div>
   </footer>
