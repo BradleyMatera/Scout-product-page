@@ -2,143 +2,222 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.m
 
 const canvas = document.querySelector('#ambient-three');
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const finePointer = matchMedia('(pointer:fine)').matches;
 
 if (canvas) {
   let renderer;
   try {
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer = new THREE.WebGLRenderer({
+      canvas,
+      alpha: true,
+      antialias: false,
+      powerPreference: 'low-power',
+    });
   } catch (error) {
-    console.warn('Ambient Three.js renderer unavailable:', error);
+    console.warn('Scout ambient renderer unavailable:', error);
   }
 
   if (renderer) {
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.45));
     renderer.setClearColor(0x000000, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(46, innerWidth / innerHeight, 0.1, 100);
-    camera.position.set(0, 2.6, 10.5);
+    scene.fog = new THREE.FogExp2(0x070a0f, 0.075);
 
-    const root = new THREE.Group();
-    scene.add(root);
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 80);
+    camera.position.set(0, 1.2, 9.6);
 
-    const green = new THREE.Color(0x79eab3);
-    const blue = new THREE.Color(0x6da9ff);
+    const world = new THREE.Group();
+    scene.add(world);
 
-    // A low-contrast wire plane creates depth behind the document without becoming content.
-    const gridGeo = new THREE.PlaneGeometry(34, 22, 42, 28);
-    const gridMat = new THREE.MeshBasicMaterial({ color: 0x33516a, wireframe: true, transparent: true, opacity: 0.075 });
-    const grid = new THREE.Mesh(gridGeo, gridMat);
-    grid.rotation.x = -Math.PI / 2.25;
-    grid.position.set(0, -4.0, -4.5);
-    root.add(grid);
+    const COLORS = {
+      green: new THREE.Color(0x79eab3),
+      blue: new THREE.Color(0x6da9ff),
+      amber: new THREE.Color(0xe9c36f),
+      steel: new THREE.Color(0x7890a3),
+    };
 
-    // Sparse depth particles. They stay slow and subtle so the page content remains dominant.
-    const particleCount = innerWidth < 760 ? 70 : 150;
+    // Environmental depth only. Nothing in this scene is semantic UI.
+    const particleCount = innerWidth < 760 ? 100 : 220;
     const particlePositions = new Float32Array(particleCount * 3);
     const particleSeeds = new Float32Array(particleCount);
     for (let i = 0; i < particleCount; i++) {
-      particlePositions[i * 3] = (Math.random() - 0.5) * 20;
-      particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 14;
-      particlePositions[i * 3 + 2] = -2 - Math.random() * 12;
+      particlePositions[i * 3] = (Math.random() - 0.5) * 22;
+      particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 17;
+      particlePositions[i * 3 + 2] = -3 - Math.random() * 18;
       particleSeeds[i] = Math.random() * Math.PI * 2;
     }
-    const particlesGeo = new THREE.BufferGeometry();
-    particlesGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    const particles = new THREE.Points(
-      particlesGeo,
-      new THREE.PointsMaterial({ color: 0x6f8798, size: 0.027, transparent: true, opacity: 0.48, sizeAttenuation: true })
-    );
-    root.add(particles);
+    const basePositions = particlePositions.slice();
+    const particleGeometry = new THREE.BufferGeometry();
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    const particleMaterial = new THREE.PointsMaterial({
+      color: COLORS.steel,
+      size: innerWidth < 760 ? 0.022 : 0.028,
+      transparent: true,
+      opacity: 0.34,
+      sizeAttenuation: true,
+      depthWrite: false,
+    });
+    const particles = new THREE.Points(particleGeometry, particleMaterial);
+    world.add(particles);
 
-    // Thin light ribbons create movement at the edges of the page, not a central object.
-    function ribbon(color, x, z, opacity) {
-      const geometry = new THREE.PlaneGeometry(0.018, 18);
-      const material = new THREE.MeshBasicMaterial({ color, transparent: true, opacity, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false });
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(x, 0, z);
-      mesh.rotation.z = 0.22;
-      root.add(mesh);
-      return mesh;
+    const grid = new THREE.GridHelper(34, 44, 0x315067, 0x1b2b38);
+    grid.position.set(0, -4.5, -8);
+    grid.material.transparent = true;
+    grid.material.opacity = 0.15;
+    world.add(grid);
+
+    const ceiling = new THREE.GridHelper(28, 36, 0x2e4e65, 0x172630);
+    ceiling.position.set(0, 7.1, -11);
+    ceiling.rotation.z = Math.PI;
+    ceiling.material.transparent = true;
+    ceiling.material.opacity = 0.045;
+    world.add(ceiling);
+
+    // Large low-opacity wire forms sit at the page edges, never in front of content.
+    const ringMaterial = new THREE.MeshBasicMaterial({
+      color: COLORS.green,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.048,
+      depthWrite: false,
+    });
+    const formA = new THREE.Mesh(new THREE.TorusKnotGeometry(2.5, 0.34, 88, 8, 2, 3), ringMaterial.clone());
+    formA.position.set(8.1, 3.4, -8.5);
+    formA.rotation.set(0.8, 0.1, -0.5);
+    world.add(formA);
+
+    const formBMaterial = ringMaterial.clone();
+    formBMaterial.color = COLORS.blue;
+    formBMaterial.opacity = 0.036;
+    const formB = new THREE.Mesh(new THREE.IcosahedronGeometry(3.1, 1), formBMaterial);
+    formB.position.set(-8.5, -3.2, -10.5);
+    formB.rotation.set(0.25, 0.55, 0.2);
+    world.add(formB);
+
+    const ringCMaterial = ringMaterial.clone();
+    ringCMaterial.color = COLORS.steel;
+    ringCMaterial.opacity = 0.022;
+    const ringC = new THREE.Mesh(new THREE.TorusGeometry(5.4, 0.018, 4, 112), ringCMaterial);
+    ringC.position.set(0, 1.1, -14);
+    ringC.rotation.set(1.22, 0.2, 0.2);
+    world.add(ringC);
+
+    const linePoints = [];
+    for (let i = 0; i < 36; i++) {
+      const y = -6 + Math.random() * 13;
+      const z = -7 - Math.random() * 12;
+      const x = (Math.random() > 0.5 ? 1 : -1) * (4.5 + Math.random() * 7);
+      linePoints.push(x, y, z, x + (Math.random() - 0.5) * 2.7, y, z);
     }
-    const ribbonA = ribbon(green, -6.8, -4.0, 0.11);
-    const ribbonB = ribbon(blue, 7.1, -5.5, 0.08);
-
-    // Soft luminous points move behind sections and create depth while scrolling.
-    const glowGroup = new THREE.Group();
-    const glowMatA = new THREE.MeshBasicMaterial({ color: green, transparent: true, opacity: 0.055, blending: THREE.AdditiveBlending, depthWrite: false });
-    const glowMatB = new THREE.MeshBasicMaterial({ color: blue, transparent: true, opacity: 0.05, blending: THREE.AdditiveBlending, depthWrite: false });
-    const glowGeo = new THREE.CircleGeometry(2.3, 48);
-    const glowA = new THREE.Mesh(glowGeo, glowMatA);
-    glowA.position.set(5.5, 3.0, -7.5);
-    const glowB = new THREE.Mesh(glowGeo, glowMatB);
-    glowB.position.set(-5.5, -2.2, -8.5);
-    glowGroup.add(glowA, glowB);
-    root.add(glowGroup);
+    const lineGeometry = new THREE.BufferGeometry();
+    lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePoints, 3));
+    const lineMaterial = new THREE.LineBasicMaterial({
+      color: COLORS.green,
+      transparent: true,
+      opacity: 0.075,
+      depthWrite: false,
+    });
+    const circuitLines = new THREE.LineSegments(lineGeometry, lineMaterial);
+    world.add(circuitLines);
 
     const pointer = new THREE.Vector2(0, 0);
     const pointerTarget = new THREE.Vector2(0, 0);
-    let scrollTarget = 0;
-    let scrollValue = 0;
+    let scrollProgress = 0;
+    const currentAccent = COLORS.green.clone();
+    let targetAccent = COLORS.green.clone();
 
-    addEventListener('pointermove', event => {
-      pointerTarget.x = (event.clientX / innerWidth - 0.5) * 2;
-      pointerTarget.y = (event.clientY / innerHeight - 0.5) * 2;
-    }, { passive: true });
+    if (finePointer && !reduceMotion) {
+      addEventListener('pointermove', event => {
+        pointerTarget.x = (event.clientX / innerWidth - 0.5) * 2;
+        pointerTarget.y = (event.clientY / innerHeight - 0.5) * 2;
+      }, { passive: true });
+    }
 
-    addEventListener('scroll', () => {
+    function updateScroll() {
       const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
-      scrollTarget = scrollY / max;
-    }, { passive: true });
+      scrollProgress = Math.min(1, Math.max(0, scrollY / max));
+    }
+    addEventListener('scroll', updateScroll, { passive: true });
+    updateScroll();
+
+    const sectionThemes = {
+      architecture: 'green',
+      implementation: 'green',
+      verification: 'blue',
+      scope: 'amber',
+      regression: 'green',
+      history: 'blue',
+      status: 'green',
+      roadmap: 'amber',
+      limits: 'amber',
+    };
+
+    const sectionObserver = new IntersectionObserver(entries => {
+      const visible = entries.filter(entry => entry.isIntersecting);
+      if (!visible.length) return;
+      visible.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      const tone = sectionThemes[visible[0].target.id] || 'green';
+      targetAccent = COLORS[tone].clone();
+      document.documentElement.dataset.sceneTone = tone;
+    }, { threshold: [0.18, 0.35, 0.55], rootMargin: '-18% 0px -46% 0px' });
+    document.querySelectorAll('main section[id]').forEach(section => sectionObserver.observe(section));
 
     function resize() {
-      const w = innerWidth;
-      const h = innerHeight;
-      camera.aspect = w / h;
+      camera.aspect = innerWidth / Math.max(1, innerHeight);
       camera.updateProjectionMatrix();
-      renderer.setSize(w, h, false);
+      renderer.setSize(innerWidth, innerHeight, false);
     }
     addEventListener('resize', resize, { passive: true });
     resize();
 
     const clock = new THREE.Clock();
-    const basePositions = particlePositions.slice();
+    let lastFrame = 0;
 
-    function animate() {
+    function frame(now) {
+      if (!reduceMotion && now - lastFrame < 31) {
+        requestAnimationFrame(frame);
+        return;
+      }
+      lastFrame = now;
       const t = clock.getElapsedTime();
-      pointer.lerp(pointerTarget, 0.025);
-      scrollValue += (scrollTarget - scrollValue) * 0.035;
 
-      camera.position.x += ((reduceMotion ? 0 : pointer.x * 0.28) - camera.position.x) * 0.025;
-      camera.position.y += ((2.6 + (reduceMotion ? 0 : -pointer.y * 0.2)) - camera.position.y) * 0.025;
-      camera.lookAt(0, -0.7, -4.5);
+      pointer.lerp(pointerTarget, reduceMotion ? 1 : 0.045);
+      currentAccent.lerp(targetAccent, 0.035);
+
+      const scrollYWorld = scrollProgress * 4.8;
+      const wantedX = reduceMotion ? 0 : pointer.x * 0.22;
+      const wantedY = 1.2 - scrollYWorld + (reduceMotion ? 0 : -pointer.y * 0.16);
+      camera.position.x += (wantedX - camera.position.x) * 0.035;
+      camera.position.y += (wantedY - camera.position.y) * 0.035;
+      camera.lookAt(0, camera.position.y * 0.18, -7.5);
+
+      formA.material.color.copy(currentAccent);
+      lineMaterial.color.copy(currentAccent);
 
       if (!reduceMotion) {
-        grid.position.y = -4.0 + Math.sin(t * 0.14) * 0.16;
-        grid.rotation.z = Math.sin(t * 0.08) * 0.012;
-        grid.material.opacity = 0.06 + Math.sin(t * 0.22) * 0.012;
+        formA.rotation.y += 0.0017;
+        formA.rotation.z += 0.0007;
+        formB.rotation.x -= 0.0006;
+        formB.rotation.y += 0.0010;
+        ringC.rotation.z += 0.0004;
+        particles.rotation.y = t * 0.0055;
+        grid.position.z = -8 + ((scrollProgress * 4) % 1.1);
+        grid.position.y = -4.5 + Math.sin(t * 0.12) * 0.08;
 
-        ribbonA.position.y = Math.sin(t * 0.2) * 1.2 + (scrollValue - 0.5) * 2.5;
-        ribbonB.position.y = Math.cos(t * 0.17) * 1.4 - (scrollValue - 0.5) * 2.0;
-        ribbonA.material.opacity = 0.08 + Math.sin(t * 0.5) * 0.025;
-        ribbonB.material.opacity = 0.06 + Math.cos(t * 0.42) * 0.02;
-
-        glowA.position.y = 3.0 - scrollValue * 5.0 + Math.sin(t * 0.12) * 0.3;
-        glowB.position.y = -2.2 + scrollValue * 4.0 + Math.cos(t * 0.11) * 0.3;
-
-        const pos = particlesGeo.attributes.position.array;
+        const pos = particleGeometry.attributes.position.array;
         for (let i = 0; i < particleCount; i++) {
-          pos[i * 3] = basePositions[i * 3] + Math.sin(t * 0.08 + particleSeeds[i]) * 0.12;
-          pos[i * 3 + 1] = basePositions[i * 3 + 1] + Math.cos(t * 0.1 + particleSeeds[i]) * 0.18 - scrollValue * 1.4;
+          pos[i * 3] = basePositions[i * 3] + Math.sin(t * 0.06 + particleSeeds[i]) * 0.10;
+          pos[i * 3 + 1] = basePositions[i * 3 + 1] + Math.cos(t * 0.08 + particleSeeds[i]) * 0.14 - scrollProgress * 1.2;
         }
-        particlesGeo.attributes.position.needsUpdate = true;
-        particles.rotation.z = Math.sin(t * 0.04) * 0.01;
+        particleGeometry.attributes.position.needsUpdate = true;
       }
 
       renderer.render(scene, camera);
+      requestAnimationFrame(frame);
     }
 
-    renderer.setAnimationLoop(animate);
+    requestAnimationFrame(frame);
   }
 }
