@@ -5,18 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#03080d" />
   <meta name="color-scheme" content="dark" />
-  <meta name="description" content="Scout documentation index for runtime facts, architecture, retrieval, validation, release controls, QA reports, and source history." />
-  <meta property="og:title" content="Scout Docs" />
-  <meta property="og:description" content="Source-linked documentation for the current Scout / ProjectHub implementation." />
+  <meta name="description" content="Full Scout documentation for the current ProjectHub implementation: architecture, request lifecycle, retrieval, state, tools, inference, validation, API, configuration, testing, release, troubleshooting, and limits." />
+  <meta property="og:title" content="Scout Documentation" />
+  <meta property="og:description" content="Source-linked technical documentation for the current Scout / ProjectHub runtime." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://bradleymatera.dev/scout/docs.html" />
   <meta property="og:image" content="https://bradleymatera.dev/scout/assets/scout-og.svg" />
   <link rel="canonical" href="https://bradleymatera.dev/scout/docs.html" />
   <link rel="icon" href="./assets/scout-mark.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./styles.css" />
-  <title>Scout Docs</title>
+  <link rel="stylesheet" href="./docs.css" />
+  <title>Scout Documentation</title>
 </head>
-<body class="product-subpage">
+<body class="product-subpage docs-page">
   <canvas id="ambient-three" aria-hidden="true"></canvas>
   <div class="page-grid" aria-hidden="true"></div>
   <div class="scan-line" aria-hidden="true"></div>
@@ -28,68 +29,563 @@
     <section class="subpage-hero">
       <div class="shell reveal">
         <div class="subpage-kicker">Scout / Documentation</div>
-        <h1>Docs that point back to <span>source.</span></h1>
-        <p>This page indexes the checked-in documents and runtime files used to understand Scout. When prose and executable behavior disagree, current runtime configuration and source code are treated as the stronger evidence.</p>
+        <h1>Current runtime, from request to <span>release.</span></h1>
+        <p>These docs describe the Scout engine as it exists inside ProjectHub Recruiter Alpha today. They separate released production behavior from integrated development behavior and historical records. Source code and current runtime configuration take precedence when older prose describes a superseded model or path.</p>
         <div class="subpage-actions">
-          <a class="button primary" href="https://github.com/BradleyMatera/ProjectHub" target="_blank" rel="noopener">Open ProjectHub source ↗</a>
+          <a class="button primary" href="#quickstart">Quickstart</a>
           <a class="button" href="./api.html">API reference</a>
-          <a class="button" href="./changelog.html">Changelog</a>
+          <a class="button" href="https://github.com/BradleyMatera/ProjectHub" target="_blank" rel="noopener">ProjectHub source ↗</a>
+        </div>
+        <div class="docs-status-row" aria-label="Current Scout documentation status">
+          <div class="docs-status-card current"><span>Production model</span><strong>Llama 3.1 8B Fast</strong></div>
+          <div class="docs-status-card"><span>Retrieval</span><strong>Local BM25 + contextual RRF</strong></div>
+          <div class="docs-status-card"><span>Response contract</span><strong>15 seconds end to end</strong></div>
+          <div class="docs-status-card"><span>Docs verified against</span><strong>master + develop source</strong></div>
         </div>
       </div>
     </section>
 
-    <section class="product-section">
-      <div class="shell">
-        <header class="product-section-head reveal">
-          <div class="index">01 / Start here</div>
-          <div><h2>Current implementation references.</h2><p>The runtime facts file is the shortest current description of what the released Scout configuration is actually doing. The architecture and handoff documents provide broader context around the same codebase.</p></div>
-        </header>
-        <div class="doc-grid">
-          <article class="product-card" data-tilt="3"><div class="code">Runtime / master</div><h3>Scout runtime facts</h3><p>Current model, provider, RAG-first request path, Cloudflare allocation behavior, rate controls, telemetry, and hosting facts verified in the production branch.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">scout-runtime-knowledge.json ↗</a></article>
-          <article class="product-card" data-tilt="3"><div class="code">Architecture / develop</div><h3>Architecture overview</h3><p>High-level system structure, request flow, frontend/backend responsibilities, retrieval components, session state, and operational constraints.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/docs/architecture-overview.md" target="_blank" rel="noopener">architecture-overview.md ↗</a></article>
-          <article class="product-card" data-tilt="3"><div class="code">Continuation / develop</div><h3>Current feature handoff</h3><p>Current development state and continuation notes for work that follows the released production line.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/docs/current-feature-handoff.md" target="_blank" rel="noopener">current-feature-handoff.md ↗</a></article>
+    <div class="shell docs-shell">
+      <aside class="docs-sidebar" aria-label="Documentation navigation">
+        <div class="docs-sidebar-head">
+          <div class="docs-sidebar-title"><span>Documentation</span><span>Scout</span></div>
+          <input class="docs-search" type="search" placeholder="Filter topics…" aria-label="Filter documentation topics" />
         </div>
-      </div>
-    </section>
+        <nav class="docs-nav">
+          <div class="docs-nav-group">
+            <span class="docs-nav-label">Start</span>
+            <a href="#overview"><span class="nav-code">01</span>Overview</a>
+            <a href="#scope"><span class="nav-code">02</span>Current scope</a>
+            <a href="#quickstart"><span class="nav-code">03</span>Quickstart</a>
+          </div>
+          <div class="docs-nav-group">
+            <span class="docs-nav-label">Core runtime</span>
+            <a href="#architecture"><span class="nav-code">04</span>Architecture</a>
+            <a href="#request-lifecycle"><span class="nav-code">05</span>Request lifecycle</a>
+            <a href="#retrieval"><span class="nav-code">06</span>Retrieval</a>
+            <a href="#session-state"><span class="nav-code">07</span>Session state</a>
+            <a href="#response-contracts"><span class="nav-code">08</span>Response contracts</a>
+            <a href="#tools"><span class="nav-code">09</span>Evidence tools</a>
+            <a href="#inference"><span class="nav-code">10</span>Inference</a>
+            <a href="#validation"><span class="nav-code">11</span>Validation</a>
+          </div>
+          <div class="docs-nav-group">
+            <span class="docs-nav-label">Interfaces</span>
+            <a href="#widget"><span class="nav-code">12</span>Widget</a>
+            <a href="#api"><span class="nav-code">13</span>API</a>
+            <a href="#telemetry"><span class="nav-code">14</span>Telemetry</a>
+          </div>
+          <div class="docs-nav-group">
+            <span class="docs-nav-label">Operate</span>
+            <a href="#configuration"><span class="nav-code">15</span>Configuration</a>
+            <a href="#local-development"><span class="nav-code">16</span>Local development</a>
+            <a href="#docker"><span class="nav-code">17</span>Docker</a>
+            <a href="#testing"><span class="nav-code">18</span>Tests and evals</a>
+            <a href="#release"><span class="nav-code">19</span>Release flow</a>
+            <a href="#troubleshooting"><span class="nav-code">20</span>Troubleshooting</a>
+            <a href="#limits"><span class="nav-code">21</span>Limits</a>
+            <a href="#source-map"><span class="nav-code">22</span>Source map</a>
+          </div>
+        </nav>
+      </aside>
 
-    <section class="product-section alt">
-      <div class="shell">
-        <header class="product-section-head reveal">
-          <div class="index">02 / Quality and release</div>
-          <div><h2>Qualification, release, and hardening records.</h2><p>These documents record test interpretation, release controls, QA findings, RAG hardening work, and the release process used around ProjectHub.</p></div>
-        </header>
-        <div class="doc-grid">
-          <article class="product-card" data-tilt="3"><div class="code">Release process</div><h3>Development and release spec</h3><p>Branch roles, staging flow, release checks, promotion rules, and deployment expectations for ProjectHub.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/PROJECTHUB-DEVELOPMENT-AND-RELEASE-SPEC.md" target="_blank" rel="noopener">release spec ↗</a></article>
-          <article class="product-card" data-tilt="3"><div class="code">Hardening</div><h3>RAG-first hardening report</h3><p>Engineering report covering the move toward retrieval-first evidence, model context construction, and grounding behavior.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/docs/rag-first-hardening-report.md" target="_blank" rel="noopener">rag-first-hardening-report.md ↗</a></article>
-          <article class="product-card" data-tilt="3"><div class="code">QA</div><h3>Scout development QA report</h3><p>Checked-in QA record for Scout development behavior and qualification findings.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/docs/scout-dev-final-qa-report.md" target="_blank" rel="noopener">scout-dev-final-qa-report.md ↗</a></article>
-          <article class="product-card" data-tilt="3"><div class="code">Audit</div><h3>Accepted-answer audit</h3><p>Stored audit material used to inspect previously accepted answers and scoring behavior.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/data/accepted-answer-audit.md" target="_blank" rel="noopener">accepted-answer-audit.md ↗</a></article>
-          <article class="product-card" data-tilt="3"><div class="code">Release record</div><h3>Release manifest</h3><p>A dated release manifest describing the Scout release candidate state and associated artifacts.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/docs/scout-release-manifest-2026-08-16.md" target="_blank" rel="noopener">release manifest ↗</a></article>
-          <article class="product-card" data-tilt="3"><div class="code">Rules</div><h3>Repository engineering instructions</h3><p>Project-level instructions and invariants for working in the Scout / ProjectHub source tree.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/AGENTS.md" target="_blank" rel="noopener">AGENTS.md ↗</a></article>
+      <div class="docs-content">
+        <div class="docs-mobile-nav">
+          <select aria-label="Jump to documentation section">
+            <option value="overview">Overview</option><option value="scope">Current scope</option><option value="quickstart">Quickstart</option>
+            <option value="architecture">Architecture</option><option value="request-lifecycle">Request lifecycle</option><option value="retrieval">Retrieval</option>
+            <option value="session-state">Session state</option><option value="response-contracts">Response contracts</option><option value="tools">Evidence tools</option>
+            <option value="inference">Inference</option><option value="validation">Validation</option><option value="widget">Widget</option><option value="api">API</option>
+            <option value="telemetry">Telemetry</option><option value="configuration">Configuration</option><option value="local-development">Local development</option>
+            <option value="docker">Docker</option><option value="testing">Tests and evals</option><option value="release">Release flow</option>
+            <option value="troubleshooting">Troubleshooting</option><option value="limits">Limits</option><option value="source-map">Source map</option>
+          </select>
         </div>
-        <p class="notice" style="margin-top:18px">Documentation is versioned with the repository and can temporarily lag executable configuration. The production runtime facts file and current source are used on this product site when older prose describes a superseded model or route.</p>
-      </div>
-    </section>
 
-    <section class="product-section">
-      <div class="shell">
-        <header class="product-section-head reveal">
-          <div class="index">03 / Implementation</div>
-          <div><h2>Primary source files.</h2><p>Direct paths for the components described on the Scout overview page.</p></div>
-        </header>
-        <div class="doc-grid">
-          <article class="product-card"><div class="code">Query</div><h3>Query understanding</h3><p>Normalization, protected terms, intent handling, typo correction, and contextual rewriting.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/query-understanding.js" target="_blank" rel="noopener">query-understanding.js ↗</a></article>
-          <article class="product-card"><div class="code">Retrieval</div><h3>BM25 + RRF</h3><p>Local lexical scoring and reciprocal-rank fusion for contextual retrieval.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/bm25.js" target="_blank" rel="noopener">bm25.js ↗</a> · <a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rrf.js" target="_blank" rel="noopener">rrf.js ↗</a></article>
-          <article class="product-card"><div class="code">Generation</div><h3>RAG agent</h3><p>RAG-first evidence context and model-generation path with structured enrichment.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-agent.js" target="_blank" rel="noopener">rag-agent.js ↗</a></article>
-          <article class="product-card"><div class="code">Contract</div><h3>Response contract</h3><p>Fact state, answer polarity, required entities, evidence boundaries, and output requirements.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/response-contract.js" target="_blank" rel="noopener">response-contract.js ↗</a></article>
-          <article class="product-card"><div class="code">Tools</div><h3>Evidence tools</h3><p>Read-only project, profile, role-match, skill-evidence, and comparison helpers.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/agent-tools.js" target="_blank" rel="noopener">agent-tools.js ↗</a></article>
-          <article class="product-card"><div class="code">Validation</div><h3>Grounding validator</h3><p>Entity, number, relationship, provenance, negation-aware, polarity, and overclaim checks.</p><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/grounding-validator.js" target="_blank" rel="noopener">grounding-validator.js ↗</a></article>
-        </div>
+        <div class="docs-empty">No documentation section matches that filter.</div>
+
+        <section class="docs-section" id="overview" data-search="overview documentation precedence production develop runtime facts">
+          <div class="docs-eyebrow">01 / Overview</div>
+          <h2>What these docs describe.</h2>
+          <p class="docs-lede">Scout is the intelligence and orchestration layer currently used by ProjectHub Recruiter Alpha. The public implementation combines deterministic query/state/evidence handling with a generative language layer and post-generation factual validation.</p>
+          <div class="docs-callout production"><strong>Current production reference:</strong> the released runtime uses Cloudflare Workers AI with <code>@cf/meta/llama-3.1-8b-instruct-fast</code> for normal generation, while retrieval, session handling, evidence selection, tools, validation, telemetry, and persistence run in ProjectHub's backend process.</div>
+          <h3>Evidence order</h3>
+          <p>ProjectHub has moved quickly enough that some checked-in reports describe earlier Ollama-only phases. This documentation uses the following precedence when sources disagree:</p>
+          <ol>
+            <li><strong>Executable source and current runtime configuration.</strong></li>
+            <li><strong>Production runtime facts</strong> in <code>data/scout-runtime-knowledge.json</code>.</li>
+            <li><strong>Current master/develop documentation</strong> when it matches the code it describes.</li>
+            <li><strong>Dated QA, qualification, and handoff reports</strong> as historical evidence only.</li>
+          </ol>
+          <div class="docs-source-row">
+            <a href="https://github.com/BradleyMatera/ProjectHub/blob/master/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">runtime facts ↗</a>
+            <a href="https://github.com/BradleyMatera/ProjectHub/blob/master/README.md" target="_blank" rel="noopener">production README ↗</a>
+            <a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/docs/current-feature-handoff.md" target="_blank" rel="noopener">develop handoff ↗</a>
+          </div>
+        </section>
+
+        <section class="docs-section" id="scope" data-search="scope recruiter alpha generic sdk domain package customer neutral limitations shipped">
+          <div class="docs-eyebrow">02 / Current scope</div>
+          <h2>What is shipped and what is not.</h2>
+          <div class="docs-grid-2">
+            <article class="docs-card"><span class="label">Released application</span><h3>ProjectHub Recruiter Alpha</h3><p>Answers from Bradley Matera's verified professional information and can explain Scout's own runtime. The public widget is the concrete production use of Scout today.</p></article>
+            <article class="docs-card"><span class="label">Productization direction</span><h3>Customer-neutral Scout Core</h3><p>Empty/no-KB operation, generalized domain packages, arbitrary customer workflows, and unrelated-domain portability tests are productization work, not a currently shipped SDK claim.</p></article>
+          </div>
+          <div class="docs-callout warning"><strong>Not currently represented as shipped:</strong> a public npm package, generic customer SDK, multi-tenant API-key product, arbitrary business domain installer, or self-service customer knowledge-package system.</div>
+          <p>The architecture is being pushed toward portability, but these docs describe the implementation that can be inspected and tested now rather than the intended end state.</p>
+        </section>
+
+        <section class="docs-section" id="quickstart" data-search="quickstart embed install script ProjectHub.js run public widget">
+          <div class="docs-eyebrow">03 / Quickstart</div>
+          <h2>Run the current public implementation.</h2>
+          <p>The released browser widget is a single JavaScript artifact hosted on GitHub Pages. Embedding it loads the ProjectHub UI and connects recruiter-style questions to the ProjectHub backend.</p>
+          <div class="docs-code">
+            <div class="docs-code-head"><span>HTML / current public widget</span><button class="docs-copy" type="button">Copy</button></div>
+            <pre>&lt;script src="https://bradleymatera.github.io/ProjectHub/ProjectHub.js"&gt;&lt;/script&gt;</pre>
+          </div>
+          <div class="docs-callout"><strong>This is ProjectHub's production embed, not a generic Scout installer.</strong> It carries the current recruiter application behavior and knowledge contract.</div>
+          <h3>Local repository quickstart</h3>
+          <div class="docs-code">
+            <div class="docs-code-head"><span>Shell</span><button class="docs-copy" type="button">Copy</button></div>
+            <pre>git clone https://github.com/BradleyMatera/ProjectHub.git
+cd ProjectHub
+npm ci
+npm test
+npm run eval-retrieval
+npm run build
+node --check server-gemini.js</pre>
+          </div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub" target="_blank" rel="noopener">repository ↗</a><a href="https://bradleymatera.github.io/ProjectHub/" target="_blank" rel="noopener">production widget ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="architecture" data-search="architecture frontend backend cloudflare gcp bm25 rrf validation orchestration">
+          <div class="docs-eyebrow">04 / Architecture</div>
+          <h2>Runtime boundaries.</h2>
+          <p>Scout does not send an entire knowledge base to a model and hope the model behaves. Deterministic backend stages prepare the request and evidence first; the model is used for language generation inside that boundary.</p>
+          <div class="docs-flow">
+            <div class="docs-flow-step"><div><strong>Browser widget</strong><span>Vanilla JavaScript UI hosted from GitHub Pages creates the session and sends the user's message/history to the backend.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Express API</strong><span>Applies CORS, request-size limits, chat rate limiting, deadline handling, knowledge loading, and build/runtime instrumentation.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Control or substantive routing</strong><span>Conversation-control intents can bypass normal retrieval. Substantive questions continue into query understanding and evidence retrieval.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Query understanding + BM25/RRF</strong><span>Normalizes the question, protects terms, handles typos/context, and retrieves verified chunks locally.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Response contract + tools</strong><span>Creates semantic answer constraints and, when needed, executes allowlisted read-only evidence tools.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Generation</strong><span>Current production generation is routed to Cloudflare Workers AI. The model receives bounded evidence and response instructions rather than unrestricted application state.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Validation / repair</strong><span>Generated claims are checked against evidence and semantic constraints. Invalid output is repaired or rejected rather than silently accepted.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Reply + telemetry</strong><span>The response includes provider/model/provenance information and records retrieval/generation/latency/accounting data used by diagnostics.</span></div></div>
+          </div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">server-gemini.js ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-agent.js" target="_blank" rel="noopener">rag-agent.js ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="request-lifecycle" data-search="request lifecycle control intents substantive greeting user profile thanks help small talk deadline cache pipeline">
+          <div class="docs-eyebrow">05 / Request lifecycle</div>
+          <h2>How one message is processed.</h2>
+          <div class="docs-flow">
+            <div class="docs-flow-step"><div><strong>Validate input and apply request controls.</strong><span><code>/api/chat</code> is rate-limited by IP. JSON bodies are capped by Express and messages are bounded before deeper processing.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Load verified knowledge and recent context.</strong><span>The backend uses bundled recruiter knowledge plus server-owned state and recent sanitized turns.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Classify response policy.</strong><span>Greetings, thanks, profile updates/queries, help, small talk and similar conversational-control turns can take a compact fact-free route.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Resolve the substantive query.</strong><span>For evidence-bearing questions, query understanding normalizes and rewrites the message using recent context.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Retrieve up to ten candidates.</strong><span>The current RAG-first server path requests BM25/RRF evidence candidates before invoking the generative agent.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Build semantic constraints.</strong><span>The response contract establishes intent, fact state, answer polarity, evidence strength, claim ceiling, boundaries, and forbidden claims.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Generate, validate, and optionally repair.</strong><span>Generation runs inside the request deadline. Validation must accept the answer before it is shaped for the final response.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Persist short-lived conversation state and telemetry.</strong><span>The backend updates session state, response cache where eligible, topic/provider metrics, and the result's provenance metadata.</span></div></div>
+          </div>
+          <div class="docs-callout production"><strong>Deadline:</strong> current runtime facts and server health configuration use a 15,000 ms request contract, with the model generation timeout kept inside that envelope.</div>
+        </section>
+
+        <section class="docs-section" id="retrieval" data-search="retrieval bm25 okapi rrf query understanding golden set Recall@6 MRR eval-retrieval">
+          <div class="docs-eyebrow">06 / Retrieval</div>
+          <h2>Local lexical retrieval before generation.</h2>
+          <p>Verified application knowledge is flattened into searchable RAG chunks. Okapi BM25 scores those chunks locally. Context-bearing questions can combine literal, expanded, and rewritten query views using Reciprocal Rank Fusion.</p>
+          <div class="docs-grid-3">
+            <article class="docs-card"><span class="label">Index</span><h3>BM25</h3><p>Lexical relevance scoring over bundled verified knowledge. No hosted vector database is required for the current corpus.</p></article>
+            <article class="docs-card"><span class="label">Context</span><h3>Query understanding</h3><p>Normalizes input, protects technology terms, corrects common typos, classifies intent, and can rewrite follow-ups.</p></article>
+            <article class="docs-card"><span class="label">Fusion</span><h3>RRF</h3><p>Contextual follow-ups can fuse multiple BM25 rankings; standalone queries can retain direct BM25 when it ranks better.</p></article>
+          </div>
+          <h3>Reproduce the retrieval benchmark</h3>
+          <div class="docs-code"><div class="docs-code-head"><span>Shell</span><button class="docs-copy" type="button">Copy</button></div><pre>npm run test:retrieval
+npm run eval-retrieval</pre></div>
+          <p>The checked-in 40-query golden set has a documented Recall@6 of <strong>1.000</strong> and MRR@6 of <strong>0.971</strong>. CI independently rejects a retrieval run if Recall@6 falls below <strong>0.90</strong>. Treat the benchmark as a scoped retrieval measurement, not as an end-to-end answer-accuracy percentage.</p>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/bm25.js" target="_blank" rel="noopener">bm25.js ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rrf.js" target="_blank" rel="noopener">rrf.js ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/data/eval-golden.json" target="_blank" rel="noopener">golden set ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/.github/workflows/test.yml" target="_blank" rel="noopener">CI threshold ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="session-state" data-search="session memory state turns referent topic projects job comparison visitor name stance ttl">
+          <div class="docs-eyebrow">07 / Session state</div>
+          <h2>Conversation context is server-owned.</h2>
+          <p>The current runtime does not rely only on raw transcript text. It maintains structured session state so follow-ups can refer to previously discussed projects, roles, comparisons, names, and unresolved references.</p>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>State</th><th>Purpose</th></tr></thead><tbody>
+            <tr><td>Recent turns</td><td>Five recent compact/sanitized user and assistant turns are used for bounded conversational context.</td></tr>
+            <tr><td>Topic / intent</td><td>Tracks what the conversation is about so short follow-ups are not interpreted in isolation.</td></tr>
+            <tr><td>Projects / comparisons</td><td>Maintains active and comparison entities for phrases such as “that project” or “the other one.”</td></tr>
+            <tr><td>Job / role context</td><td>Preserves the requested role or job context for fit/evidence questions.</td></tr>
+            <tr><td>User profile state</td><td>Conversation-control intents can commit visitor name/profile state before generation.</td></tr>
+            <tr><td>Unresolved references</td><td>Allows the runtime to distinguish a missing referent from evidence that actually says “no.”</td></tr>
+          </tbody></table></div>
+          <div class="docs-callout"><strong>State is not evidence.</strong> Conversation state tells Scout what a user is referring to; verified knowledge and tool/retrieval evidence determine whether a factual claim is supported.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/session-state.js" target="_blank" rel="noopener">session-state.js ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/conversation-resolver.js" target="_blank" rel="noopener">conversation-resolver.js ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="response-contracts" data-search="response contract true false unknown direct answer polarity evidence strength claim ceiling forbidden claims boundary">
+          <div class="docs-eyebrow">08 / Response contracts</div>
+          <h2>Semantic constraints before prose.</h2>
+          <p>A response contract describes what an answer is allowed to mean before the final language is generated. This is separate from style or phrasing.</p>
+          <div class="docs-grid-2">
+            <article class="docs-card"><span class="label">Fact state</span><h3>TRUE / FALSE / UNKNOWN</h3><p>Open-world claims are not supposed to become false simply because the knowledge base does not contain evidence for them.</p></article>
+            <article class="docs-card"><span class="label">Direct answer</span><h3>Polarity</h3><p>Captures answer direction such as YES, NO, MIXED, FIT, PARTIAL_FIT, NOT_FIT, or UNKNOWN where applicable.</p></article>
+            <article class="docs-card"><span class="label">Evidence rules</span><h3>Strength and boundaries</h3><p>Ranks relevant facts, identifies required entities, and carries important limitations the answer must preserve.</p></article>
+            <article class="docs-card"><span class="label">Claim controls</span><h3>Ceilings / forbidden claims</h3><p>Constrains seniority, unsupported relationships, false premises, and other claims that must not survive generation.</p></article>
+          </div>
+          <div class="docs-callout warning"><strong>Why UNKNOWN matters:</strong> “there is no verified evidence that he worked at Company X” is different from “he never worked at Company X.” The strict-correction work in the repository exists because older paths sometimes collapsed that distinction.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/response-contract.js" target="_blank" rel="noopener">response-contract.js ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/response-policy.js" target="_blank" rel="noopener">response-policy.js ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="tools" data-search="tools read only search_portfolio get_project compare_projects match_role candidate profile skill evidence recruiter brief">
+          <div class="docs-eyebrow">09 / Evidence tools</div>
+          <h2>Allowlisted, read-only functions.</h2>
+          <p>The current tool layer gathers structured evidence. It does not expose arbitrary shell execution or write access to external business systems.</p>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Tool</th><th>Current purpose</th></tr></thead><tbody>
+            <tr><td><code>search_portfolio</code></td><td>Search verified projects, experience, skills, and certifications for recruiter evidence.</td></tr>
+            <tr><td><code>get_project</code></td><td>Return verified details for one named project.</td></tr>
+            <tr><td><code>compare_projects</code></td><td>Compare two to four verified projects by purpose, technology, category, and public URL.</td></tr>
+            <tr><td><code>match_role</code></td><td>Match a role or pasted job description against verified skills, experience, projects, and gaps.</td></tr>
+            <tr><td><code>get_candidate_profile</code></td><td>Return a selected verified profile section without exposing private/sensitive profile data.</td></tr>
+            <tr><td><code>get_skill_evidence</code></td><td>Classify evidence for whether a technology or skill is directly supported, adjacent, or unknown.</td></tr>
+            <tr><td><code>build_recruiter_brief</code></td><td>Assemble a structured recruiter-facing brief from verified data.</td></tr>
+          </tbody></table></div>
+          <div class="docs-callout production"><strong>Tool output is enrichment.</strong> In the current RAG-first integrated path, structured tools can add evidence but do not replace retrieval as the primary answer context.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/agent-tools.js" target="_blank" rel="noopener">agent-tools.js ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="inference" data-search="inference cloudflare workers ai llama ollama fallback provider neurons free allocation timeout model router">
+          <div class="docs-eyebrow">10 / Inference</div>
+          <h2>Swappable generation behind one router.</h2>
+          <p>The generative boundary lives behind <code>lib/local-model-router.js</code>. Application orchestration calls the router rather than coding directly against one provider.</p>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Path</th><th>Status</th><th>Behavior</th></tr></thead><tbody>
+            <tr><td>Cloudflare Workers AI</td><td><span class="docs-badge prod">Production</span></td><td>Normal production generation using <code>@cf/meta/llama-3.1-8b-instruct-fast</code>.</td></tr>
+            <tr><td>Ollama</td><td><span class="docs-badge dev">Dev / eval</span></td><td>Current local development/evaluation model is <code>qwen2.5:1.5b</code>.</td></tr>
+            <tr><td>Cloudflare → Ollama fallback</td><td><span class="docs-badge exp">Gated</span></td><td>Disabled by default when Cloudflare is primary. Requires explicit fallback enablement and <code>SCOUT_OLLAMA_QUALIFIED=true</code>.</td></tr>
+            <tr><td>Browser WebGPU generation</td><td><span class="docs-badge exp">Experimental</span></td><td>Client packet/validation routes exist for experimentation; browser-side generation is not the production primary path.</td></tr>
+          </tbody></table></div>
+          <h3>Cloudflare allocation behavior</h3>
+          <p>The current provider adapter records a Workers AI free allocation of <strong>10,000 neurons/day</strong>. That is a shared account allocation, not a per-user allowance. The adapter recognizes allocation exhaustion and does not silently switch to paid-only models.</p>
+          <div class="docs-callout limit"><strong>No “unlimited AI” claim:</strong> Scout is engineered to fit current free allocations for the public deployment, but model usage is measurable and provider limits can be exhausted or changed.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/lib/local-model-router.js" target="_blank" rel="noopener">local-model-router.js ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/lib/cloudflare-provider.js" target="_blank" rel="noopener">cloudflare-provider.js ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="validation" data-search="validation grounding repair entity number relationship provenance polarity overclaim safety fail closed technical error prose source">
+          <div class="docs-eyebrow">11 / Validation</div>
+          <h2>Generated text is not accepted just because the model returned it.</h2>
+          <p>Scout checks the generated reply against retrieved/structured evidence and the response contract. The validator is responsible for rejecting unsupported factual content, not for making the prose sound nicer.</p>
+          <div class="docs-grid-3">
+            <article class="docs-card"><span class="label">Grounding</span><h3>Entities and numbers</h3><p>Checks named entities and numeric claims against the evidence supplied to the answer path.</p></article>
+            <article class="docs-card"><span class="label">Relationships</span><h3>Project / technology provenance</h3><p>Prevents a real technology from being attached to the wrong project or experience merely because both exist somewhere in the corpus.</p></article>
+            <article class="docs-card"><span class="label">Semantics</span><h3>Polarity and negation</h3><p>Checks whether generated meaning matches TRUE/FALSE/UNKNOWN evidence and expected answer direction.</p></article>
+            <article class="docs-card"><span class="label">Boundaries</span><h3>Overclaim / seniority</h3><p>Rejects inflated titles, unsupported experience levels, and prohibited claim patterns.</p></article>
+            <article class="docs-card"><span class="label">Recovery</span><h3>Repair attempt</h3><p>Invalid primary generation can be sent through a constrained repair path. Repair is still validated before acceptance.</p></article>
+            <article class="docs-card"><span class="label">Failure</span><h3>Typed technical error</h3><p>If reliable generative output cannot be produced, the server can return an <code>INFERENCE_UNAVAILABLE</code> / <code>TECHNICAL_ERROR</code> result rather than inventing a factual answer.</p></article>
+          </div>
+          <h3>Prose provenance</h3>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th><code>proseSource</code></th><th>Meaning</th></tr></thead><tbody>
+            <tr><td>MODEL_GENERATION</td><td>The visible conversational answer was generated by the configured model from bounded context and passed the runtime checks.</td></tr>
+            <tr><td>DIRECT_KB</td><td>Canonical verified knowledge supplied a direct answer path without model-authored prose for that response.</td></tr>
+            <tr><td>TECHNICAL_ERROR</td><td>The infrastructure/generation path could not produce a reliable answer. This is an error state, not evidence about the user or domain.</td></tr>
+          </tbody></table></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/grounding-validator.js" target="_blank" rel="noopener">grounding-validator.js ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/response-validator.js" target="_blank" rel="noopener">response-validator.js ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="widget" data-search="widget browser vanilla javascript github pages session embed frontend ProjectHub.js">
+          <div class="docs-eyebrow">12 / Widget</div>
+          <h2>Browser integration.</h2>
+          <p>The current ProjectHub frontend is deliberately lightweight: vanilla JavaScript source modules are assembled into one embeddable <code>ProjectHub.js</code> artifact. The widget owns UI/session behavior; the backend remains authoritative for knowledge retrieval, evidence, inference, validation, and structured state.</p>
+          <div class="docs-grid-2">
+            <article class="docs-card"><span class="label">Source modules</span><h3><code>data.js</code> · <code>utils.js</code> · <code>logic.js</code> · <code>ui.js</code></h3><p>The committed single-file artifact is checked in CI to make sure it matches these source modules.</p></article>
+            <article class="docs-card"><span class="label">Hosting</span><h3>GitHub Pages</h3><p>The public widget is served from the ProjectHub GitHub Pages deployment; staging uses the ProjectHub-dev mirror.</p></article>
+          </div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/ProjectHub.js" target="_blank" rel="noopener">ProjectHub.js ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/.github/workflows/test.yml" target="_blank" rel="noopener">bundle freshness check ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="api" data-search="api chat request response endpoints health live ready client packet validate status code session id history">
+          <div class="docs-eyebrow">13 / API</div>
+          <h2>Current application interface.</h2>
+          <p>The production ProjectHub backend is reachable at <code>https://projecthub-chat.bradleymatera.dev</code>. These endpoints describe the current application implementation; they are not a public multi-tenant API-key/SLA product.</p>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Method / route</th><th>Purpose</th></tr></thead><tbody>
+            <tr><td>GET <code>/</code></td><td>Basic service identity/status.</td></tr>
+            <tr><td>GET <code>/health/live</code></td><td>Liveness probe. Confirms the process is alive.</td></tr>
+            <tr><td>GET <code>/health/ready</code></td><td>Readiness probe. Returns ready only after the model path and knowledge are verified/loaded.</td></tr>
+            <tr><td>GET <code>/health</code></td><td>Detailed runtime/build/provider/state/telemetry snapshot.</td></tr>
+            <tr><td>POST <code>/api/chat</code></td><td>Main conversation endpoint used by the widget.</td></tr>
+            <tr><td>POST <code>/api/client-packet</code></td><td>Experimental browser-local mode: prepares a client-safe evidence packet and temporary run ID.</td></tr>
+            <tr><td>POST <code>/api/client-validate</code></td><td>Experimental browser-local mode: validates a browser-generated answer against the same server-held evidence.</td></tr>
+            <tr><td>GET <code>/api/chat-log</code></td><td>Operational chat-log view used by current backend diagnostics.</td></tr>
+          </tbody></table></div>
+          <h3>Chat request</h3>
+          <div class="docs-code"><div class="docs-code-head"><span>JSON</span><button class="docs-copy" type="button">Copy</button></div><pre>{
+  "message": "Which project best demonstrates AWS experience?",
+  "sessionId": "per-tab-session-id",
+  "history": [
+    {
+      "user": "What is Bradley strongest at?",
+      "assistant": "..."
+    }
+  ]
+}</pre></div>
+          <h3>Response fields to inspect</h3>
+          <div class="docs-code"><div class="docs-code-head"><span>JSON / abbreviated</span><button class="docs-copy" type="button">Copy</button></div><pre>{
+  "ok": true,
+  "reply": "...",
+  "provider": "cloudflare",
+  "model": "@cf/meta/llama-3.1-8b-instruct-fast",
+  "proseSource": "MODEL_GENERATION",
+  "pipeline": ["..."],
+  "contract": {
+    "intent": "...",
+    "directAnswer": "...",
+    "factState": "..."
+  },
+  "agent": {
+    "retrievalCandidates": [],
+    "selectedEvidence": [],
+    "generationCalls": []
+  },
+  "sessionMemory": {
+    "turns": 5,
+    "retained": true
+  }
+}</pre></div>
+          <div class="docs-callout"><strong>Exact response shape is implementation-level and can evolve.</strong> Consumers should not infer factual correctness from HTTP 200 alone; inspect <code>ok</code>, <code>proseSource</code>, provider/model, contract, and failure fields.</div>
+          <a class="button" href="./api.html">Open full API page</a>
+        </section>
+
+        <section class="docs-section" id="telemetry" data-search="telemetry health provider model tokens neurons latency repair candidates evidence cost ledger stats provenance build source commit">
+          <div class="docs-eyebrow">14 / Telemetry</div>
+          <h2>Inspect what produced the answer.</h2>
+          <p>The runtime exposes enough metadata to distinguish retrieval, generation, validation, model/provider use, build provenance, and usage accounting.</p>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Signal</th><th>What it tells you</th></tr></thead><tbody>
+            <tr><td>Build source</td><td>Repository, branch, and commit recorded by deployment/build provenance.</td></tr>
+            <tr><td>Provider / model</td><td>Which inference backend/model was configured or actually called.</td></tr>
+            <tr><td>Generation calls</td><td>Attempt index/type, success, accepted state, model, tokens, and neuron information when available.</td></tr>
+            <tr><td>Retrieval candidates</td><td>Evidence candidates considered before final selection.</td></tr>
+            <tr><td>Selected evidence</td><td>The smaller evidence set passed into the RAG synthesis path.</td></tr>
+            <tr><td>Validation</td><td>Validator verdict/outcome and repair/failure information.</td></tr>
+            <tr><td>Latency</td><td>Provider and total request timings used to enforce/inspect the response contract.</td></tr>
+            <tr><td>Cost ledger</td><td>Optional accounting of LLM-adjacent events, token/neuron estimates, and response egress when enabled.</td></tr>
+          </tbody></table></div>
+          <div class="docs-code"><div class="docs-code-head"><span>Shell / health</span><button class="docs-copy" type="button">Copy</button></div><pre>curl https://projecthub-chat.bradleymatera.dev/health
+curl https://projecthub-chat.bradleymatera.dev/health/live
+curl https://projecthub-chat.bradleymatera.dev/health/ready</pre></div>
+        </section>
+
+        <section class="docs-section" id="configuration" data-search="configuration environment variables cloudflare account token model provider allowed origins rate limit knowledge file agent mode fallback qualified deadline">
+          <div class="docs-eyebrow">15 / Configuration</div>
+          <h2>Runtime controls.</h2>
+          <p>Production secrets are not committed. The table below documents the important configuration surfaces visible in the current source. Defaults can differ between development examples and deployed production environment values.</p>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Variable</th><th>Meaning</th><th>Current/source default</th></tr></thead><tbody>
+            <tr><td><code>PORT</code></td><td>Express port.</td><td><code>3000</code></td></tr>
+            <tr><td><code>HOST</code></td><td>Bind host.</td><td><code>127.0.0.1</code></td></tr>
+            <tr><td><code>KNOWLEDGE_FILE</code></td><td>Bundled knowledge JSON path.</td><td><code>data/recruiter-knowledge.json</code></td></tr>
+            <tr><td><code>ALLOWED_ORIGINS</code></td><td>Comma-separated browser origins accepted by CORS.</td><td>Environment-specific</td></tr>
+            <tr><td><code>RATE_LIMIT_MAX</code></td><td>Maximum chat requests per minute per IP.</td><td><code>20</code></td></tr>
+            <tr><td><code>USE_BM25_RETRIEVAL</code></td><td>Enable local BM25 retrieval.</td><td>Enabled unless set to <code>false</code></td></tr>
+            <tr><td><code>SCOUT_AGENT_MODE</code></td><td>Selects lite/full/legacy execution mode. Release work targets lite mode.</td><td>Deployment-configured</td></tr>
+            <tr><td><code>SCOUT_INFERENCE_PROVIDER</code></td><td><code>cloudflare</code>, <code>ollama</code>, or <code>auto</code>.</td><td><code>auto</code> in router</td></tr>
+            <tr><td><code>CLOUDFLARE_ACCOUNT_ID</code></td><td>Workers AI account ID.</td><td>Required for Cloudflare path</td></tr>
+            <tr><td><code>CLOUDFLARE_API_TOKEN</code></td><td>Workers AI API token.</td><td>Required for Cloudflare path</td></tr>
+            <tr><td><code>CLOUDFLARE_MODEL</code></td><td>Workers AI model name.</td><td><code>@cf/meta/llama-3.1-8b-instruct-fast</code></td></tr>
+            <tr><td><code>OLLAMA_URL</code></td><td>Local/container Ollama endpoint.</td><td><code>http://localhost:11434</code></td></tr>
+            <tr><td><code>OLLAMA_MODEL</code></td><td>Local development/eval model.</td><td><code>qwen2.5:1.5b</code> in router</td></tr>
+            <tr><td><code>SCOUT_OLLAMA_PRODUCTION_FALLBACK_ENABLED</code></td><td>Explicitly opts Cloudflare-primary runtime into Ollama emergency fallback.</td><td>Disabled</td></tr>
+            <tr><td><code>SCOUT_OLLAMA_QUALIFIED</code></td><td>Second gate required before production Ollama fallback can be used.</td><td>Disabled</td></tr>
+            <tr><td><code>REQUEST_DEADLINE_MS</code></td><td>End-to-end request deadline.</td><td><code>15000</code></td></tr>
+            <tr><td><code>GEN_TIMEOUT_MS</code></td><td>Generation timeout inside the request envelope.</td><td><code>12500</code></td></tr>
+            <tr><td><code>COST_TRACKER</code></td><td>Enable cost/usage ledger persistence.</td><td>Off unless <code>true</code></td></tr>
+            <tr><td><code>FEATURE_PREVIEW_ENABLED</code></td><td>Expose the private preview static route on the preview environment.</td><td>Off unless <code>true</code></td></tr>
+          </tbody></table></div>
+          <div class="docs-callout warning"><strong>Do not copy the development example into production without review.</strong> The repository's example env file still contains settings from earlier local-model development phases. Use current router/server source and deployment configuration as the authority for production.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/lib/local-model-router.js" target="_blank" rel="noopener">router config ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/lib/cloudflare-provider.js" target="_blank" rel="noopener">Cloudflare config ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/.env.development.example" target="_blank" rel="noopener">development example ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="local-development" data-search="local development npm install cloudflare ollama env server run node localhost diagnostics">
+          <div class="docs-eyebrow">16 / Local development</div>
+          <h2>Run Scout from the repository.</h2>
+          <h3>Cloudflare-backed development</h3>
+          <div class="docs-code"><div class="docs-code-head"><span>.env / example values only</span><button class="docs-copy" type="button">Copy</button></div><pre>PORT=3000
+HOST=127.0.0.1
+SCOUT_AGENT_MODE=lite
+SCOUT_INFERENCE_PROVIDER=cloudflare
+CLOUDFLARE_ACCOUNT_ID=your-account-id
+CLOUDFLARE_API_TOKEN=your-api-token
+CLOUDFLARE_MODEL=@cf/meta/llama-3.1-8b-instruct-fast
+REQUEST_DEADLINE_MS=15000
+GEN_TIMEOUT_MS=12500
+USE_BM25_RETRIEVAL=true
+RATE_LIMIT_MAX=20</pre></div>
+          <h3>Ollama development/evaluation</h3>
+          <div class="docs-code"><div class="docs-code-head"><span>Shell + .env</span><button class="docs-copy" type="button">Copy</button></div><pre>ollama pull qwen2.5:1.5b
+
+# .env
+SCOUT_AGENT_MODE=lite
+SCOUT_INFERENCE_PROVIDER=ollama
+OLLAMA_URL=http://127.0.0.1:11434
+OLLAMA_MODEL=qwen2.5:1.5b
+REQUEST_DEADLINE_MS=15000
+USE_BM25_RETRIEVAL=true</pre></div>
+          <h3>Start and inspect</h3>
+          <div class="docs-code"><div class="docs-code-head"><span>Shell</span><button class="docs-copy" type="button">Copy</button></div><pre>node server-gemini.js
+
+curl http://127.0.0.1:3000/health/live
+curl http://127.0.0.1:3000/health/ready
+curl http://127.0.0.1:3000/health</pre></div>
+          <div class="docs-callout"><strong>Never commit <code>.env</code>.</strong> Cloudflare account IDs/tokens and any other secrets belong in the deployment environment or local ignored files.</div>
+        </section>
+
+        <section class="docs-section" id="docker" data-search="docker compose container production parity health test runner build">
+          <div class="docs-eyebrow">17 / Docker</div>
+          <h2>Production-parity container testing.</h2>
+          <p>The repository includes a Docker path intended to make backend/inference testing reproducible without relying on whatever happens to be installed on the host.</p>
+          <div class="docs-code"><div class="docs-code-head"><span>Shell</span><button class="docs-copy" type="button">Copy</button></div><pre>docker compose up --build -d
+
+curl http://localhost:3000/health
+
+docker compose run --rm test-runner npm test</pre></div>
+          <div class="docs-callout warning"><strong>Deployment transition:</strong> the canonical release spec says the existing SCP-style <code>deploy-gcp.sh</code> path is legacy and is intended to be replaced by qualified Docker image deployment. Do not describe the migration as already complete.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/docker-compose.yml" target="_blank" rel="noopener">docker-compose.yml ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/Dockerfile" target="_blank" rel="noopener">Dockerfile ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="testing" data-search="tests evals npm test retrieval conversation tools CI audit secret build syntax golden acceptance">
+          <div class="docs-eyebrow">18 / Tests and evals</div>
+          <h2>Commands that can be rerun.</h2>
+          <p>The documentation avoids turning one historic score into a general quality claim. The useful part is the checked-in test/eval surface and the commands needed to reproduce a result.</p>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Command</th><th>Coverage</th></tr></thead><tbody>
+            <tr><td><code>npm test</code></td><td>Node unit test suite under <code>test/**/*.test.js</code>.</td></tr>
+            <tr><td><code>npm run test:retrieval</code></td><td>BM25, query-understanding, and RRF unit tests.</td></tr>
+            <tr><td><code>npm run eval-retrieval</code></td><td>40-query golden retrieval evaluation.</td></tr>
+            <tr><td><code>npm run eval:local-api</code></td><td>API acceptance/evaluation runner against a configured local target.</td></tr>
+            <tr><td><code>npm run eval:scout</code></td><td>Scout evaluation harness.</td></tr>
+            <tr><td><code>npm run eval:tools</code></td><td>Tool-selection evaluation.</td></tr>
+            <tr><td><code>npm run eval:conversation</code></td><td>Conversation behavior evaluation.</td></tr>
+            <tr><td><code>npm run eval:production-conversations</code></td><td>Python production-conversation regression harness.</td></tr>
+            <tr><td><code>npm run build</code></td><td>Vite/analytics build freshness.</td></tr>
+            <tr><td><code>node --check server-gemini.js</code></td><td>Server syntax check.</td></tr>
+          </tbody></table></div>
+          <h3>CI checks on develop / pull requests</h3>
+          <ul>
+            <li>Production dependency audit at high severity.</li>
+            <li>Analytics build and committed bundle freshness.</li>
+            <li><code>ProjectHub.js</code> bundle freshness against source modules.</li>
+            <li>Server/workspace/analytics syntax checks.</li>
+            <li>Cost-ledger and retrieval unit tests.</li>
+            <li>Retrieval evaluation plus a Recall@6 ≥ 0.90 gate.</li>
+            <li>Knowledge JSON parse/required-key validation.</li>
+            <li>Committed secret-pattern scan.</li>
+            <li>Staging-routing guard.</li>
+          </ul>
+          <div class="docs-callout warning"><strong>Historical scorer correction:</strong> older qualification runs that reported 114/115 and 40/40 were later invalidated as release gates after false positives were found in the raw answers. They are retained as history, not advertised as current accuracy.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/package.json" target="_blank" rel="noopener">package scripts ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/.github/workflows/test.yml" target="_blank" rel="noopener">CI workflow ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/data/evals/pre-strict-qualification-status.json" target="_blank" rel="noopener">pre-strict status ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="release" data-search="release branch develop master staging preview pull request rollback ProjectHub-dev production deployment">
+          <div class="docs-eyebrow">19 / Release flow</div>
+          <h2>Source, staging, production.</h2>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Environment</th><th>Source</th><th>Frontend / backend</th></tr></thead><tbody>
+            <tr><td>Feature preview</td><td>Clean <code>feat/*</code> branch</td><td>SSH-tunneled private preview; loopback-only development service.</td></tr>
+            <tr><td>Development staging</td><td><code>ProjectHub:develop</code> mirrored to <code>ProjectHub-dev:main</code></td><td><code>bradleymatera.github.io/ProjectHub-dev/</code> + <code>dev.projecthub-chat.bradleymatera.dev</code></td></tr>
+            <tr><td>Production</td><td><code>ProjectHub:master</code></td><td><code>bradleymatera.github.io/ProjectHub/</code> + <code>projecthub-chat.bradleymatera.dev</code></td></tr>
+          </tbody></table></div>
+          <h3>Required sequence</h3>
+          <ol>
+            <li>Branch from current <code>develop</code>.</li>
+            <li>Run the checks appropriate to the change.</li>
+            <li>Use private preview for backend/agent work when applicable.</li>
+            <li>Open a PR to <code>develop</code>; required CI must pass.</li>
+            <li>Deploy/mirror development staging and verify the actual staging frontend/backend.</li>
+            <li>Open a release PR from <code>develop</code> to <code>master</code>.</li>
+            <li>Deploy/verify production backend, then publish the production frontend.</li>
+            <li>Record and verify the released source commit.</li>
+          </ol>
+          <h3>Minimum acceptance</h3>
+          <div class="docs-code"><div class="docs-code-head"><span>Shell</span><button class="docs-copy" type="button">Copy</button></div><pre>npm test
+npm run build
+node --check server-gemini.js
+git diff --check
+
+# Retrieval / conversation changes
+npm run eval-retrieval
+PROJECTHUB_API_URL=http://127.0.0.1:&lt;port&gt; npm run eval:local-api
+python3 test-production-conversations.py \
+  --url http://127.0.0.1:&lt;port&gt;/api/chat \
+  --delay 2.5</pre></div>
+          <div class="docs-callout limit"><strong>No direct feature-to-production shortcut.</strong> The canonical spec requires staging and a release PR; local passing tests do not authorize production publication.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/PROJECTHUB-DEVELOPMENT-AND-RELEASE-SPEC.md" target="_blank" rel="noopener">release specification ↗</a></div>
+        </section>
+
+        <section class="docs-section" id="troubleshooting" data-search="troubleshooting health warming unavailable 429 allocation cors retrieval regression stale bundle model timeout bad answer grounding">
+          <div class="docs-eyebrow">20 / Troubleshooting</div>
+          <h2>Start with the failing stage.</h2>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Symptom</th><th>Check first</th><th>Likely area</th></tr></thead><tbody>
+            <tr><td><code>/health/ready</code> returns 503</td><td>Inspect <code>modelVerified</code> and <code>knowledgeReady</code>.</td><td>Provider/model health or knowledge load.</td></tr>
+            <tr><td><code>INFERENCE_UNAVAILABLE</code></td><td>Inspect provider/model, generation attempts, deadline, and Cloudflare/Ollama health.</td><td>Generation/provider path. Do not treat as a factual answer.</td></tr>
+            <tr><td>Cloudflare 429 / allocation error</td><td>Inspect provider error type and daily neuron usage.</td><td>Free allocation/rate capacity.</td></tr>
+            <tr><td>Correct topic, wrong fact relationship</td><td>Inspect selected evidence + grounding validator result.</td><td>Evidence selection, relationship/provenance validation.</td></tr>
+            <tr><td>Follow-up loses referent</td><td>Inspect session state, rewritten query, and recent-turn input.</td><td>Conversation resolver / query understanding.</td></tr>
+            <tr><td>“No” when evidence is merely absent</td><td>Inspect <code>factState</code>, <code>directAnswer</code>, response policy, and contract.</td><td>Open-world UNKNOWN handling.</td></tr>
+            <tr><td>Retrieval quality drops</td><td>Run <code>npm run eval-retrieval</code> and inspect changed query/chunk logic.</td><td>BM25, query understanding, RRF, knowledge chunks.</td></tr>
+            <tr><td>Widget changes not reflected</td><td>Run build/CI bundle freshness check.</td><td><code>ProjectHub.js</code> source/artifact mismatch.</td></tr>
+            <tr><td>Staging looks like production</td><td>Inspect staging source marker and routing rules.</td><td>Mirror/deployment provenance.</td></tr>
+          </tbody></table></div>
+          <h3>Useful diagnostic commands</h3>
+          <div class="docs-code"><div class="docs-code-head"><span>Shell</span><button class="docs-copy" type="button">Copy</button></div><pre>npm test
+npm run eval-retrieval
+node --check server-gemini.js
+curl http://127.0.0.1:3000/health
+curl http://127.0.0.1:3000/health/ready</pre></div>
+        </section>
+
+        <section class="docs-section" id="limits" data-search="limits boundaries current application scope free allocation rate limit no sla customer sdk domain package webgpu experimental state persistence">
+          <div class="docs-eyebrow">21 / Limits</div>
+          <h2>Current boundaries.</h2>
+          <ul>
+            <li><strong>Domain:</strong> the shipped application is scoped to Bradley Matera's verified professional information and Scout's own runtime, not arbitrary world knowledge.</li>
+            <li><strong>Commercial packaging:</strong> the customer-neutral empty/no-KB engine and generalized domain package system are productization goals, not a currently released self-service feature.</li>
+            <li><strong>Inference allocation:</strong> the public production path depends on external Cloudflare Workers AI allocation/capacity.</li>
+            <li><strong>Application rate control:</strong> the current server defaults to 20 chat requests per minute per IP unless deployment configuration overrides it.</li>
+            <li><strong>Deadline:</strong> requests are bounded; slow/unavailable inference can return a typed technical error instead of an answer.</li>
+            <li><strong>Browser inference:</strong> WebGPU/client-local work is experimental and is not the normal production generation path.</li>
+            <li><strong>State:</strong> conversation state is intentionally bounded rather than acting as permanent personal memory.</li>
+            <li><strong>Docs/version drift:</strong> dated QA/handoff files can describe historical runtime phases; check executable source and current runtime facts before treating them as current configuration.</li>
+            <li><strong>No public SLA/API-key platform:</strong> the current backend routes document the implementation used by ProjectHub. A generalized customer API product is not claimed here.</li>
+          </ul>
+          <div class="docs-callout production"><strong>Expected behavior when evidence is unavailable:</strong> Scout should distinguish UNKNOWN from FALSE and should not invent a claim merely to avoid saying that verified information is unavailable.</div>
+        </section>
+
+        <section class="docs-section" id="source-map" data-search="source map files repository code docs server rag chunks bm25 rrf router validator tools session workflow package">
+          <div class="docs-eyebrow">22 / Source map</div>
+          <h2>Where each behavior lives.</h2>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Path</th><th>Responsibility</th></tr></thead><tbody>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener"><code>server-gemini.js</code></a></td><td>Express API, request lifecycle, deadlines, knowledge loading, state integration, response shaping, telemetry and operational routes.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-chunks.js" target="_blank" rel="noopener"><code>lib/rag-chunks.js</code></a></td><td>Flattens verified knowledge into retrieval chunks.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/query-understanding.js" target="_blank" rel="noopener"><code>lib/query-understanding.js</code></a></td><td>Normalization, typo handling, protected terms, intent/context rewrite.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/bm25.js" target="_blank" rel="noopener"><code>lib/bm25.js</code></a></td><td>Okapi BM25 lexical retrieval.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rrf.js" target="_blank" rel="noopener"><code>lib/rrf.js</code></a></td><td>Contextual reciprocal-rank fusion.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/session-state.js" target="_blank" rel="noopener"><code>lib/session-state.js</code></a></td><td>Structured server-owned conversation state.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/response-policy.js" target="_blank" rel="noopener"><code>lib/response-policy.js</code></a></td><td>Conversation-control and substantive response policy classification.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/response-contract.js" target="_blank" rel="noopener"><code>lib/response-contract.js</code></a></td><td>Intent, fact state, polarity, boundaries, claim ceilings and semantic answer constraints.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/agent-tools.js" target="_blank" rel="noopener"><code>lib/agent-tools.js</code></a></td><td>Allowlisted read-only evidence tools.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-agent.js" target="_blank" rel="noopener"><code>lib/rag-agent.js</code></a></td><td>RAG-first generation, evidence selection, tool enrichment, repair and generation accounting.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/lib/local-model-router.js" target="_blank" rel="noopener"><code>lib/local-model-router.js</code></a></td><td>Inference provider abstraction and Cloudflare/Ollama routing/fallback gates.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/lib/cloudflare-provider.js" target="_blank" rel="noopener"><code>lib/cloudflare-provider.js</code></a></td><td>Workers AI REST adapter, model restrictions, usage/neuron accounting and provider errors.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/grounding-validator.js" target="_blank" rel="noopener"><code>lib/grounding-validator.js</code></a></td><td>Grounding, relationship, provenance, semantic and overclaim validation.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/data/scout-runtime-knowledge.json" target="_blank" rel="noopener"><code>data/scout-runtime-knowledge.json</code></a></td><td>Current production-facing facts about Scout's runtime/model/provider/cost controls.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/data/eval-golden.json" target="_blank" rel="noopener"><code>data/eval-golden.json</code></a></td><td>Retrieval golden set used by the checked-in evaluator.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/.github/workflows/test.yml" target="_blank" rel="noopener"><code>.github/workflows/test.yml</code></a></td><td>Automated build, audit, syntax, retrieval, knowledge, secret and staging checks.</td></tr>
+            <tr><td><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/PROJECTHUB-DEVELOPMENT-AND-RELEASE-SPEC.md" target="_blank" rel="noopener"><code>PROJECTHUB-DEVELOPMENT-AND-RELEASE-SPEC.md</code></a></td><td>Canonical release environments, promotion sequence, acceptance and rollback process.</td></tr>
+          </tbody></table></div>
+          <div class="docs-callout"><strong>Need the history rather than the current behavior?</strong> Use the <a href="./changelog.html">Changelog</a> and dated reports in the repository. Those records are intentionally kept separate from the current runtime description.</div>
+        </section>
       </div>
-    </section>
+    </div>
   </main>
 
-  <footer class="site-footer"><div class="shell"><div><strong>Scout</strong><span> · ProjectHub runtime</span></div><a href="https://www.linkedin.com/in/bradmatera" target="_blank" rel="noopener">LinkedIn ↗</a></div></footer>
+  <footer class="site-footer"><div class="shell"><div><strong>Scout</strong><span> · Documentation</span></div><a href="https://www.linkedin.com/in/bradmatera" target="_blank" rel="noopener">LinkedIn ↗</a></div></footer>
   <script type="module" src="./scene.js"></script>
   <script src="./site.js" defer></script>
+  <script src="./docs.js" defer></script>
 </body>
 </html>
