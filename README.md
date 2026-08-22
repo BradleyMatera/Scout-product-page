@@ -19,7 +19,7 @@ The customer-facing navigation is:
 1. **Overview** — launch hero, current runtime snapshot, source state, verification, limits, and productization status.
 2. **Features** — implemented code paths and current integrated capabilities.
 3. **How It Works** — request pipeline from query handling through retrieval, generation, validation, and telemetry.
-4. **Docs** — source-linked runtime, architecture, QA, hardening, release, and implementation references.
+4. **Docs** — full source-linked technical documentation for the current runtime, including quickstart, architecture, request lifecycle, retrieval, state, response contracts, tools, inference, validation, widget integration, API, telemetry, configuration, local development, Docker, tests/evals, release flow, troubleshooting, limits, and source map.
 5. **API** — checked-in ProjectHub route surface, request shape, response metadata, and current API limitations.
 6. **Changelog** — selected source-linked repository milestones and evaluation-history notes.
 7. **Pricing** — customer-facing early-access hosted plans, implementation scope, licensing models, and LinkedIn contact.
@@ -38,7 +38,9 @@ The customer-facing navigation is:
 The product site is a zero-build static project. Three.js is used as an ambient visual layer around normal HTML rather than as a standalone 3D product demo.
 
 - `index.html` — overview, implementation/status content, source links, verification, limits, and productization state
-- `docs.html` — source-linked documentation index
+- `docs.html` — full documentation application with 22 current-runtime topics and direct source/retest paths
+- `docs.css` — sticky docs navigation, searchable topic layout, tables, code blocks, callouts, badges, and responsive docs UI
+- `docs.js` — docs search/filtering, active-section tracking, mobile section navigation, and code-copy controls
 - `api.html` — current ProjectHub API reference and limitations
 - `changelog.html` — selected development/release/evaluation history
 - `pricing.html` — customer-facing early-access pricing, hosted plans, licensing models, process, and LinkedIn contact
@@ -55,6 +57,19 @@ The product site is a zero-build static project. Three.js is used as an ambient 
 - `SCOUT-SOURCE-AUDIT.md` — source audit behind product-page claims
 
 The Three.js scene is deliberately non-semantic. The actual interface remains HTML. If WebGL or the CDN module is unavailable, the page content remains usable.
+
+## Documentation rule
+
+`docs.html` is written as runnable technical documentation rather than a repository-link directory. It uses current executable source and runtime facts as the primary authority, labels production/develop/experimental behavior, and keeps dated qualification/QA records in historical context.
+
+The docs include reproducible commands instead of general quality claims wherever possible. Examples include `npm test`, `npm run eval-retrieval`, API health checks, local Cloudflare/Ollama configuration, Docker commands, release acceptance commands, and direct implementation links.
+
+When documentation sources conflict, the precedence used on the product site is:
+
+1. executable source/current runtime configuration;
+2. production runtime facts;
+3. current master/develop documentation that matches the source;
+4. dated reports as historical evidence.
 
 ## Product-page content rule
 
