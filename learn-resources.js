@@ -59,6 +59,10 @@
     ]
   };
 
+  const sourceNotes = {
+    'cost-math': '<strong>Provider-source discrepancy, checked 2026-08-23:</strong> Scout currently associates the 4,119 input / 34,868 output neuron rates with <code>@cf/meta/llama-3.1-8b-instruct-fast</code>. Cloudflare’s current pricing table publishes those rates for <code>@cf/meta/llama-3.1-8b-instruct-fp8-fast</code>, while its model catalog separately documents the non-fp8 <code>...-fast</code> identifier. Treat the arithmetic below as Scout’s current internal estimator until that model/rate mapping is reconciled against provider billing.'
+  };
+
   function firstNarrative(section) {
     return section.querySelector('.docs-lede') || Array.from(section.children).find(el => el.tagName === 'P') || section.querySelector('h2');
   }
@@ -73,6 +77,9 @@
 
   function addStudy(id, items) {
     const section = document.getElementById(id); if (!section || section.querySelector('.learn-study')) return;
+    if (sourceNotes[id]) {
+      const warning = document.createElement('div'); warning.className='docs-callout warning learn-source-warning'; warning.innerHTML=sourceNotes[id]; section.appendChild(warning);
+    }
     const block = document.createElement('aside'); block.className = 'learn-study'; block.setAttribute('aria-label','External sources and further study');
     block.innerHTML = `<div class="learn-study-head"><span>External sources &amp; further study</span><small>General theory / independent references</small></div><div class="learn-study-grid">${items.map(([type,author,title,url,note]) => `<a class="learn-study-card" href="${url}" target="_blank" rel="noopener"><span class="learn-study-type ${type}">${type}</span><strong>${title}</strong><span class="learn-study-author">${author}</span><p>${note}</p><span class="learn-study-open">open source ↗</span></a>`).join('')}</div><p class="learn-study-note">These references explain the general algorithm or standard. The ProjectHub source links in this section show Scout’s actual implementation and take precedence for implementation-specific behavior.</p>`;
     section.appendChild(block);
