@@ -15,26 +15,33 @@ const pages = [
 
 const scriptTag = '  <script src="./freshness.js" defer></script>';
 const docsGraphicsScript = '  <script src="./docs-graphics.js" defer></script>';
+const learnResourcesScript = '  <script src="./learn-resources.js" defer></script>';
 const docsScript = '  <script src="./docs.js" defer></script>';
+const learnCss = '  <link rel="stylesheet" href="./learn-resources.css" />';
 
 for (const page of pages) {
   const file = path.join(root, page);
   if (!fs.existsSync(file)) throw new Error(`Missing Scout page: ${page}`);
 
   let html = fs.readFileSync(file, 'utf8');
-  if (html.includes('src="./freshness.js"')) continue;
   if (!html.includes('</body>')) throw new Error(`Cannot prepare ${page}: missing </body>`);
 
-  // Docs/API/Changelog/Learn should have current-state additions in the DOM
-  // before docs.js snapshots sections and attaches copy/search behavior.
-  // docs.html also gets the visual teaching layer before docs.js initializes.
-  if (html.includes(docsScript)) {
-    const additions = page === 'docs.html'
-      ? `${scriptTag}\n${docsGraphicsScript}\n${docsScript}`
-      : `${scriptTag}\n${docsScript}`;
-    html = html.replace(docsScript, additions);
-  } else {
-    html = html.replace('</body>', `${scriptTag}\n</body>`);
+  if (page === 'learn.html' && !html.includes('href="./learn-resources.css"')) {
+    if (!html.includes('</head>')) throw new Error('Cannot prepare learn.html: missing </head>');
+    html = html.replace('</head>', `${learnCss}\n</head>`);
+  }
+
+  if (!html.includes('src="./freshness.js"')) {
+    // Dynamic current-state content and teaching resources must exist before
+    // docs.js snapshots sections and attaches navigation/search/copy behavior.
+    if (html.includes(docsScript)) {
+      let additions = `${scriptTag}\n${docsScript}`;
+      if (page === 'docs.html') additions = `${scriptTag}\n${docsGraphicsScript}\n${docsScript}`;
+      if (page === 'learn.html') additions = `${scriptTag}\n${learnResourcesScript}\n${docsScript}`;
+      html = html.replace(docsScript, additions);
+    } else {
+      html = html.replace('</body>', `${scriptTag}\n</body>`);
+    }
   }
 
   fs.writeFileSync(file, html, 'utf8');
