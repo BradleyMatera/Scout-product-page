@@ -239,15 +239,41 @@ reciprocal_rankᵢ = 1/rank of first relevant result
           <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/lib/cloudflare-provider.js" target="_blank" rel="noopener">Source: production provider adapter ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-agent.js" target="_blank" rel="noopener">Source: prompt/evidence path ↗</a></div>
         </section>
 
-        <section class="docs-section" id="cost-math" data-search="cloudflare neuron cost token rates free daily capacity estimate math 4119 34868">
+        <section class="docs-section" id="cost-math" data-search="cloudflare neuron usage accounting exact model unknown unverified fp8 fast pricing actual estimated tokens free allocation 10000 0.011 utc">
           <div class="docs-eyebrow">11 · Provider usage math</div>
-          <h2>Scout estimates Cloudflare usage from token counts and published neuron rates.</h2>
-          <p>For the current 8B Fast model, the adapter contains rates of <code>4,119</code> neurons per million input tokens and <code>34,868</code> neurons per million output tokens. If Cloudflare returns an actual neuron count, telemetry can keep it. Otherwise Scout can estimate.</p>
-          <div class="equation"><span class="eq-title">Estimated neurons</span><code>neurons ≈ (input_tokens / 1,000,000) × 4,119
-        + (output_tokens / 1,000,000) × 34,868</code></div>
-          <div class="worked-example"><h4>Example: 500 input tokens + 100 output tokens</h4><div class="step"><b>1</b><span>Input: <code>500 / 1,000,000 × 4,119 = 2.0595</code> neurons.</span></div><div class="step"><b>2</b><span>Output: <code>100 / 1,000,000 × 34,868 = 3.4868</code> neurons.</span></div><div class="step"><b>3</b><span>Total estimate ≈ <code>5.5463</code> neurons.</span></div><div class="step"><b>4</b><span>At a 10,000-neuron daily allocation, a naive constant-size capacity estimate is <code>floor(10,000 / 5.5463) = 1,803</code> such requests.</span></div></div>
-          <p>That final number is only a planning estimate. Real prompts vary in length, outputs vary, retries/repairs can add calls, provider accounting can return actual usage, and free-tier policy can change independently of Scout.</p>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/lib/cloudflare-provider.js" target="_blank" rel="noopener">Source: neuron rates + estimate functions ↗</a></div>
+          <h2>Scout's current model has no published token-to-neuron rate.</h2>
+          <p>Scout's hosted generation model remains <code>@cf/meta/llama-3.1-8b-instruct-fast</code>. Cloudflare documents that model as active, but its current pricing table does <strong>not</strong> publish an exact input/output neuron rate for that identifier. Scout therefore does not borrow token-to-neuron rates from a similarly named model.</p>
+          <div class="docs-callout production"><strong>Current accounting rule:</strong> preserve provider-reported neuron usage as <code>actualNeurons</code> when it is available. Calculate <code>estimatedNeurons</code> only when the exact model identifier has a verified published rate. If neither exists, neuron usage is <strong>unknown / unverified</strong>, not zero and not a guessed estimate.</div>
+
+          <h3>Platform allocation and request accounting are different facts</h3>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Cloudflare platform fact</th><th>Current value</th><th>What it does not prove</th></tr></thead><tbody>
+            <tr><td>Workers AI included allocation</td><td><strong>10,000 neurons per day</strong></td><td>It does not tell us how many current Scout requests fit inside the allocation.</td></tr>
+            <tr><td>Allocation reset</td><td><strong>00:00 UTC</strong></td><td>It does not provide Scout's token-to-neuron conversion rate.</td></tr>
+            <tr><td>Workers Paid reference above the included allocation</td><td><strong>$0.011 / 1,000 neurons</strong></td><td>It is a provider price reference, not proof of Scout's actual spend or current daily neuron usage.</td></tr>
+          </tbody></table></div>
+
+          <h3>Actual, estimated, and unknown are different states</h3>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>State</th><th>Meaning</th></tr></thead><tbody>
+            <tr><td><code>actualNeurons</code></td><td>Neuron usage reported by the provider when that field is available.</td></tr>
+            <tr><td><code>estimatedNeurons</code></td><td>A token-derived estimate calculated only when the exact model identifier has a verified published rate.</td></tr>
+            <tr><td><strong>unknown</strong></td><td>No provider actual value and no verified exact-model estimate are available. Unknown is not represented as zero.</td></tr>
+          </tbody></table></div>
+
+          <h3>Exact model identifiers matter</h3>
+          <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Exact identifier</th><th>Published neuron rate</th><th>Relationship to Scout</th></tr></thead><tbody>
+            <tr><td><code>@cf/meta/llama-3.1-8b-instruct-fast</code></td><td><strong>Not published on the current Cloudflare pricing table</strong></td><td>This is Scout's current hosted generation model. Token-derived neuron consumption is therefore unknown/unverified unless Cloudflare supplies actual neuron usage.</td></tr>
+            <tr><td><code>@cf/meta/llama-3.1-8b-instruct-fp8-fast</code></td><td><code>4,119</code> / M input · <code>34,868</code> / M output</td><td>A distinct pricing identifier. These rates must not be assigned to Scout's current <code>-fast</code> identifier.</td></tr>
+            <tr><td><code>@cf/meta/llama-3.1-8b-instruct-fp8</code></td><td><code>13,778</code> / M input · <code>26,128</code> / M output</td><td>Another distinct model with its own published rates.</td></tr>
+          </tbody></table></div>
+
+          <div class="equation"><span class="eq-title">General estimate, only when the exact model has published rates</span><code>estimated_neurons = (input_tokens / 1,000,000) × published_input_rate(model)
+                  + (output_tokens / 1,000,000) × published_output_rate(model)</code></div>
+
+          <div class="worked-example"><h4>Teaching example: <code>@cf/meta/llama-3.1-8b-instruct-fp8-fast</code> only</h4><div class="step"><b>1</b><span>500 input tokens: <code>500 / 1,000,000 × 4,119 = 2.0595</code> neurons.</span></div><div class="step"><b>2</b><span>100 output tokens: <code>100 / 1,000,000 × 34,868 = 3.4868</code> neurons.</span></div><div class="step"><b>3</b><span>Total estimate = <code>5.5463</code> neurons for <strong>that exact FP8-fast identifier</strong>.</span></div><div class="step"><b>4</b><span><code>floor(10,000 / 5.5463) = 1,803</code> equal-sized requests is an FP8-fast arithmetic example only. It is <strong>not</strong> Scout's current requests-per-day capacity.</span></div></div>
+          <div class="docs-callout warning"><strong>Do not reuse that capacity number for Scout.</strong> Because Cloudflare does not currently publish the token-to-neuron rate for <code>@cf/meta/llama-3.1-8b-instruct-fast</code>, the product page does not claim that a normal Scout request costs about 5.5463 neurons or that Scout supports about 1,803 requests per day.</div>
+
+          <p>Accounting completeness also matters across several calls. If one billable call has unknown neuron usage, the complete session neuron total remains unknown instead of later becoming a misleading partial total just because a subsequent call has known usage.</p>
+          <div class="docs-source-row"><a href="https://developers.cloudflare.com/workers-ai/platform/pricing/" target="_blank" rel="noopener">Source: Cloudflare Workers AI pricing ↗</a><a href="https://developers.cloudflare.com/ai/models/%40cf/meta/llama-3.1-8b-instruct-fast/" target="_blank" rel="noopener">Source: Cloudflare -fast model page ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/lib/cloudflare-provider.js" target="_blank" rel="noopener">Source: Scout production provider adapter ↗</a></div>
         </section>
 
         <section class="docs-section" id="time-math" data-search="deadline timeout rate limit cache ttl 15 seconds 20 minute 30 minutes">
@@ -387,7 +413,7 @@ reciprocal_rankᵢ = 1/rank of first relevant result
             <div class="glossary-term"><dt>Context / context packet</dt><dd>The bounded instructions, state, evidence, and tool observations supplied to the language model for one turn.</dd></div>
             <div class="glossary-term"><dt>Temperature</dt><dd>A language-model sampling parameter that rescales logits before token sampling. Lower generally means a sharper, less variable distribution.</dd></div>
             <div class="glossary-term"><dt>Top-p</dt><dd>Nucleus sampling parameter. Sampling is limited to the smallest high-probability set of tokens whose cumulative probability reaches the chosen threshold.</dd></div>
-            <div class="glossary-term"><dt>Neuron</dt><dd>Cloudflare Workers AI's usage-accounting unit. Scout estimates neurons from input/output token counts using model-specific rates when necessary.</dd></div>
+            <div class="glossary-term"><dt>Neuron</dt><dd>Cloudflare Workers AI's usage-accounting unit. Scout preserves provider-reported neuron usage when available and calculates token-derived estimates only for exact model identifiers with verified published rates. For the current <code>@cf/meta/llama-3.1-8b-instruct-fast</code> identifier, token-derived neuron usage is unknown/unverified while no exact rate is published.</dd></div>
             <div class="glossary-term"><dt>TTL</dt><dd><strong>Time To Live.</strong> How long cached or temporary data remains valid before expiring.</dd></div>
             <div class="glossary-term"><dt>Rate limit</dt><dd>A cap on how many requests a client may make during a time window.</dd></div>
             <div class="glossary-term"><dt>Liveness</dt><dd>A health check answering “is the process alive?”</dd></div>
