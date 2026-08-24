@@ -25,6 +25,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Validate site scripts
+        run: |
+          node --check freshness.js
+          node --check scripts/prepare-site.js
+
       - name: Prepare static site
         run: node scripts/prepare-site.js
 
