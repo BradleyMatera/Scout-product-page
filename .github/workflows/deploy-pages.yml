@@ -29,6 +29,7 @@ jobs:
         run: |
           node --check freshness.js
           node --check docs-graphics.js
+          node --check learn-resources.js
           node --check scripts/prepare-site.js
 
       - name: Prepare static site
