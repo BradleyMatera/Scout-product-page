@@ -14,6 +14,7 @@ const pages = [
 ];
 
 const scriptTag = '  <script src="./freshness.js" defer></script>';
+const docsGraphicsScript = '  <script src="./docs-graphics.js" defer></script>';
 const docsScript = '  <script src="./docs.js" defer></script>';
 
 for (const page of pages) {
@@ -22,13 +23,16 @@ for (const page of pages) {
 
   let html = fs.readFileSync(file, 'utf8');
   if (html.includes('src="./freshness.js"')) continue;
-  if (!html.includes('</body>')) throw new Error(`Cannot inject freshness.js into ${page}: missing </body>`);
+  if (!html.includes('</body>')) throw new Error(`Cannot prepare ${page}: missing </body>`);
 
-  // Docs/API/Changelog/Learn should have the current-state additions in the DOM
-  // before docs.js snapshots sections and attaches copy/search behavior. Overview
-  // and Pricing do not use docs.js, so they can load the snapshot at body end.
+  // Docs/API/Changelog/Learn should have current-state additions in the DOM
+  // before docs.js snapshots sections and attaches copy/search behavior.
+  // docs.html also gets the visual teaching layer before docs.js initializes.
   if (html.includes(docsScript)) {
-    html = html.replace(docsScript, `${scriptTag}\n${docsScript}`);
+    const additions = page === 'docs.html'
+      ? `${scriptTag}\n${docsGraphicsScript}\n${docsScript}`
+      : `${scriptTag}\n${docsScript}`;
+    html = html.replace(docsScript, additions);
   } else {
     html = html.replace('</body>', `${scriptTag}\n</body>`);
   }
