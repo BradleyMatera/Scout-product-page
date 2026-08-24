@@ -14,6 +14,7 @@ const pages = [
 ];
 
 const scriptTag = '  <script src="./freshness.js" defer></script>';
+const snapshotScript = '  <script src="./snapshot-refresh.js" defer></script>';
 const docsGraphicsScript = '  <script src="./docs-graphics.js" defer></script>';
 const learnResourcesScript = '  <script src="./learn-resources.js" defer></script>';
 const accountingScript = '  <script src="./accounting-correction.js" defer></script>';
@@ -33,20 +34,25 @@ for (const page of pages) {
   }
 
   if (!html.includes('src="./freshness.js"')) {
-    // Dynamic current-state content, teaching resources, and accounting corrections
-    // must exist before docs.js snapshots sections and attaches navigation/search/copy behavior.
+    // Current-state content, the dated snapshot refresh, teaching resources, and
+    // accounting corrections must exist before docs.js snapshots sections and
+    // attaches navigation/search/copy behavior.
     if (html.includes(docsScript)) {
-      let additions = `${scriptTag}\n${accountingScript}\n${docsScript}`;
-      if (page === 'docs.html') additions = `${scriptTag}\n${docsGraphicsScript}\n${accountingScript}\n${docsScript}`;
-      if (page === 'learn.html') additions = `${scriptTag}\n${learnResourcesScript}\n${accountingScript}\n${docsScript}`;
+      let additions = `${scriptTag}\n${snapshotScript}\n${accountingScript}\n${docsScript}`;
+      if (page === 'docs.html') additions = `${scriptTag}\n${snapshotScript}\n${docsGraphicsScript}\n${accountingScript}\n${docsScript}`;
+      if (page === 'learn.html') additions = `${scriptTag}\n${snapshotScript}\n${learnResourcesScript}\n${accountingScript}\n${docsScript}`;
       html = html.replace(docsScript, additions);
     } else {
-      html = html.replace('</body>', `${scriptTag}\n${accountingScript}\n</body>`);
+      html = html.replace('</body>', `${scriptTag}\n${snapshotScript}\n${accountingScript}\n</body>`);
     }
-  } else if (!html.includes('src="./accounting-correction.js"')) {
-    // Keep prepared/local copies correct even if freshness.js was already inserted.
-    if (html.includes(docsScript)) html = html.replace(docsScript, `${accountingScript}\n${docsScript}`);
-    else html = html.replace('</body>', `${accountingScript}\n</body>`);
+  } else {
+    if (!html.includes('src="./snapshot-refresh.js"')) {
+      html = html.replace('  <script src="./freshness.js" defer></script>', `  <script src="./freshness.js" defer></script>\n${snapshotScript}`);
+    }
+    if (!html.includes('src="./accounting-correction.js"')) {
+      if (html.includes(docsScript)) html = html.replace(docsScript, `${accountingScript}\n${docsScript}`);
+      else html = html.replace('</body>', `${accountingScript}\n</body>`);
+    }
   }
 
   fs.writeFileSync(file, html, 'utf8');
