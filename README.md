@@ -6,6 +6,7 @@ Public customer-facing and implementation-reference site for **Scout**, the orch
 
 - Overview: https://bradleymatera.dev/scout/
 - Docs: https://bradleymatera.dev/scout/docs.html
+- Learn Scout: https://bradleymatera.dev/scout/learn.html
 - API: https://bradleymatera.dev/scout/api.html
 - Changelog: https://bradleymatera.dev/scout/changelog.html
 - Pricing: https://bradleymatera.dev/scout/pricing.html
@@ -19,10 +20,12 @@ The customer-facing navigation is:
 1. **Overview** — launch hero, current runtime snapshot, source state, verification, limits, and productization status.
 2. **Features** — implemented code paths and current integrated capabilities.
 3. **How It Works** — request pipeline from query handling through retrieval, generation, validation, and telemetry.
-4. **Docs** — full source-linked technical documentation for the current runtime, including quickstart, architecture, request lifecycle, retrieval, state, response contracts, tools, inference, validation, widget integration, API, telemetry, configuration, local development, Docker, tests/evals, release flow, troubleshooting, limits, and source map.
-5. **API** — checked-in ProjectHub route surface, request shape, response metadata, and current API limitations.
-6. **Changelog** — selected source-linked repository milestones and evaluation-history notes.
+4. **Docs** — source-linked runtime/operation documentation.
+5. **API** — current ProjectHub route surface, chat contract, diagnostics, telemetry, and compatibility limits.
+6. **Changelog** — dated production/integration/evaluation history with source citations.
 7. **Pricing** — customer-facing early-access hosted plans, implementation scope, licensing models, and LinkedIn contact.
+
+`learn.html` is linked from Docs as the teaching path for the algorithms, math, data flow, heuristics, and implementation decisions behind Scout.
 
 ## Canonical Scout sources
 
@@ -33,24 +36,61 @@ The customer-facing navigation is:
 - Production ProjectHub: https://bradleymatera.github.io/ProjectHub/
 - Staging ProjectHub: https://bradleymatera.github.io/ProjectHub-dev/
 
+## Living source snapshot
+
+Scout changes frequently, so source-state and gate facts are centralized in `freshness.js` rather than copied independently into every page.
+
+The snapshot keeps these states separate:
+
+1. released production (`ProjectHub:master`);
+2. integrated development (`ProjectHub:develop`);
+3. staging packaging/source (`ProjectHub-dev:main` + `STAGING-SOURCE.json`);
+4. dated test/evaluation/release-gate results.
+
+`freshness.js` updates the relevant parts of Overview, Docs, Learn, API, and Changelog from one audited snapshot. Source URLs in the injected material are citations/evidence for the adjacent claim.
+
+`scripts/prepare-site.js` injects `freshness.js` into all published HTML pages at build time. The GitHub Pages workflow runs syntax checks and this preparation step before uploading the static artifact. The Gatsby/Netlify sync uses the same preparation script before copying Scout into `public/scout/`.
+
+### Current audited snapshot
+
+As of **August 23, 2026**:
+
+- production: `master@4a1eee7`
+- integration: `develop@c9007ff`
+- latest executable develop patch below the report-only HEAD: `e3f1a59`
+- develop vs master: `53 ahead / 4 behind`
+- staging wrapper: `ef125fe`
+- staging source marker: `d1da87b`
+- unit tests: `924/924` PASS
+- retrieval: Recall@6 `1.000`, MRR@6 `0.954`
+- latest v3 local API eval: `23/23`
+- focused technical-error reliability set: `1/27` TECHNICAL_ERROR
+- full production-conversation regression: `70/132` turns and `12/33` conversations passing
+- release decision: **NO**
+
+These are dated development measurements, not production quality guarantees.
+
 ## Site implementation
 
 The product site is a zero-build static project. Three.js is used as an ambient visual layer around normal HTML rather than as a standalone 3D product demo.
 
 - `index.html` — overview, implementation/status content, source links, verification, limits, and productization state
-- `docs.html` — full documentation application with 22 current-runtime topics and direct source/retest paths
-- `docs.css` — sticky docs navigation, searchable topic layout, tables, code blocks, callouts, badges, and responsive docs UI
-- `docs.js` — docs search/filtering, active-section tracking, mobile section navigation, and code-copy controls
+- `docs.html` — full runtime/operations documentation application
+- `learn.html` — teaching guide for BM25/RRF, text processing, evaluation math, context/inference, validation, complexity, and glossary
 - `api.html` — current ProjectHub API reference and limitations
-- `changelog.html` — selected development/release/evaluation history
-- `pricing.html` — customer-facing early-access pricing, hosted plans, licensing models, process, and LinkedIn contact
+- `changelog.html` — development/release/evaluation history
+- `pricing.html` — customer-facing early-access pricing, licensing, process, and LinkedIn contact
+- `docs.css` / `docs.js` — shared documentation navigation/search/code-copy UI
+- `learn.css` / `learn.js` — teaching-guide extensions
+- `freshness.js` — shared audited source/gate snapshot and page-specific current-state updates
+- `scripts/prepare-site.js` — build-time freshness-script injection
 - `styles.css` — primary responsive layout and component styles
 - `enhancements.css` — panel lighting, active section accents, card depth, table/UI polish, and architecture motion
-- `launch.css` — launch-page visual system based on the Scout social graphic: dark glass browser shell, green/blue technical panels, neon edge lighting, product navigation, subpage layouts, and pricing integration
+- `launch.css` — dark glass/neon product visual system
 - `further-reading.css` — shared AI/LLM/agent article directory in the footer
-- `pricing.css` — pricing-specific cards, licensing, process, FAQ, and LinkedIn CTA layout
+- `pricing.css` — pricing-specific layout
 - `scene.js` — pinned Three.js `0.185.1` ambient renderer
-- `site.js` — product navigation, overview/feature/how-it-works section routing, page state, reveal effects, card perspective/lighting, metric counters, scroll/timeline progress, and further-reading inventory
+- `site.js` — product navigation, reveal effects, card lighting, metrics, and further-reading inventory
 - `assets/scout-mark.svg` — Scout vector mark
 - `assets/scout-og.svg` — social/share graphic
 - `site.webmanifest` — installable-site metadata
@@ -58,27 +98,22 @@ The product site is a zero-build static project. Three.js is used as an ambient 
 
 The Three.js scene is deliberately non-semantic. The actual interface remains HTML. If WebGL or the CDN module is unavailable, the page content remains usable.
 
-## Documentation rule
+## Documentation/source rule
 
-`docs.html` is written as runnable technical documentation rather than a repository-link directory. It uses current executable source and runtime facts as the primary authority, labels production/develop/experimental behavior, and keeps dated qualification/QA records in historical context.
+The site uses this precedence when sources disagree:
 
-The docs include reproducible commands instead of general quality claims wherever possible. Examples include `npm test`, `npm run eval-retrieval`, API health checks, local Cloudflare/Ollama configuration, Docker commands, release acceptance commands, and direct implementation links.
-
-When documentation sources conflict, the precedence used on the product site is:
-
-1. executable source/current runtime configuration;
+1. current executable source/runtime configuration;
 2. production runtime facts;
 3. current master/develop documentation that matches the source;
 4. dated reports as historical evidence.
 
-## Product-page content rule
+The site separates:
 
-The implementation site separates:
-
-1. **Released** — behavior supported by the production `master` line.
-2. **Integration** — current `develop` behavior that may not yet be in production.
-3. **Historical measurement** — dated/scoped evaluation results retained with scorer/model context.
-4. **Not shipped / productization work** — customer-neutral Scout Core, empty/no-KB operation, domain packages, unrelated-domain portability tests, and commercial handoff work.
+1. **Released** — behavior supported by production `master`.
+2. **Integration** — current `develop` behavior that may not be in production.
+3. **Staging** — the exact source recorded by the staging wrapper/marker.
+4. **Historical measurement** — dated/scoped evaluation results.
+5. **Not shipped / productization work** — customer-neutral empty/no-KB operation, domain packages, unrelated-domain portability tests, and commercial handoff work.
 
 Claims should point to implementation, workflow, commit, evaluation artifact, or a reproducible command where practical.
 
@@ -104,7 +139,7 @@ https://www.linkedin.com/in/bradmatera
 
 ## Current architecture represented on the product site
 
-The current Scout/ProjectHub code includes:
+The released/integrated Scout/ProjectHub lines include, depending on branch state:
 
 - local Okapi BM25 retrieval and contextual Reciprocal Rank Fusion
 - query understanding and conversational rewriting
@@ -118,22 +153,22 @@ The current Scout/ProjectHub code includes:
 - runtime/retrieval telemetry
 - a 15-second response budget
 
-The current production application is not represented as a general-purpose assistant. Current runtime knowledge scopes it to Bradley Matera's verified professional information and Scout's runtime.
+Current `develop` also contains more explicit EXPERIENCE, QUALIFICATIONS, FUTURE_CAPABILITY, META/capability, privacy/refusal, and non-technical re-explanation routing than the released production line. These are labeled as integration behavior until promoted.
+
+The production application is not represented as a general-purpose assistant. Current runtime knowledge scopes it to Bradley Matera's verified professional information and Scout's runtime.
 
 ## API-page rule
 
 `api.html` documents the checked-in ProjectHub runtime interface. It does **not** claim a public multi-tenant developer platform, public API-key product, external SLA, or backwards-compatible commercial API contract.
 
-The repository `docs/api-guide.md` still contains language from the earlier local-Ollama phase. The product site uses `server-gemini.js` for route existence and `data/scout-runtime-knowledge.json` for current inference-provider/runtime facts when those sources differ.
+Current semantic changes on `develop` are documented behind the existing chat interface without inventing new public routes.
 
 ## Evaluation display policy
 
-Historical benchmark values are labeled with their context instead of being shown as current quality guarantees. The page records the older acceptance-scorer results and later strict re-score as development history, while keeping the current retrieval benchmark separately reproducible through the repository evaluator.
-
-See `SCOUT-SOURCE-AUDIT.md` for the repository audit used to build the product site.
+Historical benchmark values are labeled with their date/scorer/model/context instead of being shown as current quality guarantees. Retrieval measurements are kept separate from API acceptance, repeated reliability tests, browser QA, and multi-turn conversation regressions.
 
 ## Deployment
 
-`.github/workflows/deploy-pages.yml` publishes `main` to the GitHub Pages mirror.
+`.github/workflows/deploy-pages.yml` validates the snapshot scripts, runs `scripts/prepare-site.js`, and publishes `main` to the GitHub Pages mirror.
 
-The production Gatsby/Netlify site at `bradleymatera.dev` clones this repository during its normal build and copies the product files into `public/scout/`. The source commit used for each production build is written to `/scout/scout-source.json`.
+The production Gatsby/Netlify site at `bradleymatera.dev` clones this repository during its normal build, runs the same preparation step, and copies the product files into `public/scout/`. The Scout source commit used for each production build is written to `/scout/scout-source.json`.
