@@ -23,7 +23,8 @@
     ],
     'edit-distance': [
       ['paper','Wagner & Fischer (1974)','The String-to-String Correction Problem','https://doi.org/10.1145/321796.321811','Classic dynamic-programming formulation for insertion, deletion and substitution edit distance.'],
-      ['paper','Zhao & Sahni (2019)','String correction using the Damerau-Levenshtein distance','https://doi.org/10.1186/s12859-019-2819-0','Peer-reviewed treatment of edit distance with transposition, useful for distinguishing Levenshtein from Damerau-style variants.'],
+      ['paper','van der Loo (2014)','The stringdist Package for Approximate String Matching','https://doi.org/10.32614/RJ-2014-011','Peer-reviewed explanation of Optimal String Alignment as restricted Damerau-Levenshtein and how it differs from the full Damerau-Levenshtein metric.'],
+      ['paper','Zhao & Sahni (2019)','String correction using the Damerau-Levenshtein distance','https://doi.org/10.1186/s12859-019-2819-0','Peer-reviewed treatment of full Damerau-Levenshtein distance with transposition.'],
       ['watch','Back To Back SWE','Edit Distance Between 2 Strings — The Levenshtein Distance','https://www.youtube.com/watch?v=MiqoA-yF-0M','Step-by-step dynamic-programming explanation aimed at programmers.']
     ],
     'bm25': [
