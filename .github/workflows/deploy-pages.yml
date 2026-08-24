@@ -25,6 +25,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Prepare static site
+        run: node scripts/prepare-site.js
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
