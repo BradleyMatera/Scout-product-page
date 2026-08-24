@@ -49,40 +49,49 @@ The snapshot keeps these states separate:
 
 `freshness.js` updates the relevant parts of Overview, Docs, Learn, API, and Changelog from one audited snapshot. Source URLs in the injected material are citations/evidence for the adjacent claim.
 
-`scripts/prepare-site.js` injects `freshness.js` into all published HTML pages at build time. It also loads `accounting-correction.js` before the documentation UI initializes so the Cloudflare exact-model accounting correction is reflected consistently across Overview, Docs, Learn, API, and Changelog. The GitHub Pages workflow syntax-checks these scripts before publishing. The Gatsby/Netlify sync uses the same preparation step before copying Scout into `public/scout/`.
+`scripts/prepare-site.js` injects the shared source-state and teaching-resource scripts into published HTML. `accounting-correction.js` remains in the published bundle because it supplies the cross-page accounting notes used by Overview, Docs, API, and Changelog; the raw Learn accounting section is also correct on its own and no longer depends on that script to hide stale math.
 
-### Current audited source state
+### Accounting sync state
 
-As of **August 24, 2026**, before the separate production-promotion task completes:
+As of **August 24, 2026**, the Cloudflare exact-model accounting correction has been implemented and production-hotfixed in Scout. This site does not infer a production commit SHA from a stale page snapshot; the ProjectHub production branch/runtime remains the authority for the exact deployed revision.
 
-- production: `master@4a1eee7`
-- integration: `develop@2c140ba`
-- develop vs master: `65 ahead / 4 behind`
-- staging source marker: `d1da87b`
-- Cloudflare provider tests: `26/26` PASS
-- public telemetry tests: `14/14` PASS
-- cost-ledger tests: `13/13` PASS
-- cost-insights tests: `6/6` PASS
-- full unit suite recorded by the final accounting correction: `949/949` PASS
-- accounting correction release scope: isolated from the still-separate general conversation-quality release gate
-
-The earlier Aug. 23 retrieval/conversation gate measurements remain dated measurements rather than production quality guarantees. The production source state should be re-audited after the separate `develop → master` promotion completes.
+The accounting correction is independently test-backed in ProjectHub. Earlier retrieval/conversation-gate measurements remain dated measurements and are not production quality guarantees.
 
 ## Cloudflare neuron-accounting rule
 
-A source audit found that Scout had associated Cloudflare's published `4,119` input / `34,868` output neurons-per-million-token rates with `@cf/meta/llama-3.1-8b-instruct-fast`. Cloudflare publishes those rates for the exact identifier `@cf/meta/llama-3.1-8b-instruct-fp8-fast` and does not document the two identifiers as billing aliases.
+Scout's hosted generation model remains:
 
-The corrected ProjectHub behavior is therefore exact-model and null-safe:
+`@cf/meta/llama-3.1-8b-instruct-fast`
 
-- `@cf/meta/llama-3.1-8b-instruct-fast` has no guessed token-to-neuron rate while Cloudflare does not publish one for that exact identifier;
-- `@cf/meta/llama-3.1-8b-instruct-fp8-fast` uses its published `4119 / 34868` rates;
-- `@cf/meta/llama-3.1-8b-instruct-fp8` uses its distinct published `13778 / 26128` rates;
-- provider-returned `usage.neurons` is preserved as actual usage when present;
-- otherwise unpriced usage remains `null` / unknown rather than becoming a fabricated zero;
-- shadow-cost totals expose incomplete/unpriced sources instead of silently treating an unknown Cloudflare value as `$0`;
-- once any billable call makes a session neuron total incomplete, later known calls do not turn that partial total back into a falsely complete number.
+The model did **not** change as part of the accounting correction.
 
-The customer-facing explanation is maintained by `accounting-correction.js`. The ProjectHub source/report remains authoritative for the runtime implementation.
+Cloudflare's current pricing table does not publish a token-to-neuron rate for that exact identifier. Scout therefore treats token-derived neuron usage for that model as **unknown / unverified** instead of borrowing a rate from a similarly named model.
+
+Cloudflare currently publishes these distinct exact-model rates:
+
+- `@cf/meta/llama-3.1-8b-instruct-fp8-fast`: `4,119` neurons / M input tokens and `34,868` neurons / M output tokens;
+- `@cf/meta/llama-3.1-8b-instruct-fp8`: `13,778` neurons / M input tokens and `26,128` neurons / M output tokens.
+
+The current accounting distinction is:
+
+- `actualNeurons` — provider-reported neuron usage when available;
+- `estimatedNeurons` — calculated only when the exact model identifier has a verified published token-to-neuron rate;
+- unknown — neither provider actual usage nor a verified exact-model estimate is available.
+
+Unknown is not represented as zero. An incomplete session total also stays incomplete instead of later becoming a misleading partial total.
+
+Platform-level Cloudflare facts remain separate from Scout's per-request accounting:
+
+- Workers AI includes a **10,000-neuron daily allocation**;
+- the allocation resets at **00:00 UTC**;
+- Workers Paid usage above the included allocation is **$0.011 per 1,000 neurons**.
+
+Those platform facts do **not** make Scout's current requests-per-day capacity knowable while the exact token-to-neuron rate for `@cf/meta/llama-3.1-8b-instruct-fast` is unpublished.
+
+Primary Cloudflare references:
+
+- https://developers.cloudflare.com/workers-ai/platform/pricing/
+- https://developers.cloudflare.com/ai/models/%40cf/meta/llama-3.1-8b-instruct-fast/
 
 ## Site implementation
 
@@ -97,8 +106,9 @@ The product site is a zero-build static project. Three.js is used as an ambient 
 - `docs.css` / `docs.js` — shared documentation navigation/search/code-copy UI
 - `learn.css` / `learn.js` — teaching-guide extensions
 - `freshness.js` — shared audited source/gate snapshot and page-specific current-state updates
-- `accounting-correction.js` — cross-page exact-model Cloudflare neuron-accounting correction and changelog/teaching updates
-- `scripts/prepare-site.js` — build-time freshness/resource/correction-script injection
+- `snapshot-refresh.js` — dated source-state follow-up layer
+- `accounting-correction.js` — cross-page exact-model accounting notes for Overview, Docs, API, and Changelog
+- `scripts/prepare-site.js` — build-time shared-script/resource injection
 - `styles.css` — primary responsive layout and component styles
 - `enhancements.css` — panel lighting, active section accents, card depth, table/UI polish, and architecture motion
 - `launch.css` — dark glass/neon product visual system
@@ -168,7 +178,7 @@ The released/integrated Scout/ProjectHub lines include, depending on branch stat
 - runtime/retrieval telemetry
 - a 15-second response budget
 
-Current `develop` also contains more explicit EXPERIENCE, QUALIFICATIONS, FUTURE_CAPABILITY, META/capability, privacy/refusal, and non-technical re-explanation routing than the released production line. These are labeled as integration behavior until promoted.
+Current `develop` can contain behavior not yet represented in a dated product-page source snapshot. Accounting claims on this site are maintained separately from those broader development-gate snapshots so a model-pricing correction is not confused with a general Scout release.
 
 The production application is not represented as a general-purpose assistant. Current runtime knowledge scopes it to Bradley Matera's verified professional information and Scout's runtime.
 
@@ -184,6 +194,6 @@ Historical benchmark values are labeled with their date/scorer/model/context ins
 
 ## Deployment
 
-`.github/workflows/deploy-pages.yml` validates the snapshot/resource/correction scripts, runs `scripts/prepare-site.js`, and publishes `main` to the GitHub Pages mirror.
+`.github/workflows/deploy-pages.yml` validates the shared scripts, runs `scripts/prepare-site.js`, and publishes `main` to the GitHub Pages mirror.
 
 The production Gatsby/Netlify site at `bradleymatera.dev` clones this repository during its normal build, runs the same preparation step, and copies the product files into `public/scout/`. The Scout source commit used for each production build is written to `/scout/scout-source.json`.
