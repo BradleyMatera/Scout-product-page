@@ -49,26 +49,40 @@ The snapshot keeps these states separate:
 
 `freshness.js` updates the relevant parts of Overview, Docs, Learn, API, and Changelog from one audited snapshot. Source URLs in the injected material are citations/evidence for the adjacent claim.
 
-`scripts/prepare-site.js` injects `freshness.js` into all published HTML pages at build time. The GitHub Pages workflow runs syntax checks and this preparation step before uploading the static artifact. The Gatsby/Netlify sync uses the same preparation script before copying Scout into `public/scout/`.
+`scripts/prepare-site.js` injects `freshness.js` into all published HTML pages at build time. It also loads `accounting-correction.js` before the documentation UI initializes so the Cloudflare exact-model accounting correction is reflected consistently across Overview, Docs, Learn, API, and Changelog. The GitHub Pages workflow syntax-checks these scripts before publishing. The Gatsby/Netlify sync uses the same preparation step before copying Scout into `public/scout/`.
 
-### Current audited snapshot
+### Current audited source state
 
-As of **August 23, 2026**:
+As of **August 24, 2026**, before the separate production-promotion task completes:
 
 - production: `master@4a1eee7`
-- integration: `develop@c9007ff`
-- latest executable develop patch below the report-only HEAD: `e3f1a59`
-- develop vs master: `53 ahead / 4 behind`
-- staging wrapper: `ef125fe`
+- integration: `develop@2c140ba`
+- develop vs master: `65 ahead / 4 behind`
 - staging source marker: `d1da87b`
-- unit tests: `924/924` PASS
-- retrieval: Recall@6 `1.000`, MRR@6 `0.954`
-- latest v3 local API eval: `23/23`
-- focused technical-error reliability set: `1/27` TECHNICAL_ERROR
-- full production-conversation regression: `70/132` turns and `12/33` conversations passing
-- release decision: **NO**
+- Cloudflare provider tests: `26/26` PASS
+- public telemetry tests: `14/14` PASS
+- cost-ledger tests: `13/13` PASS
+- cost-insights tests: `6/6` PASS
+- full unit suite recorded by the final accounting correction: `949/949` PASS
+- accounting correction release scope: isolated from the still-separate general conversation-quality release gate
 
-These are dated development measurements, not production quality guarantees.
+The earlier Aug. 23 retrieval/conversation gate measurements remain dated measurements rather than production quality guarantees. The production source state should be re-audited after the separate `develop → master` promotion completes.
+
+## Cloudflare neuron-accounting rule
+
+A source audit found that Scout had associated Cloudflare's published `4,119` input / `34,868` output neurons-per-million-token rates with `@cf/meta/llama-3.1-8b-instruct-fast`. Cloudflare publishes those rates for the exact identifier `@cf/meta/llama-3.1-8b-instruct-fp8-fast` and does not document the two identifiers as billing aliases.
+
+The corrected ProjectHub behavior is therefore exact-model and null-safe:
+
+- `@cf/meta/llama-3.1-8b-instruct-fast` has no guessed token-to-neuron rate while Cloudflare does not publish one for that exact identifier;
+- `@cf/meta/llama-3.1-8b-instruct-fp8-fast` uses its published `4119 / 34868` rates;
+- `@cf/meta/llama-3.1-8b-instruct-fp8` uses its distinct published `13778 / 26128` rates;
+- provider-returned `usage.neurons` is preserved as actual usage when present;
+- otherwise unpriced usage remains `null` / unknown rather than becoming a fabricated zero;
+- shadow-cost totals expose incomplete/unpriced sources instead of silently treating an unknown Cloudflare value as `$0`;
+- once any billable call makes a session neuron total incomplete, later known calls do not turn that partial total back into a falsely complete number.
+
+The customer-facing explanation is maintained by `accounting-correction.js`. The ProjectHub source/report remains authoritative for the runtime implementation.
 
 ## Site implementation
 
@@ -83,7 +97,8 @@ The product site is a zero-build static project. Three.js is used as an ambient 
 - `docs.css` / `docs.js` — shared documentation navigation/search/code-copy UI
 - `learn.css` / `learn.js` — teaching-guide extensions
 - `freshness.js` — shared audited source/gate snapshot and page-specific current-state updates
-- `scripts/prepare-site.js` — build-time freshness-script injection
+- `accounting-correction.js` — cross-page exact-model Cloudflare neuron-accounting correction and changelog/teaching updates
+- `scripts/prepare-site.js` — build-time freshness/resource/correction-script injection
 - `styles.css` — primary responsive layout and component styles
 - `enhancements.css` — panel lighting, active section accents, card depth, table/UI polish, and architecture motion
 - `launch.css` — dark glass/neon product visual system
@@ -169,6 +184,6 @@ Historical benchmark values are labeled with their date/scorer/model/context ins
 
 ## Deployment
 
-`.github/workflows/deploy-pages.yml` validates the snapshot scripts, runs `scripts/prepare-site.js`, and publishes `main` to the GitHub Pages mirror.
+`.github/workflows/deploy-pages.yml` validates the snapshot/resource/correction scripts, runs `scripts/prepare-site.js`, and publishes `main` to the GitHub Pages mirror.
 
 The production Gatsby/Netlify site at `bradleymatera.dev` clones this repository during its normal build, runs the same preparation step, and copies the product files into `public/scout/`. The Scout source commit used for each production build is written to `/scout/scout-source.json`.
