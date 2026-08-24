@@ -28,6 +28,7 @@ jobs:
       - name: Validate site scripts
         run: |
           node --check freshness.js
+          node --check snapshot-refresh.js
           node --check docs-graphics.js
           node --check learn-resources.js
           node --check accounting-correction.js
