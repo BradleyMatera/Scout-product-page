@@ -18,6 +18,7 @@ const snapshotScript = '  <script src="./snapshot-refresh.js" defer></script>';
 const docsGraphicsScript = '  <script src="./docs-graphics.js" defer></script>';
 const learnResourcesScript = '  <script src="./learn-resources.js" defer></script>';
 const accountingScript = '  <script src="./accounting-correction.js" defer></script>';
+const roadmapScript = '  <script src="./roadmap-current.js" defer></script>';
 const docsScript = '  <script src="./docs.js" defer></script>';
 const learnCss = '  <link rel="stylesheet" href="./learn-resources.css" />';
 
@@ -53,6 +54,13 @@ for (const page of pages) {
       if (html.includes(docsScript)) html = html.replace(docsScript, `${accountingScript}\n${docsScript}`);
       else html = html.replace('</body>', `${accountingScript}\n</body>`);
     }
+  }
+
+  // The Overview roadmap is a separately maintained current-state layer. Keeping it
+  // out of the old static roadmap markup lets the site show active branch/integration/
+  // staging truth without rewriting the historical page body on every engineering turn.
+  if (page === 'index.html' && !html.includes('src="./roadmap-current.js"')) {
+    html = html.replace('</body>', `${roadmapScript}\n</body>`);
   }
 
   fs.writeFileSync(file, html, 'utf8');
