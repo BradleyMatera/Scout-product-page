@@ -33,6 +33,7 @@ jobs:
           node --check learn-resources.js
           node --check accounting-correction.js
           node --check roadmap-current.js
+          node --check roadmap-copy.js
           node --check scripts/prepare-site.js
 
       - name: Prepare static site
