@@ -84,7 +84,7 @@
         const strong = snapshotCards[2].querySelector('strong');
         const small = snapshotCards[2].querySelector('small');
         if (strong) strong.textContent = 'fix/phase7-8-conversation-gate';
-        if (small) small.textContent = 'f02a659 · 16 commits ahead of develop, 0 behind. Dev backend code is deployed from e70b117; f02a659 changes the local evaluation harness only.';
+        if (small) small.textContent = 'dfe1385 · 17 commits ahead of develop, 0 behind. The same revision is deployed to the development backend for Phase 02 evaluation.';
       }
       if (snapshotCards[3]) {
         const small = snapshotCards[3].querySelector('small');
@@ -93,14 +93,19 @@
 
       const activeCopy = roadmap.querySelector('.roadmap-active-note p');
       if (activeCopy) {
-        activeCopy.innerHTML = 'Phase 02 focuses on real multi-turn failures in classification, response contracts, referent/context handling, relationship grounding, open-world claims, repair behavior, and answer quality. Branch <code>f02a659</code> reports <strong>963/963 unit tests</strong> and a <strong>92/132</strong> conversation run, but that gate result remains under review because the current evidence-term matcher can accept unrelated prefix matches. The branch is development work, not integrated or production behavior.';
+        activeCopy.innerHTML = 'Phase 02 has a conservative evaluation gate and a reproducible comparison baseline. Using the same corrected scoring logic, the saved pre-fix run scores <strong>86/132</strong> and the post-fix run scores <strong>92/132</strong>, a net gain of six turns and one conversation. A clean live run at <code>dfe1385</code> recorded <strong>93/132 turns</strong> and <strong>19/33 conversations</strong>, with <strong>12 provider failures</strong> tracked separately. The active product work is response routing and evidence use for non-tech experience and negative-assessment questions; Phase 02 is not ready for integration.';
       }
 
       const metrics = roadmap.querySelectorAll('.roadmap-active-note .metric-line span');
-      if (metrics[0]) metrics[0].textContent = 'reported branch suite · 92/132 · under review';
-      if (metrics[1]) metrics[1].textContent = 'reported conversations · 19/33';
-      if (metrics[2]) metrics[2].textContent = 'provider failures in run · 5';
-      if (metrics[3]) metrics[3].textContent = 'reported unit suite · 963/963';
+      if (metrics[0]) metrics[0].textContent = 'clean live gate · 93/132';
+      if (metrics[1]) metrics[1].textContent = 'conversations · 19/33';
+      if (metrics[2]) metrics[2].textContent = 'provider failures · 12';
+      if (metrics[3]) metrics[3].textContent = 'unit suite · 964/964';
+
+      const activePhase = roadmap.querySelector('.roadmap-phase.active .phase-gate');
+      if (activePhase) {
+        activePhase.innerHTML = '<b>Current gate</b>Conservative scorer established; next root-cause group is non-tech experience and negative-assessment routing/evidence use. Integration remains blocked until the live conversation gate and human review reach the accepted standard.';
+      }
 
       const productizationIntro = roadmap.querySelectorAll('.roadmap-band')[1];
       if (productizationIntro) {
