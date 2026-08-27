@@ -80,6 +80,12 @@
       );
 
       const snapshotCards = roadmap.querySelectorAll('.roadmap-current-snapshot article');
+      if (snapshotCards[2]) {
+        const strong = snapshotCards[2].querySelector('strong');
+        const small = snapshotCards[2].querySelector('small');
+        if (strong) strong.textContent = 'fix/phase7-8-conversation-gate';
+        if (small) small.textContent = 'f02a659 · 16 commits ahead of develop, 0 behind. Dev backend code is deployed from e70b117; f02a659 changes the local evaluation harness only.';
+      }
       if (snapshotCards[3]) {
         const small = snapshotCards[3].querySelector('small');
         if (small) small.textContent = 'ProjectHub-dev records d1da87b; develop 2c140ba was 16 commits ahead of that marker at verification.';
@@ -87,8 +93,14 @@
 
       const activeCopy = roadmap.querySelector('.roadmap-active-note p');
       if (activeCopy) {
-        activeCopy.innerHTML = 'Phase 02 focuses on real multi-turn failures in classification, response contracts, referent/context handling, relationship grounding, open-world claims, repair behavior, and answer quality. The evaluation recorded for branch <code>76e7df5</code> showed why this gate exists: <strong>962/962 unit tests</strong> coexisted with only <strong>87/132 human-style conversation turns</strong> passing. That result is development evidence, not an integrated or production quality claim.';
+        activeCopy.innerHTML = 'Phase 02 focuses on real multi-turn failures in classification, response contracts, referent/context handling, relationship grounding, open-world claims, repair behavior, and answer quality. Branch <code>f02a659</code> reports <strong>963/963 unit tests</strong> and a <strong>92/132</strong> conversation run, but that gate result remains under review because the current evidence-term matcher can accept unrelated prefix matches. The branch is development work, not integrated or production behavior.';
       }
+
+      const metrics = roadmap.querySelectorAll('.roadmap-active-note .metric-line span');
+      if (metrics[0]) metrics[0].textContent = 'reported branch suite · 92/132 · under review';
+      if (metrics[1]) metrics[1].textContent = 'reported conversations · 19/33';
+      if (metrics[2]) metrics[2].textContent = 'provider failures in run · 5';
+      if (metrics[3]) metrics[3].textContent = 'reported unit suite · 963/963';
 
       const productizationIntro = roadmap.querySelectorAll('.roadmap-band')[1];
       if (productizationIntro) {
