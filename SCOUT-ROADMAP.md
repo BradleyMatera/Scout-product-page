@@ -22,8 +22,8 @@ Review loop:
 
 - **Production:** `ProjectHub:master` at `4a1eee70821ed83f50be1fe2ff6286abfaa4a15c`.
 - **Integration:** `ProjectHub:develop` at `2c140ba747d09cd51d9fcd48f350b66dc6683efc`.
-- **Active conversation branch:** `fix/phase7-8-conversation-gate` at `dfe13851df4e1f8542e8c69ed6b903136261f960`, 17 commits ahead of `develop` and 0 behind at verification.
-- **Development backend evaluation revision:** `dfe13851df4e1f8542e8c69ed6b903136261f960`.
+- **Active conversation branch:** `fix/phase7-8-conversation-gate` at `2d358ac9e67036a82cda66a6665a3a8fbfcca811`, 28 commits ahead of `develop` and 0 behind at verification.
+- **Development backend evaluation revision:** `2d358ac9e67036a82cda66a6665a3a8fbfcca811`.
 - **Staging mirror marker:** `ProjectHub-dev:main` records source commit `d1da87bdcce4b4b77b4b9008d3f156348b7c1255`; `develop` is 16 commits ahead of that marker.
 
 The active conversation branch is not integrated into `develop` and is not production.
@@ -32,7 +32,7 @@ The active conversation branch is not integrated into `develop` and is not produ
 
 The conversation gate uses a conservative evidence-term matcher that accepts explicit inflections without arbitrary prefix matches. Examples such as `blog -> blogs`, `debug -> debugging`, and `learn -> learning` are supported, while unrelated prefixes such as `js -> json`, `git -> github`, `react -> reactive`, `go -> google`, and `sql -> sqlite` are rejected.
 
-Recorded evaluation state at `dfe1385`:
+The fixed comparison checkpoint at `dfe1385` records:
 
 - harness term regressions: **26 / 26**;
 - unit tests: **964 / 964**;
@@ -40,10 +40,16 @@ Recorded evaluation state at `dfe1385`:
 - saved post-fix run rescored with the same gate: **92 / 132 turns, 19 / 33 conversations**;
 - apples-to-apples change: **+6 turns, +1 conversation**;
 - clean live gate: **93 / 132 turns, 19 / 33 conversations**;
-- clean live failure breakdown: **27 generation failures, 12 provider failures**;
-- provider failures remain separate from answer-quality failures and do not erase the original scheduled outcomes.
+- clean live failure breakdown: **27 generation failures, 12 provider failures**.
 
-The gate is usable for continued diagnosis, but Phase 02 remains active. The next product failure group is non-tech experience and negative-assessment routing/evidence use. Current examples include failure to surface verified non-tech experience, documented learning gaps, and the correct prior-turn referent.
+The focused non-tech-experience and negative-assessment work at `2d358ac` records:
+
+- unit tests: **970 / 970**;
+- synthetic routing/contract regressions: **6 / 6**;
+- isolated skeptical-recruiter/roast conversation: **4 / 4 turns**;
+- full live gate: **86 / 132 turns, 17 / 33 conversations**.
+
+The focused behavior is improved in isolation, but the broader `2d358ac` run is lower than the `dfe1385` checkpoint and its final report does not provide the same provider/generation failure breakdown. Phase 02 therefore remains in regression review. Focused fixes must remain tenant-neutral, preserve the RAG-first architecture, and avoid trading broader conversation quality for narrow test success.
 
 ## Roadmap
 
@@ -75,9 +81,10 @@ Current focus:
 - validator/repair behavior;
 - natural answer quality;
 - separation of provider failures from product failures;
+- tenant-neutral implementation of domain behavior;
 - human-style conversation suites in addition to unit tests.
 
-**Current root-cause group:** non-tech experience and negative-assessment questions. Scout must surface verified experience and documented learning gaps instead of falling into generic `no verified evidence` boilerplate when relevant evidence exists.
+**Current gate:** the non-tech-experience and negative-assessment target behavior works in focused tests, but the broader `2d358ac` conversation run is below the fixed `dfe1385` checkpoint. The next step is an apples-to-apples regression and provider-failure audit, plus removal of any tenant-specific assumptions from core routing/evidence logic, before more answer tuning or integration work.
 
 **Exit gate:**
 
@@ -85,6 +92,7 @@ Current focus:
 - product, harness, and provider failures separated;
 - visible replies manually reviewed;
 - no benchmark-specific deterministic prose;
+- no tenant-specific executable facts or routing shortcuts in Scout Core;
 - no weakening of grounding, privacy, safety, or open-world semantics merely to improve a score;
 - legitimate failures converted into generic regressions;
 - Bradley accepts the conversational behavior before integration.
@@ -97,7 +105,7 @@ Current focus:
 
 Move only accepted Phase 02 work from the active branch into protected `develop`.
 
-**Exit gate:** branch diff reviewed, deterministic suites pass, conversation failures are understood, no safety/grounding weakening is hidden in the diff, and the resulting remote `develop` SHA is verified.
+**Exit gate:** branch diff reviewed, deterministic suites pass, conversation failures are understood, no safety/grounding weakening or tenant-specific shortcut is hidden in the diff, and the resulting remote `develop` SHA is verified.
 
 ---
 
