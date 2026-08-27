@@ -19,6 +19,7 @@ const docsGraphicsScript = '  <script src="./docs-graphics.js" defer></script>';
 const learnResourcesScript = '  <script src="./learn-resources.js" defer></script>';
 const accountingScript = '  <script src="./accounting-correction.js" defer></script>';
 const roadmapScript = '  <script src="./roadmap-current.js" defer></script>';
+const roadmapCopyScript = '  <script src="./roadmap-copy.js" defer></script>';
 const docsScript = '  <script src="./docs.js" defer></script>';
 const learnCss = '  <link rel="stylesheet" href="./learn-resources.css" />';
 
@@ -61,6 +62,12 @@ for (const page of pages) {
   // staging truth without rewriting the historical page body on every engineering turn.
   if (page === 'index.html' && !html.includes('src="./roadmap-current.js"')) {
     html = html.replace('</body>', `${roadmapScript}\n</body>`);
+  }
+
+  // Public copy stays static and product-focused even when the current-state roadmap
+  // renderer changes frequently. This layer runs after roadmap-current.js.
+  if (page === 'index.html' && !html.includes('src="./roadmap-copy.js"')) {
+    html = html.replace('</body>', `${roadmapCopyScript}\n</body>`);
   }
 
   fs.writeFileSync(file, html, 'utf8');
