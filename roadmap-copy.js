@@ -84,7 +84,7 @@
         const strong = snapshotCards[2].querySelector('strong');
         const small = snapshotCards[2].querySelector('small');
         if (strong) strong.textContent = 'fix/phase7-8-conversation-gate';
-        if (small) small.textContent = 'dfe1385 · 17 commits ahead of develop, 0 behind. The same revision is deployed to the development backend for Phase 02 evaluation.';
+        if (small) small.textContent = '2d358ac · 28 commits ahead of develop, 0 behind. The same revision is deployed to the development backend for Phase 02 evaluation.';
       }
       if (snapshotCards[3]) {
         const small = snapshotCards[3].querySelector('small');
@@ -93,18 +93,18 @@
 
       const activeCopy = roadmap.querySelector('.roadmap-active-note p');
       if (activeCopy) {
-        activeCopy.innerHTML = 'Phase 02 has a conservative evaluation gate and a reproducible comparison baseline. Using the same corrected scoring logic, the saved pre-fix run scores <strong>86/132</strong> and the post-fix run scores <strong>92/132</strong>, a net gain of six turns and one conversation. A clean live run at <code>dfe1385</code> recorded <strong>93/132 turns</strong> and <strong>19/33 conversations</strong>, with <strong>12 provider failures</strong> tracked separately. The active product work is response routing and evidence use for non-tech experience and negative-assessment questions; Phase 02 is not ready for integration.';
+        activeCopy.innerHTML = 'Phase 02 has a conservative evaluation gate and a fixed comparison checkpoint. Revision <code>dfe1385</code> recorded <strong>93/132 turns</strong> and <strong>19/33 conversations</strong> in a clean live run. The focused non-tech-experience and negative-assessment work at <code>2d358ac</code> passes <strong>970/970 unit tests</strong>, <strong>6/6 synthetic routing tests</strong>, and a <strong>4/4 focused recruiter conversation</strong>, while its full live gate records <strong>86/132 turns</strong> and <strong>17/33 conversations</strong>. The focused behavior is improved in isolation, but the broader result requires regression and provider-failure classification before the branch can advance.';
       }
 
       const metrics = roadmap.querySelectorAll('.roadmap-active-note .metric-line span');
-      if (metrics[0]) metrics[0].textContent = 'clean live gate · 93/132';
-      if (metrics[1]) metrics[1].textContent = 'conversations · 19/33';
-      if (metrics[2]) metrics[2].textContent = 'provider failures · 12';
-      if (metrics[3]) metrics[3].textContent = 'unit suite · 964/964';
+      if (metrics[0]) metrics[0].textContent = 'current full gate · 86/132';
+      if (metrics[1]) metrics[1].textContent = 'conversations · 17/33';
+      if (metrics[2]) metrics[2].textContent = 'focused routing · 6/6';
+      if (metrics[3]) metrics[3].textContent = 'unit suite · 970/970';
 
       const activePhase = roadmap.querySelector('.roadmap-phase.active .phase-gate');
       if (activePhase) {
-        activePhase.innerHTML = '<b>Current gate</b>Conservative scorer established; next root-cause group is non-tech experience and negative-assessment routing/evidence use. Integration remains blocked until the live conversation gate and human review reach the accepted standard.';
+        activePhase.innerHTML = '<b>Current gate</b>Focused routing/evidence behavior must remain tenant-neutral and must not regress the broader conversation gate. The 2d358ac full-run failures need apples-to-apples classification against the dfe1385 checkpoint before integration can be considered.';
       }
 
       const productizationIntro = roadmap.querySelectorAll('.roadmap-band')[1];
