@@ -2,55 +2,58 @@
 
 Last refreshed: August 27, 2026
 
-This roadmap describes the actual engineering path for Scout. It separates released production, integrated development, active feature/fix work, staging, and future productization. A green unit-test count by itself is not a release gate.
+This roadmap describes Scout's engineering path. It separates released production, integrated development, active branch work, staging, system-truth cleanup, and later Scout Core portability work. Passing unit tests is evidence, not a release decision.
 
-## How Scout is being engineered
+## Engineering controls
 
-Scout is currently built through a three-part engineering loop:
+Scout development separates product direction, implementation, verification, and release authority.
 
-1. **Bradley Matera — product owner and final decision-maker**
-   - defines product direction, architecture requirements, behavior goals, constraints, and acceptance criteria;
-   - performs human QA and decides whether behavior is actually useful and correct;
-   - decides what is allowed to move into integration or production.
+- **Product direction + acceptance — Bradley Matera:** product goals, architecture requirements, behavior constraints, human conversation evaluation, and authorization for integration or production release.
+- **Implementation workspace — local repository + Devin/Windsurf:** scoped source changes, tests, evaluation harnesses, development deployments, and commits.
+- **Research + independent verification — GitHub + ChatGPT review:** repository/branch/deployment inspection, architecture and failure analysis, implementation planning, and verification of reported results against source state.
 
-2. **ChatGPT — research, planning, and independent verification**
-   - inspects GitHub source, branch state, tests, reports, deployment markers, and external documentation where necessary;
-   - reasons with Bradley about architecture and product direction;
-   - turns the agreed goal into a scoped implementation prompt for Devin;
-   - reviews Devin's report against the actual repository rather than accepting the report as proof;
-   - identifies contradictions, stale documentation, misleading tests, deployment drift, and regressions before the next step is chosen.
+Review loop:
 
-3. **Devin in Windsurf on Bradley's PC — local implementation environment**
-   - works in the real local repository/workspace;
-   - edits code, runs tests/evaluations, deploys development/staging when instructed, commits work, and reports the result;
-   - does not independently authorize integration or production release.
+`Requirement -> scoped implementation -> local code/test cycle -> independent source/deployment review -> human behavior review -> accept/revise -> integration or release gate`
 
-The working loop is:
-
-`Bradley goal/problem -> Bradley + ChatGPT analysis -> repository/source verification -> ChatGPT implementation prompt -> Devin/Windsurf implementation + tests -> Devin report -> ChatGPT independent verification -> Bradley + ChatGPT accept/reject/revise -> repeat`
-
-**Engineering rule:** no agent completion report is treated as proof. Repository state, test evidence, deployed behavior, and human evaluation are checked independently before work advances to the next gate.
+**Evidence gate:** no completion report, test count, or model output advances code on its own. Source state, test evidence, deployed behavior, and human evaluation are checked before integration or release.
 
 ## Current source state
 
-As of this roadmap refresh:
-
 - **Production:** `ProjectHub:master` at `4a1eee70821ed83f50be1fe2ff6286abfaa4a15c`.
 - **Integration:** `ProjectHub:develop` at `2c140ba747d09cd51d9fcd48f350b66dc6683efc`.
-- **Active conversation branch:** `fix/phase7-8-conversation-gate` at `76e7df556c6e8a12a19cbdd650eae8c9a5237aa1`, 14 commits ahead of `develop` and 0 behind at the time of verification.
-- **Staging mirror marker:** `ProjectHub-dev:main` records source commit `d1da87bdcce4b4b77b4b9008d3f156348b7c1255`; current `develop` is 16 commits ahead of that marker.
+- **Active conversation branch:** `fix/phase7-8-conversation-gate` at `dfe13851df4e1f8542e8c69ed6b903136261f960`, 17 commits ahead of `develop` and 0 behind at verification.
+- **Development backend evaluation revision:** `dfe13851df4e1f8542e8c69ed6b903136261f960`.
+- **Staging mirror marker:** `ProjectHub-dev:main` records source commit `d1da87bdcce4b4b77b4b9008d3f156348b7c1255`; `develop` is 16 commits ahead of that marker.
 
-The active conversation branch is not production and is not yet integrated into `develop`.
+The active conversation branch is not integrated into `develop` and is not production.
+
+## Phase 02 gate record
+
+The conversation gate uses a conservative evidence-term matcher that accepts explicit inflections without arbitrary prefix matches. Examples such as `blog -> blogs`, `debug -> debugging`, and `learn -> learning` are supported, while unrelated prefixes such as `js -> json`, `git -> github`, `react -> reactive`, `go -> google`, and `sql -> sqlite` are rejected.
+
+Recorded evaluation state at `dfe1385`:
+
+- harness term regressions: **26 / 26**;
+- unit tests: **964 / 964**;
+- saved pre-fix baseline rescored with the corrected gate: **86 / 132 turns, 18 / 33 conversations**;
+- saved post-fix run rescored with the same gate: **92 / 132 turns, 19 / 33 conversations**;
+- apples-to-apples change: **+6 turns, +1 conversation**;
+- clean live gate: **93 / 132 turns, 19 / 33 conversations**;
+- clean live failure breakdown: **27 generation failures, 12 provider failures**;
+- provider failures remain separate from answer-quality failures and do not erase the original scheduled outcomes.
+
+The gate is usable for continued diagnosis, but Phase 02 remains active. The next product failure group is non-tech experience and negative-assessment routing/evidence use. Current examples include failure to surface verified non-tech experience, documented learning gaps, and the correct prior-turn referent.
 
 ## Roadmap
 
 ### Phase 01 — Working Scout foundation
 
-**Status:** Built / released foundation
+**Status:** BUILT / RELEASED FOUNDATION
 
-**Goal:** Maintain the proven system foundations that already exist: RAG-first retrieval, generation, validation, server conversation state, provider abstraction, runtime telemetry, and release boundaries.
+Maintain the RAG-first retrieval, model generation, grounding/relationship validation, server conversation state, provider abstraction, telemetry, and release boundaries already in the system.
 
-**Exit condition:** already established; later work must not silently regress this foundation.
+**Invariant:** later work must not silently regress the working foundation.
 
 ---
 
@@ -58,31 +61,33 @@ The active conversation branch is not production and is not yet integrated into 
 
 **Status:** ACTIVE
 
-**Goal:** Make Scout reliable in real multi-turn conversation before adding broad new product capabilities.
+Make Scout reliable in real multi-turn conversation before broad productization work.
 
-Current focus includes:
+Current focus:
 
 - intent and sub-intent classification;
 - response contracts and TRUE/FALSE/UNKNOWN semantics;
 - follow-up and referent resolution;
-- entity/project/employer/technology relationship grounding;
+- relationship grounding;
 - negative/open-world claim handling;
-- natural answer quality without deterministic benchmark-cheating prose;
-- validation/repair behavior that does not reject good grounded answers or accept invalid ones;
-- reproducible model behavior where useful for diagnosis;
+- retrieval and evidence selection for the requested topic;
+- model compliance with grounded response contracts;
+- validator/repair behavior;
+- natural answer quality;
+- separation of provider failures from product failures;
 - human-style conversation suites in addition to unit tests.
 
-The latest local Devin/Windsurf work reported a materially improved but still incomplete conversation gate: 962/962 unit tests passed while the broader human-style conversation suite remained well below a release-quality target. That mismatch is itself part of the gate: unit tests are necessary, not sufficient.
+**Current root-cause group:** non-tech experience and negative-assessment questions. Scout must surface verified experience and documented learning gaps instead of falling into generic `no verified evidence` boilerplate when relevant evidence exists.
 
 **Exit gate:**
 
-- complete the full 132-turn conversation suite without hiding failures behind retries;
-- separate true product failures from stale/brittle harness assertions;
-- manually inspect visible answers, not only scorer labels;
-- do not weaken grounding, privacy, safety, or open-world semantics to raise the score;
-- distinguish model/provider/technical failures from deterministic harness failures;
-- convert legitimate human failures into generic regressions;
-- Bradley explicitly accepts the conversational behavior before integration.
+- full 132-turn conversation suite completed without hiding scheduled failures behind retries;
+- product, harness, and provider failures separated;
+- visible replies manually reviewed;
+- no benchmark-specific deterministic prose;
+- no weakening of grounding, privacy, safety, or open-world semantics merely to improve a score;
+- legitimate failures converted into generic regressions;
+- Bradley accepts the conversational behavior before integration.
 
 ---
 
@@ -90,35 +95,19 @@ The latest local Devin/Windsurf work reported a materially improved but still in
 
 **Status:** NEXT
 
-**Goal:** Move only accepted Phase 7/8 conversation improvements from the active branch into `develop`.
+Move only accepted Phase 02 work from the active branch into protected `develop`.
 
-**Exit gate:**
-
-- branch diff reviewed against `develop`;
-- unit/regression suites pass;
-- human conversation failures are understood;
-- no safety or grounding rules were weakened merely to improve a benchmark;
-- no unrelated production work is bundled into the integration;
-- resulting `develop` SHA is recorded and verified remotely.
+**Exit gate:** branch diff reviewed, deterministic suites pass, conversation failures are understood, no safety/grounding weakening is hidden in the diff, and the resulting remote `develop` SHA is verified.
 
 ---
 
-### Phase 04 — Staging truth and parity
+### Phase 04 — Staging truth + parity
 
 **Status:** NEXT
 
-**Goal:** Make `ProjectHub-dev` an accurate generated representation of accepted `develop` again.
+Regenerate `ProjectHub-dev` from the accepted integration state so staging accurately represents `develop`.
 
-The current staging source marker is behind current `develop`, so staging must not be described as if it automatically represents the newest integration state.
-
-**Exit gate:**
-
-- `STAGING-SOURCE.json` records the accepted `develop` SHA;
-- generated `ProjectHub.js` and frontend assets are rebuilt from source;
-- dev backend revision matches the intended source;
-- browser QA verifies the actual deployed staging build;
-- telemetry shown to the user matches backend semantics, including actual vs estimated vs unknown neuron usage;
-- staging analytics/runtime state remain separated from production.
+**Exit gate:** `STAGING-SOURCE.json` matches the accepted `develop` SHA, generated assets match source, frontend/backend revisions align, browser QA passes, and telemetry semantics are correct.
 
 ---
 
@@ -126,16 +115,9 @@ The current staging source marker is behind current `develop`, so staging must n
 
 **Status:** NEXT
 
-**Goal:** Promote a proven integration state to production without treating `develop` or staging success as automatic production authorization.
+Promote a proven integration state through the explicit production authorization boundary.
 
-**Exit gate:**
-
-- explicit Bradley release approval;
-- coordinated frontend/backend release plan;
-- production branch update through the release process;
-- production smoke tests and conversational checks;
-- runtime/source SHA verified after deployment;
-- no assumption that fixing one isolated bug makes the whole product release-ready.
+**Exit gate:** Bradley release approval, coordinated frontend/backend release, production source/runtime revision verification, and production smoke/conversation checks.
 
 ---
 
@@ -143,45 +125,27 @@ The current staging source marker is behind current `develop`, so staging must n
 
 **Status:** NEXT
 
-**Goal:** Make Scout's code, telemetry, runtime facts, staging markers, documentation, and public product explanation agree with one another before the major portability refactor.
+Make executable behavior, telemetry, runtime facts, staging markers, documentation, and public product explanations agree before the major portability refactor.
 
-Known classes of truth debt include:
+Known truth-debt classes include stale provider/accounting descriptions, stale branch/runtime documentation, browser/server prose-source mismatches, and historical reports that can appear current without clear scope.
 
-- stale model/accounting explanations surviving after accounting code changed;
-- older docs that describe previous provider or branch behavior;
-- browser fallback behavior that does not perfectly match server-side prose-source descriptions;
-- staging snapshots that lag integration;
-- historical reports that can look current when their date/scope is not obvious.
-
-**Exit gate:**
-
-- current executable behavior and current docs agree;
-- stale facts are corrected or explicitly labeled historical;
-- public telemetry never converts unknown into zero or estimate into actual;
-- source precedence is documented and consistently followed.
+**Exit gate:** current executable behavior and current documentation agree; historical facts are labeled; unknown is never represented as zero; estimates are never represented as actuals.
 
 ---
 
 ## Productization boundary
 
-Phases 01–06 are primarily **engine hardening and release truth**. The work below is the deliberate transition from the current recruiter implementation toward a portable Scout product.
+Phases 01–06 are engine hardening and release truth. Phases 07–12 are the deliberate transition from ProjectHub Recruiter Alpha toward a portable Scout product.
 
-A refactor is only successful if Scout still works afterward.
-
----
+A refactor only succeeds if Scout still works afterward.
 
 ### Phase 07 — Scout Core extraction
 
 **Status:** LATER
 
-**Goal:** Separate the reusable Scout engine from Bradley/recruiter-specific knowledge, identity assumptions, tools, policies, and workflows without creating a second divergent rewrite.
+Separate reusable orchestration from Bradley/recruiter-specific knowledge, identity assumptions, policies, tools, and workflows while keeping ProjectHub Recruiter Alpha on the same core.
 
-**Exit gate:**
-
-- current ProjectHub Recruiter Alpha still runs on the same Scout Core;
-- recruiter-specific behavior can be identified outside core orchestration boundaries;
-- provider/model choice remains an interchangeable layer;
-- no customer-specific if-statements are required inside Scout Core for normal specialization.
+**Exit gate:** normal specialization requires no customer-specific branches inside Scout Core.
 
 ---
 
@@ -189,7 +153,7 @@ A refactor is only successful if Scout still works afterward.
 
 **Status:** LATER
 
-**Goal:** Prove that Scout Core exists independently of a customer knowledge base.
+Prove that Scout Core functions independently of a customer knowledge package.
 
 Expected invariant:
 
@@ -197,30 +161,15 @@ Expected invariant:
 
 Knowledge specializes Scout; it does not create Scout.
 
-**Exit gate:**
-
-- empty/no-KB operation is intentional, supported, and tested;
-- core conversation/runtime behavior remains functional;
-- installing and removing a domain package does not require core edits.
-
 ---
 
 ### Phase 09 — Domain package contracts
 
 **Status:** LATER
 
-**Goal:** Define stable specialization interfaces for:
+Define stable specialization interfaces for knowledge, configuration, identity, policies, workflows, and tools/extensions.
 
-- knowledge;
-- configuration;
-- identity;
-- policies;
-- workflows;
-- tools/extensions.
-
-Extensions that can execute code need explicit schemas, permissions, timeouts, validation, side-effect classification, failure isolation, logging, and ownership boundaries.
-
-**Exit gate:** a new domain can specialize Scout through defined package contracts rather than edits scattered through Scout Core.
+Executable extensions require explicit schemas, permissions, timeouts, validation, side-effect classification, failure isolation, logging, and ownership boundaries.
 
 ---
 
@@ -228,15 +177,15 @@ Extensions that can execute code need explicit schemas, permissions, timeouts, v
 
 **Status:** LATER
 
-**Goal:** Demonstrate that portability is real, not a claim in documentation.
+Demonstrate portability with unrelated domain packages while holding Scout Core constant.
 
 Example proof set:
 
-- recruiter/portfolio domain;
-- unrelated inventory or fruit-store domain;
-- IT support domain.
+- recruiter/portfolio;
+- inventory or fruit store;
+- IT support.
 
-**Pass condition:** the same Scout Core SHA powers all test domains; only the domain packages change. If Scout Core must be modified merely to make an unrelated domain work, the portability test failed.
+**Pass condition:** the same Scout Core SHA powers the test domains; only domain packages change.
 
 ---
 
@@ -244,11 +193,9 @@ Example proof set:
 
 **Status:** LATER
 
-**Goal:** Allow richer customer tools, workflows, integrations, and agent-to-agent capabilities without turning Scout into an unsafe tool-calling shell.
+Support richer customer tools, workflows, integrations, and controlled agent-to-agent capabilities without turning Scout into an unbounded tool-calling shell.
 
-Potential tools may include inventory systems, internal documents, invoices, test systems, communication/scheduling systems, or another agent. Core orchestration should consume a generic controlled tool contract rather than know every future customer tool.
-
-**Exit gate:** permissioned extension lifecycle, validation, observability, safe failure behavior, and test coverage exist before broad executable extension support is called a product capability.
+**Exit gate:** permissioned extension lifecycle, validation, observability, safe failure behavior, and test coverage exist before broad executable-extension support is treated as a product capability.
 
 ---
 
@@ -256,15 +203,13 @@ Potential tools may include inventory systems, internal documents, invoices, tes
 
 **Status:** LATER
 
-**Goal:** Make Scout understandable and operable by another competent developer/customer without hidden Bradley-only knowledge.
+Make Scout installable, configurable, testable, deployable, operable, troubleshootable, and extensible by another competent developer/customer without hidden Bradley-only knowledge.
 
-**Exit gate:** another competent developer can receive the repository and documentation, install it, configure a domain, test it, deploy it, operate it, troubleshoot it, and extend it without Bradley being present.
-
-Required work includes deployment docs, ADRs, root agent/developer instructions, configuration validation, security review, licensing/IP inventory, known limitations, operator runbooks, and buyer/handoff documentation.
+Required work includes deployment documentation, ADRs, developer/agent instructions, configuration validation, security review, licensing/IP inventory, known limitations, operator runbooks, and handoff documentation.
 
 ## Product rule
 
-Scout is not being optimized for the appearance of progress. The order is:
+Priority order:
 
 1. Scout actually works.
 2. Correctness, grounding, and reliability.
@@ -277,4 +222,4 @@ Scout is not being optimized for the appearance of progress. The order is:
 9. Human understandability and maintainability.
 10. Repository aesthetics and cleanup.
 
-Do not sacrifice the first four items to make the later items look finished sooner.
+Do not sacrifice the first four items to make later productization work appear finished sooner.
