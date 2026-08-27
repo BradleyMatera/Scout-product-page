@@ -32,6 +32,7 @@ jobs:
           node --check docs-graphics.js
           node --check learn-resources.js
           node --check accounting-correction.js
+          node --check roadmap-current.js
           node --check scripts/prepare-site.js
 
       - name: Prepare static site
