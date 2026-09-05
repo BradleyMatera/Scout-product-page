@@ -15,7 +15,7 @@ A GitHub Pages mirror is also deployed from this repository.
 
 ## Current audited source state
 
-Last full branch/source audit: **September 5, 2026**.
+Last full branch/source audit and recheck: **September 5, 2026**.
 
 - Production branch: `ProjectHub:master@b071e4e4f0bb69faeecd811f31514af30d2e1f61`
 - Production tree: `a0066cc849f33dd84d18d8e8c36b080fed8ce70e`
@@ -23,22 +23,23 @@ Last full branch/source audit: **September 5, 2026**.
 - Integration tree: `a0066cc849f33dd84d18d8e8c36b080fed8ce70e`
 - Staging repository: `ProjectHub-dev:main@6d36433c040d0bbc903ec26b6968674bd937bcd0`
 - `ProjectHub-dev/STAGING-SOURCE.json`: `4f5ee971488e433ebdf66280cce82e163c5c7688`
-- Latest non-runtime proposal: Dependabot `c32e83b8428a733b597341b1bc7efe4b4ede7423`, one lockfile-only commit ahead of `master`
+- Active unmerged runtime branch: `feat/generic-conversation-sets@5bd9437b1811957f20d1a217c854d46228ace12c`, **2 commits ahead / 0 behind `develop`** at recheck
+- Pending dependency-only branch: Dependabot `c32e83b8428a733b597341b1bc7efe4b4ede7423`, one `package-lock.json`-only commit ahead of `master`
 
 `master` and `develop` have different Git ancestry, but their current trees are byte-for-byte represented by the same Git tree SHA above. The September 5 production release deliberately preserved production ancestry while promoting the exact qualified `develop` tree.
 
-The product site was previously current through August 27. The September 5 audit inspected all 35 visible `ProjectHub` branches and both visible `ProjectHub-dev` branches, branch-head dates, recent PR/release history, staging provenance, current provider/router code, runtime documentation, tests, and the product site's own previous update layers. See `SCOUT-SOURCE-AUDIT.md`.
+The product site was previously current through August 27. The September 5 audit inspected all 35 visible `ProjectHub` branches and both visible `ProjectHub-dev` branches, branch-head dates, recent PR/release history, staging provenance, current provider/router code, runtime documentation, tests, and the product site's own previous update layers. The branch list was re-read again before finalization; during the audit `feat/generic-conversation-sets` moved from the released develop pointer to new post-release commits, so that newer state is included here. See `SCOUT-SOURCE-AUDIT.md`.
 
 ## What changed after the August 27 product-site snapshot
 
-The old product page showed Phase 02 as an active unmerged conversation branch. That is no longer current.
+The old product page showed Phase 02 as an active unmerged conversation branch. That exact branch state is no longer current.
 
 - PR #23 merged the Phase 7/8 conversation-gate work into `develop`.
 - PR #24 merged idempotent ProjectHub widget initialization.
 - PR #26 merged chat scroll/input behavior: users can type while Scout replies, a submitted follow-up can queue, and auto-scroll follows only when the user is already near the bottom.
 - PR #28 added release hardening: server-authorized + request-opted diagnostics, debug-cache isolation, retry-safe widget initialization with partial-setup rollback, and browser regressions for draft/bottom-follow behavior.
 - PR #29 promoted the qualified `develop@4f5ee971` tree to production on September 5.
-- `ProjectHub-dev:main` now records the same `4f5ee971` source revision.
+- `ProjectHub-dev:main` records the same `4f5ee971` source revision.
 
 Recorded verification for the qualified September 5 tree:
 
@@ -50,7 +51,18 @@ Recorded verification for the qualified September 5 tree:
 - pre-release Phase 7/8 live qualification at `4d39995`: **94/132 turns**, **21/33 conversations**
 - that live qualification still recorded **14 of 38 failures** as `inference-unavailable`; those are historical test outcomes, not a claim that every such failure was externally caused
 
-The September release is therefore documented as a real release with known residuals, not as a perfect-conversation claim.
+The September release is therefore documented as a real source release with known residuals, not as a perfect-conversation claim.
+
+## Active post-release branch
+
+After the September 5 production source release, `feat/generic-conversation-sets` advanced two commits beyond `develop`:
+
+1. `f145f8c` — generic server-owned discourse frames and generated clarification;
+2. `5bd9437` — commit discourse state before cache/direct-KB early returns and add a `CLARIFICATION` control mode for unresolved plural-set questions.
+
+The branch currently changes `conversation-resolver`, `session-state`, response-policy classification, RAG/LITE control handling, server orchestration, and adds `test/discourse-frames.test.js`. Its stated design is domain-neutral: user-introduced ordered alternatives are tracked as server-owned discourse state, assistant mentions do not become authoritative set members, and ambiguous questions such as “which of those is better?” can route to a generated clarification instead of a scope decline.
+
+At the audit recheck this branch was **2 ahead / 0 behind `develop`** and had no GitHub Actions run/status exposed. It is therefore documented as **active unmerged work**, not as integrated, staged, released, or validated production behavior.
 
 ## Current hosted inference
 
@@ -98,7 +110,7 @@ Primary Cloudflare references:
 
 Current executable `master` provider/accounting code is corrected, but `data/scout-runtime-knowledge.json` is still marked `lastVerified: 2026-08-21` and still contains the superseded statement assigning `4,119 / 34,868` to the normal `-fast` model. The product site does **not** treat that stale sentence as authoritative. Executable provider/accounting code and current Cloudflare primary documentation take precedence until ProjectHub's runtime self-knowledge record is refreshed.
 
-## Current architecture represented on the site
+## Current released architecture represented on the site
 
 The released September 5 tree includes:
 
@@ -119,18 +131,21 @@ The released September 5 tree includes:
 - queueable follow-up input while the current answer is in flight
 - near-bottom-only auto-scroll behavior
 
+The newer discourse-frame/CLARIFICATION work is not included in this released-capability list until it crosses the integration/release gates.
+
 ProjectHub Recruiter Alpha remains scoped to Bradley Matera's verified professional information and Scout's own runtime. The current product page does not claim that the deployed recruiter instance is already a general-purpose no-KB assistant or a finished multi-tenant SDK.
 
 ## Roadmap state
 
-The August 27 site showed Phase 02 as active branch work. The September audit advances the engineering state:
+The August 27 site showed Phase 02 as active branch work. The September audit advances the released engineering state while keeping the new post-release branch separate:
 
 - Phase 01: released foundation
-- Phase 02: accepted conversation-gate iteration merged and released; known residuals remain
-- Phase 03: integration completed for this iteration
+- Phase 02: accepted conversation-gate iteration merged and released; known residuals remain; new discourse-frame work is an unmerged continuation
+- Phase 03: integration completed for the released iteration
 - Phase 04: current staging provenance aligned to `develop@4f5ee971`
 - Phase 05: production source release completed through PR #29
 - Phase 06: **active system-truth cleanup / post-release verification**
+- Active code branch outside those completed release gates: `feat/generic-conversation-sets@5bd9437`, 2 ahead / 0 behind develop at recheck
 - Phases 07–12: later Scout Core/productization work
 
 Phase 06 is not cosmetic. Current examples include the stale runtime-neuron self-description above and the need to keep source, deployment provenance, docs, telemetry semantics, and historical evaluation claims clearly separated.
@@ -154,23 +169,23 @@ The site remains a zero-build static project with normal semantic HTML. Three.js
 
 Current-state responsibilities:
 
-- `freshness.js` — older shared source facts retained for compatibility with the original documentation renderer
+- `freshness.js` — non-mutating historical compatibility marker; it no longer injects August state into current pages
 - `snapshot-refresh.js` — current audited cross-page state for Overview, Docs, Learn, API, and Changelog
-- `accounting-correction.js` — exact-model accounting notes
+- `accounting-correction.js` — exact-model accounting notes and Learn resource-warning correction
 - `roadmap-current.js` — roadmap renderer
 - `roadmap-copy.js` — current public roadmap state/copy applied after the renderer
 - `scripts/prepare-site.js` — injects the shared scripts/resources before publication
 - `SCOUT-SOURCE-AUDIT.md` — branch/source audit
 - `SCOUT-ROADMAP.md` — current engineering roadmap
 
-The current-state layers intentionally override older static historical markup without rewriting historical snapshot artifacts such as `SCOUT-SOURCE-SNAPSHOT-2026-08-23.md`.
+Current-state layers intentionally leave explicitly dated historical snapshot artifacts, such as `SCOUT-SOURCE-SNAPSHOT-2026-08-23.md`, intact as historical evidence.
 
 ## Source precedence
 
 When sources disagree, this site uses:
 
 1. current executable source/runtime configuration
-2. current production/integration Git trees and staging provenance
+2. current production/integration Git trees, active-branch diffs, and staging provenance
 3. current provider primary documentation for external platform facts
 4. current repository documentation that agrees with executable source
 5. dated reports as historical evidence
