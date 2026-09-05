@@ -62,7 +62,7 @@ function start(THREE){
  function resize(){const r=host.getBoundingClientRect();renderer.setSize(Math.max(1,r.width),Math.max(1,r.height),false);camera.aspect=r.width/Math.max(1,r.height);camera.updateProjectionMatrix();request()}
  const ro=typeof ResizeObserver==='function'?new ResizeObserver(resize):null;ro?.observe(host);addEventListener('resize',resize,opts);
  function request(){if(!raf&&!document.hidden)raf=requestAnimationFrame(frame)}
- function frame(now){raf=0;if(document.hidden)return;const animate=!paused&&!reduceMotion.matches;if(animate&&now-last<1000/45){request();return}last=now;if(animate)time+=Math.min((now-last)/1000||0,.05);world.rotation.set(pitch,yaw,0);camera.position.z=zoom;camera.updateProjectionMatrix();
+ function frame(now){raf=0;if(document.hidden)return;const animate=!paused&&!reduceMotion.matches;if(animate&&now-last<1000/45){request();return}const dt=Math.min((now-last)/1000||0,.05);last=now;if(animate)time+=dt;world.rotation.set(pitch,yaw,0);camera.position.z=zoom;camera.updateProjectionMatrix();
    groups.forEach((g,i)=>{const active=stage===0||stage===i+1;g.scale.setScalar(active?1:.78);g.traverse(o=>{if(o.material?.opacity!==undefined)o.material.opacity=active?Math.max(o.material.opacity,.18):.07})});
    arrowGroups.forEach((g,i)=>g.children.forEach(o=>{if(o.material)o.material.opacity=stage===0||stage===i+1||stage===i+2?.86:.16}));
    packet.position.set(-3.85+((time*.55)%1)*7.7,.05,.35);packet.visible=stage===0;
