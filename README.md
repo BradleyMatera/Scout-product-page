@@ -52,7 +52,7 @@ that the separate Gatsby/Netlify `/scout/` sync has run.
 - Verify current source branches and dates before updating claims. Pin implementation links to the audited SHA.
 - Distinguish executable behavior, reported test results, independently rerun checks, development work, and planned capabilities.
 - Update `source-state.json` and this audit whenever refreshing release/branch status.
-- Keep pricing amounts and commercial terms unchanged unless authorized.
+- Keep the pricing page aligned with the actual commercial offer. It currently describes one negotiated Scout software/IP acquisition, not hosted service tiers.
 - Check the actual publication job for the final commit; do not equate a push with deployment.
 - Never modify Scout runtime repositories as part of a product-site sync.
 
@@ -88,4 +88,4 @@ neuron-rate statement; do not copy that claim back into these pages.
 
 Scout's released application is ProjectHub Recruiter Alpha. A customer-neutral core,
 empty-knowledge operation, generalized domain packages, and commercial handoff remain roadmap work.
-The early-access pricing page describes scoped work, not an already delivered generic SDK.
+The pricing page describes one negotiated acquisition of the existing implementation, not an already delivered generic SDK or hosted service operation.
