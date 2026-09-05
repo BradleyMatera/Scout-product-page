@@ -1,6 +1,6 @@
 # Scout Product Site
 
-Public customer-facing and implementation-reference site for **Scout**, the orchestration layer currently used by **ProjectHub Recruiter Alpha**.
+Public customer-facing and implementation-reference site for **Scout**, the orchestration layer used by **ProjectHub Recruiter Alpha**.
 
 ## Primary site
 
@@ -13,187 +13,189 @@ Public customer-facing and implementation-reference site for **Scout**, the orch
 
 A GitHub Pages mirror is also deployed from this repository.
 
-## Product navigation
+## Current audited source state
 
-The customer-facing navigation is:
+Last full branch/source audit: **September 5, 2026**.
 
-1. **Overview** — launch hero, current runtime snapshot, source state, verification, limits, and productization status.
-2. **Features** — implemented code paths and current integrated capabilities.
-3. **How It Works** — request pipeline from query handling through retrieval, generation, validation, and telemetry.
-4. **Docs** — source-linked runtime/operation documentation.
-5. **API** — current ProjectHub route surface, chat contract, diagnostics, telemetry, and compatibility limits.
-6. **Changelog** — dated production/integration/evaluation history with source citations.
-7. **Pricing** — customer-facing early-access hosted plans, implementation scope, licensing models, and LinkedIn contact.
+- Production branch: `ProjectHub:master@b071e4e4f0bb69faeecd811f31514af30d2e1f61`
+- Production tree: `a0066cc849f33dd84d18d8e8c36b080fed8ce70e`
+- Integration branch: `ProjectHub:develop@4f5ee971488e433ebdf66280cce82e163c5c7688`
+- Integration tree: `a0066cc849f33dd84d18d8e8c36b080fed8ce70e`
+- Staging repository: `ProjectHub-dev:main@6d36433c040d0bbc903ec26b6968674bd937bcd0`
+- `ProjectHub-dev/STAGING-SOURCE.json`: `4f5ee971488e433ebdf66280cce82e163c5c7688`
+- Latest non-runtime proposal: Dependabot `c32e83b8428a733b597341b1bc7efe4b4ede7423`, one lockfile-only commit ahead of `master`
 
-`learn.html` is linked from Docs as the teaching path for the algorithms, math, data flow, heuristics, and implementation decisions behind Scout.
+`master` and `develop` have different Git ancestry, but their current trees are byte-for-byte represented by the same Git tree SHA above. The September 5 production release deliberately preserved production ancestry while promoting the exact qualified `develop` tree.
 
-## Canonical Scout sources
+The product site was previously current through August 27. The September 5 audit inspected all 35 visible `ProjectHub` branches and both visible `ProjectHub-dev` branches, branch-head dates, recent PR/release history, staging provenance, current provider/router code, runtime documentation, tests, and the product site's own previous update layers. See `SCOUT-SOURCE-AUDIT.md`.
 
-- Source repository: https://github.com/BradleyMatera/ProjectHub
-- Production branch: `master`
-- Integration branch: `develop`
-- Staging deployment mirror: https://github.com/BradleyMatera/ProjectHub-dev
-- Production ProjectHub: https://bradleymatera.github.io/ProjectHub/
-- Staging ProjectHub: https://bradleymatera.github.io/ProjectHub-dev/
+## What changed after the August 27 product-site snapshot
 
-## Living source snapshot
+The old product page showed Phase 02 as an active unmerged conversation branch. That is no longer current.
 
-Scout changes frequently, so source-state and gate facts are centralized in `freshness.js` rather than copied independently into every page.
+- PR #23 merged the Phase 7/8 conversation-gate work into `develop`.
+- PR #24 merged idempotent ProjectHub widget initialization.
+- PR #26 merged chat scroll/input behavior: users can type while Scout replies, a submitted follow-up can queue, and auto-scroll follows only when the user is already near the bottom.
+- PR #28 added release hardening: server-authorized + request-opted diagnostics, debug-cache isolation, retry-safe widget initialization with partial-setup rollback, and browser regressions for draft/bottom-follow behavior.
+- PR #29 promoted the qualified `develop@4f5ee971` tree to production on September 5.
+- `ProjectHub-dev:main` now records the same `4f5ee971` source revision.
 
-The snapshot keeps these states separate:
+Recorded verification for the qualified September 5 tree:
 
-1. released production (`ProjectHub:master`);
-2. integrated development (`ProjectHub:develop`);
-3. staging packaging/source (`ProjectHub-dev:main` + `STAGING-SOURCE.json`);
-4. dated test/evaluation/release-gate results.
+- local tests: **1019/1019**
+- retrieval Recall@6: **1.000**
+- retrieval MRR@6: **0.942**
+- staging marker: `4f5ee971`
+- staging widget artifact was recorded as byte-identical to the qualified develop source in the release PR
+- pre-release Phase 7/8 live qualification at `4d39995`: **94/132 turns**, **21/33 conversations**
+- that live qualification still recorded **14 of 38 failures** as `inference-unavailable`; those are historical test outcomes, not a claim that every such failure was externally caused
 
-`freshness.js` updates the relevant parts of Overview, Docs, Learn, API, and Changelog from one audited snapshot. Source URLs in the injected material are citations/evidence for the adjacent claim.
+The September release is therefore documented as a real release with known residuals, not as a perfect-conversation claim.
 
-`scripts/prepare-site.js` injects the shared source-state and teaching-resource scripts into published HTML. `accounting-correction.js` remains in the published bundle because it supplies the cross-page accounting notes used by Overview, Docs, API, and Changelog; the raw Learn accounting section is also correct on its own and no longer depends on that script to hide stale math.
-
-### Accounting sync state
-
-As of **August 24, 2026**, the Cloudflare exact-model accounting correction has been implemented and production-hotfixed in Scout. This site does not infer a production commit SHA from a stale page snapshot; the ProjectHub production branch/runtime remains the authority for the exact deployed revision.
-
-The accounting correction is independently test-backed in ProjectHub. Earlier retrieval/conversation-gate measurements remain dated measurements and are not production quality guarantees.
-
-## Cloudflare neuron-accounting rule
+## Current hosted inference
 
 Scout's hosted generation model remains:
 
 `@cf/meta/llama-3.1-8b-instruct-fast`
 
-The model did **not** change as part of the accounting correction.
+Current production generation paths pass temperature `0` and top-p `0.9` for the RAG/LITE generation calls; the Cloudflare adapter also defaults temperature to `0` when a caller does not supply it.
 
-Cloudflare's current pricing table does not publish a token-to-neuron rate for that exact identifier. Scout therefore treats token-derived neuron usage for that model as **unknown / unverified** instead of borrowing a rate from a similarly named model.
+Cloudflare is the production primary when configured. Ollama `qwen2.5:1.5b` is the development/evaluation runtime and can be used as a production emergency fallback only when the fallback is explicitly enabled **and** `SCOUT_OLLAMA_QUALIFIED=true`. The default Cloudflare-primary fallback state is disabled.
 
-Cloudflare currently publishes these distinct exact-model rates:
+## Cloudflare neuron accounting
 
-- `@cf/meta/llama-3.1-8b-instruct-fp8-fast`: `4,119` neurons / M input tokens and `34,868` neurons / M output tokens;
-- `@cf/meta/llama-3.1-8b-instruct-fp8`: `13,778` neurons / M input tokens and `26,128` neurons / M output tokens.
+The accounting correction remains in force.
 
-The current accounting distinction is:
+Cloudflare's current pricing table does not publish a token-to-neuron rate for Scout's exact `@cf/meta/llama-3.1-8b-instruct-fast` identifier. Scout therefore does not borrow rates from similarly named models.
 
-- `actualNeurons` — provider-reported neuron usage when available;
-- `estimatedNeurons` — calculated only when the exact model identifier has a verified published token-to-neuron rate;
-- unknown — neither provider actual usage nor a verified exact-model estimate is available.
+Distinct published exact-model rates retained for reference:
 
-Unknown is not represented as zero. An incomplete session total also stays incomplete instead of later becoming a misleading partial total.
+- `@cf/meta/llama-3.1-8b-instruct-fp8-fast`: `4,119` neurons / M input and `34,868` / M output
+- `@cf/meta/llama-3.1-8b-instruct-fp8`: `13,778` neurons / M input and `26,128` / M output
 
-Platform-level Cloudflare facts remain separate from Scout's per-request accounting:
+Accounting states remain distinct:
 
-- Workers AI includes a **10,000-neuron daily allocation**;
-- the allocation resets at **00:00 UTC**;
-- Workers Paid usage above the included allocation is **$0.011 per 1,000 neurons**.
+- `actualNeurons`: provider-reported usage when supplied
+- `estimatedNeurons`: calculated only when the exact model has a verified rate
+- unknown: neither actual nor a verified exact-model estimate exists
 
-Those platform facts do **not** make Scout's current requests-per-day capacity knowable while the exact token-to-neuron rate for `@cf/meta/llama-3.1-8b-instruct-fast` is unpublished.
+Unknown is not zero. An incomplete multi-call/session total remains incomplete.
+
+Cloudflare platform facts remain separate from Scout's per-request estimate:
+
+- included Workers AI allocation: **10,000 neurons/day**
+- daily reset: **00:00 UTC**
+- Workers Paid reference above the included allocation: **$0.011 / 1,000 neurons**
+
+Those facts do not make Scout's current requests/day capacity knowable from token counts.
 
 Primary Cloudflare references:
 
 - https://developers.cloudflare.com/workers-ai/platform/pricing/
 - https://developers.cloudflare.com/ai/models/%40cf/meta/llama-3.1-8b-instruct-fast/
 
+### Known source-truth inconsistency
+
+Current executable `master` provider/accounting code is corrected, but `data/scout-runtime-knowledge.json` is still marked `lastVerified: 2026-08-21` and still contains the superseded statement assigning `4,119 / 34,868` to the normal `-fast` model. The product site does **not** treat that stale sentence as authoritative. Executable provider/accounting code and current Cloudflare primary documentation take precedence until ProjectHub's runtime self-knowledge record is refreshed.
+
+## Current architecture represented on the site
+
+The released September 5 tree includes:
+
+- local Okapi BM25 retrieval and contextual Reciprocal Rank Fusion
+- query normalization, typo handling, conversation-aware rewrite, and referent resolution
+- server-owned structured session state and recent-turn memory
+- allowlisted read-only recruiter evidence tools
+- response-policy classification and semantic response contracts, including open-world TRUE/FALSE/UNKNOWN handling
+- Cloudflare Workers AI production generation using `@cf/meta/llama-3.1-8b-instruct-fast`
+- explicitly gated Ollama fallback architecture
+- RAG-primary evidence selection with tools as supplemental evidence
+- post-generation grounding, relationship, entity, number, polarity, provenance, technology-claim, and overclaim validation
+- generative repair / constrained recovery paths
+- runtime/retrieval/cost telemetry
+- a 15-second end-to-end Scout request deadline
+- opt-in gate diagnostics that require both server authorization and request opt-in and are excluded from response caching
+- retry-safe embeddable widget initialization
+- queueable follow-up input while the current answer is in flight
+- near-bottom-only auto-scroll behavior
+
+ProjectHub Recruiter Alpha remains scoped to Bradley Matera's verified professional information and Scout's own runtime. The current product page does not claim that the deployed recruiter instance is already a general-purpose no-KB assistant or a finished multi-tenant SDK.
+
+## Roadmap state
+
+The August 27 site showed Phase 02 as active branch work. The September audit advances the engineering state:
+
+- Phase 01: released foundation
+- Phase 02: accepted conversation-gate iteration merged and released; known residuals remain
+- Phase 03: integration completed for this iteration
+- Phase 04: current staging provenance aligned to `develop@4f5ee971`
+- Phase 05: production source release completed through PR #29
+- Phase 06: **active system-truth cleanup / post-release verification**
+- Phases 07–12: later Scout Core/productization work
+
+Phase 06 is not cosmetic. Current examples include the stale runtime-neuron self-description above and the need to keep source, deployment provenance, docs, telemetry semantics, and historical evaluation claims clearly separated.
+
+See `SCOUT-ROADMAP.md` for the full roadmap.
+
+## Product navigation
+
+1. **Overview** — current source/release snapshot, implemented behavior, verification, limits, roadmap.
+2. **Features** — implemented code paths and current released capabilities.
+3. **How It Works** — request path from query understanding through retrieval, generation, validation, and telemetry.
+4. **Docs** — source-linked runtime/operations documentation.
+5. **Learn** — teaching guide for algorithms, math, heuristics, and implementation details.
+6. **API** — current ProjectHub route surface and runtime contract, not a public commercial API guarantee.
+7. **Changelog** — dated release/integration/evaluation history.
+8. **Pricing** — customer-facing early-access commercial framework. Pricing was reviewed during this sync; no September runtime change required a pricing change.
+
 ## Site implementation
 
-The product site is a zero-build static project. Three.js is used as an ambient visual layer around normal HTML rather than as a standalone 3D product demo.
+The site remains a zero-build static project with normal semantic HTML. Three.js is an ambient visual layer, not the information architecture.
 
-- `index.html` — overview, implementation/status content, source links, verification, limits, and productization state
-- `docs.html` — full runtime/operations documentation application
-- `learn.html` — teaching guide for BM25/RRF, text processing, evaluation math, context/inference, validation, complexity, and glossary
-- `api.html` — current ProjectHub API reference and limitations
-- `changelog.html` — development/release/evaluation history
-- `pricing.html` — customer-facing early-access pricing, licensing, process, and LinkedIn contact
-- `docs.css` / `docs.js` — shared documentation navigation/search/code-copy UI
-- `learn.css` / `learn.js` — teaching-guide extensions
-- `freshness.js` — shared audited source/gate snapshot and page-specific current-state updates
-- `snapshot-refresh.js` — dated source-state follow-up layer
-- `accounting-correction.js` — cross-page exact-model accounting notes for Overview, Docs, API, and Changelog
-- `scripts/prepare-site.js` — build-time shared-script/resource injection
-- `styles.css` — primary responsive layout and component styles
-- `enhancements.css` — panel lighting, active section accents, card depth, table/UI polish, and architecture motion
-- `launch.css` — dark glass/neon product visual system
-- `further-reading.css` — shared AI/LLM/agent article directory in the footer
-- `pricing.css` — pricing-specific layout
-- `scene.js` — pinned Three.js `0.185.1` ambient renderer
-- `site.js` — product navigation, reveal effects, card lighting, metrics, and further-reading inventory
-- `assets/scout-mark.svg` — Scout vector mark
-- `assets/scout-og.svg` — social/share graphic
-- `site.webmanifest` — installable-site metadata
-- `SCOUT-SOURCE-AUDIT.md` — source audit behind product-page claims
+Current-state responsibilities:
 
-The Three.js scene is deliberately non-semantic. The actual interface remains HTML. If WebGL or the CDN module is unavailable, the page content remains usable.
+- `freshness.js` — older shared source facts retained for compatibility with the original documentation renderer
+- `snapshot-refresh.js` — current audited cross-page state for Overview, Docs, Learn, API, and Changelog
+- `accounting-correction.js` — exact-model accounting notes
+- `roadmap-current.js` — roadmap renderer
+- `roadmap-copy.js` — current public roadmap state/copy applied after the renderer
+- `scripts/prepare-site.js` — injects the shared scripts/resources before publication
+- `SCOUT-SOURCE-AUDIT.md` — branch/source audit
+- `SCOUT-ROADMAP.md` — current engineering roadmap
 
-## Documentation/source rule
+The current-state layers intentionally override older static historical markup without rewriting historical snapshot artifacts such as `SCOUT-SOURCE-SNAPSHOT-2026-08-23.md`.
 
-The site uses this precedence when sources disagree:
+## Source precedence
 
-1. current executable source/runtime configuration;
-2. production runtime facts;
-3. current master/develop documentation that matches the source;
-4. dated reports as historical evidence.
+When sources disagree, this site uses:
 
-The site separates:
+1. current executable source/runtime configuration
+2. current production/integration Git trees and staging provenance
+3. current provider primary documentation for external platform facts
+4. current repository documentation that agrees with executable source
+5. dated reports as historical evidence
+6. roadmap/intended work only as planned work
 
-1. **Released** — behavior supported by production `master`.
-2. **Integration** — current `develop` behavior that may not be in production.
-3. **Staging** — the exact source recorded by the staging wrapper/marker.
-4. **Historical measurement** — dated/scoped evaluation results.
-5. **Not shipped / productization work** — customer-neutral empty/no-KB operation, domain packages, unrelated-domain portability tests, and commercial handoff work.
-
-Claims should point to implementation, workflow, commit, evaluation artifact, or a reproducible command where practical.
+A passing test count, a stale branch pointer, a model response, or an older self-description is not promoted to a current runtime fact by itself.
 
 ## Pricing-page rule
 
-`pricing.html` is customer-facing. It exposes the early-access commercial framework without publishing internal margins, tax planning, cost allocation, or private business operations.
+The pricing page remains customer-facing. The only customer contact path shown there is Bradley Matera's LinkedIn profile. Runtime engineering updates do not silently change commercial terms.
 
-Current pricing framework shown on the page:
+Current early-access framework remains:
 
 - Design Partner Pilot: `$500–$1,500` one-time
 - Scout Starter: `$149/month + $750 setup`
 - Scout Business: `$399/month + $1,500 setup`
 - Scout Managed: `$999+/month`, implementation from `$3,000`
-- Portable runtime licensing: from `$5,000`, case-by-case availability
+- Portable runtime licensing: from `$5,000`, case-by-case
 - Source-access commercial licensing: from `$15,000`, negotiated separately
 - Exclusive rights / acquisition: negotiated separately
 
-Included usage, external-service costs, integration scope, support expectations, and deployment requirements are defined in the written quote/order scope rather than represented as an unlimited promise.
-
-The only customer contact information on the pricing page is Bradley Matera's LinkedIn profile:
-
-https://www.linkedin.com/in/bradmatera
-
-## Current architecture represented on the product site
-
-The released/integrated Scout/ProjectHub lines include, depending on branch state:
-
-- local Okapi BM25 retrieval and contextual Reciprocal Rank Fusion
-- query understanding and conversational rewriting
-- server-owned structured session state
-- allowlisted read-only recruiter evidence tools
-- semantic response contracts and TRUE/FALSE/UNKNOWN claim handling
-- Cloudflare Workers AI production generation using `@cf/meta/llama-3.1-8b-instruct-fast`
-- Ollama for development/evaluation and an explicitly gated fallback architecture
-- post-generation grounding, relationship, entity, number, polarity, provenance, and overclaim validation
-- generative repair / constrained recovery paths
-- runtime/retrieval telemetry
-- a 15-second response budget
-
-Current `develop` can contain behavior not yet represented in a dated product-page source snapshot. Accounting claims on this site are maintained separately from those broader development-gate snapshots so a model-pricing correction is not confused with a general Scout release.
-
-The production application is not represented as a general-purpose assistant. Current runtime knowledge scopes it to Bradley Matera's verified professional information and Scout's runtime.
-
-## API-page rule
-
-`api.html` documents the checked-in ProjectHub runtime interface. It does **not** claim a public multi-tenant developer platform, public API-key product, external SLA, or backwards-compatible commercial API contract.
-
-Current semantic changes on `develop` are documented behind the existing chat interface without inventing new public routes.
-
-## Evaluation display policy
-
-Historical benchmark values are labeled with their date/scorer/model/context instead of being shown as current quality guarantees. Retrieval measurements are kept separate from API acceptance, repeated reliability tests, browser QA, and multi-turn conversation regressions.
+Included usage, third-party costs, integrations, support, and deployment requirements are defined in written scope rather than represented as unlimited usage.
 
 ## Deployment
 
-`.github/workflows/deploy-pages.yml` validates the shared scripts, runs `scripts/prepare-site.js`, and publishes `main` to the GitHub Pages mirror.
+`.github/workflows/deploy-pages.yml` validates the shared JavaScript/build scripts, runs `scripts/prepare-site.js`, and publishes `main` to the GitHub Pages mirror.
 
-The production Gatsby/Netlify site at `bradleymatera.dev` clones this repository during its normal build, runs the same preparation step, and copies the product files into `public/scout/`. The Scout source commit used for each production build is written to `/scout/scout-source.json`.
+The Gatsby/Netlify site at `bradleymatera.dev` has historically synced this repository into `/scout/`. This repository documents its own source and deployment; a separate host build should be verified independently before claiming that a particular Scout-product-page commit is already live on the primary domain.
