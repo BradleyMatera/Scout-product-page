@@ -1,0 +1,239 @@
+{
+  "auditedAt": "2026-09-05T19:50:06.754Z",
+  "productBefore": "c6bc2973fd03ce2846c75081fdda883306c88045",
+  "production": "b071e4e4f0bb69faeecd811f31514af30d2e1f61",
+  "integration": "4f5ee971488e433ebdf66280cce82e163c5c7688",
+  "staging": "6d36433c040d0bbc903ec26b6968674bd937bcd0",
+  "active": "cddb3bca1410f9cee04372e0670037244ffc8d3d",
+  "model": "@cf/meta/llama-3.1-8b-instruct-fast",
+  "exactModelNeuronRate": null,
+  "providerSource": "https://developers.cloudflare.com/workers-ai/platform/pricing/",
+  "branches": {
+    "ProjectHub": [
+      {
+        "name": "archive/develop-pre-multimachine-20260717",
+        "sha": "d38c5bde38cd5b5b3b82b374f48ef1b6c6cd0b2d",
+        "date": "2026-07-17T15:32:16-05:00",
+        "subject": "Merge pull request #11 from BradleyMatera/fix/secret-name-and-env-setup"
+      },
+      {
+        "name": "chatgpt/scout-negative-memory-20260820",
+        "sha": "7eef9b79657a9129e9341b7a84064cedd0ee2dac",
+        "date": "2026-08-20T15:33:22-05:00",
+        "subject": "chore: add guarded negative-assessment memory patch"
+      },
+      {
+        "name": "chatgpt/scout-strict-followup-20260820",
+        "sha": "fd5af3a7fbb39def689469a440214de7d1c06e96",
+        "date": "2026-08-20T10:55:21-05:00",
+        "subject": "chore(dev): add guarded ChatGPT strict follow-up patch"
+      },
+      {
+        "name": "chore/git-source-of-truth-guardrails",
+        "sha": "15e76514c248cdc3e405b0b51bca98773424d97d",
+        "date": "2026-08-12T10:08:46-05:00",
+        "subject": "docs: strengthen GitHub source-of-truth recovery rules"
+      },
+      {
+        "name": "chore/mark-scout-workspace-published",
+        "sha": "751374ce34093b11f39dfec68a977b44971b1e1e",
+        "date": "2026-08-12T10:49:36-05:00",
+        "subject": "chore: mark Scout workspace as GitHub-backed"
+      },
+      {
+        "name": "chore/mark-scout-workspace-published-temp",
+        "sha": "9899ae287a067bfb5b5c21eb98dc820fdb15e50c",
+        "date": "2026-08-12T10:40:04-05:00",
+        "subject": "Reserve active Scout workspace and quarantine stale develop"
+      },
+      {
+        "name": "chore/multi-workspace-git-guardrails",
+        "sha": "ec06351cd4fffa49ad57a4a4db21f479ffb23d3c",
+        "date": "2026-08-12T10:30:52-05:00",
+        "subject": "ci: run project verification before non-blocking dependency audit"
+      },
+      {
+        "name": "chore/safe-workspace-base",
+        "sha": "ffc96a62d887b9c977b78e541b0fa6e5eb4d334d",
+        "date": "2026-08-12T10:39:05-05:00",
+        "subject": "docs: make Copilot honor active workspace registry"
+      },
+      {
+        "name": "dependabot/npm_and_yarn/npm_and_yarn-116291eeda",
+        "sha": "c32e83b8428a733b597341b1bc7efe4b4ede7423",
+        "date": "2026-09-05T17:54:02Z",
+        "subject": "build(deps): bump the npm_and_yarn group across 1 directory with 2 updates"
+      },
+      {
+        "name": "develop",
+        "sha": "4f5ee971488e433ebdf66280cce82e163c5c7688",
+        "date": "2026-09-05T12:45:50-05:00",
+        "subject": "fix: secure diagnostics and retry widget setup"
+      },
+      {
+        "name": "docs/branch-protection",
+        "sha": "38b3aef8b347f0d5e9eb484abbeb8c3867e21848",
+        "date": "2026-07-17T15:14:42-05:00",
+        "subject": "docs: branch protection and environment setup guide + script"
+      },
+      {
+        "name": "docs/spec-housekeeping",
+        "sha": "97f7c7147144059983a7e522930764a26400ce2a",
+        "date": "2026-07-17T15:19:59-05:00",
+        "subject": "docs: update AGENTS.md with release spec reference, corrected Pages publish flow, new guides"
+      },
+      {
+        "name": "docs/update-handoff-path-a",
+        "sha": "a280298d0cd287ada007427805f2c3fdfcd60007",
+        "date": "2026-09-04T22:38:08-05:00",
+        "subject": "docs: update current-feature-handoff with Path A integration state"
+      },
+      {
+        "name": "feat/agent-systems-network",
+        "sha": "ef892a00deba8b28f27421794b84615c71a60332",
+        "date": "2026-08-16T17:41:01-05:00",
+        "subject": "fix: prevent identity drift, fabricated occupations, and unsupported tech claims in recruiter bot"
+      },
+      {
+        "name": "feat/architecture-refactor",
+        "sha": "dcba6bd7c4ec00b514e4b66a7a73dd5a403871c3",
+        "date": "2026-08-17T14:27:16-05:00",
+        "subject": "feat: hardcoded Ollama labels removed; direct answers added; proseSource invariants green"
+      },
+      {
+        "name": "feat/generic-conversation-sets",
+        "sha": "cddb3bca1410f9cee04372e0670037244ffc8d3d",
+        "date": "2026-09-05T14:02:49-05:00",
+        "subject": "docs: handoff note for generic discourse frames phase"
+      },
+      {
+        "name": "feat/rag-primary-restoration",
+        "sha": "d32b75e945578f9b4261cc1decd2766b7e111873",
+        "date": "2026-08-21T18:25:01-05:00",
+        "subject": "feat(inference): qualify Cloudflare Llama 3.1 8B Fast"
+      },
+      {
+        "name": "feature/ci-hardening",
+        "sha": "ffe281ed212e327dcb61b9a910b93375265971c4",
+        "date": "2026-07-17T15:10:02-05:00",
+        "subject": "ci: add analytics freshness, knowledge JSON validation, secret scan, staging routing check, retrieval quality gate"
+      },
+      {
+        "name": "feature/coordinated-releases",
+        "sha": "0e2dd7134932d7e1a941e0a7cb499245a8a51575",
+        "date": "2026-07-17T15:13:34-05:00",
+        "subject": "fix: remove automatic Pages deploy on master push — require manual trigger after backend verification"
+      },
+      {
+        "name": "feature/deploy-safety",
+        "sha": "6bf6d13f6044dc5b35678473340be61002fd883d",
+        "date": "2026-07-17T15:12:55-05:00",
+        "subject": "fix: deploy script hardening — branch checks, clean tree guard, versioned releases, complete backup, health check, auto-rollback"
+      },
+      {
+        "name": "feature/staging-isolation",
+        "sha": "25fab3342ffe4a5c5d919797b2fbf3b1eaf1eca8",
+        "date": "2026-07-17T15:08:32-05:00",
+        "subject": "fix: staging isolation — local widget loading, dev API override, deterministic sync"
+      },
+      {
+        "name": "feature/think-mode-release-compat",
+        "sha": "7220b06fc77b4bc907b77e5ae2e089d7610b7632",
+        "date": "2026-07-17T15:19:10-05:00",
+        "subject": "fix: Think Mode release compatibility — better error logging for branch protection, migration plan"
+      },
+      {
+        "name": "fix/phase7-8-conversation-gate",
+        "sha": "4d39995c88ac6cffec2314c91c44558eae353371",
+        "date": "2026-09-04T21:14:43-05:00",
+        "subject": "fix(classifier): roast routing robustness"
+      },
+      {
+        "name": "fix/release-hardening-develop",
+        "sha": "428601af97aa86091ccd9fd7d29d798427164319",
+        "date": "2026-09-05T12:44:08-05:00",
+        "subject": "fix: secure diagnostics and retry widget setup"
+      },
+      {
+        "name": "fix/release-hardening-gatedebug-init",
+        "sha": "8ac02fb5fa09a6a5595b9c9d0194eb713494ddee",
+        "date": "2026-09-02T16:06:04-05:00",
+        "subject": "Release: Scout staging → production"
+      },
+      {
+        "name": "fix/secret-name-and-env-setup",
+        "sha": "5a5f3a3e770b7a8c0ad89935b5b5d24cbd6d6072",
+        "date": "2026-07-17T15:31:48-05:00",
+        "subject": "fix: rename secret to PROJECTHUB_DEV_TOKEN (GitHub forbids GITHUB_ prefix), fix environment creation API payload"
+      },
+      {
+        "name": "hotfix/cloudflare-neuron-accounting",
+        "sha": "a205e30faac99246ce1e92ede9d7e36f040e55cd",
+        "date": "2026-08-24T09:51:54-05:00",
+        "subject": "fix(bundle): rebuild ProjectHub.js with canonical separators"
+      },
+      {
+        "name": "hotfix/name-extraction",
+        "sha": "40b22966d2c240e7def66f263220baa3f8ca1989",
+        "date": "2026-08-20T18:44:17-05:00",
+        "subject": "fix: reject article-led role intros in name extraction and stop at prepositions"
+      },
+      {
+        "name": "hotfix/projecthub-embed-idempotency",
+        "sha": "cdc0a55ff263a46a6d480ef33d1e3c0d757174e9",
+        "date": "2026-09-04T22:24:30-05:00",
+        "subject": "fix(widget): idempotent ProjectHub.js initialization"
+      },
+      {
+        "name": "hotfix/ui-scroll-and-input",
+        "sha": "eed5809f71ea54d7f0689ae1ed8978241c0e4bff",
+        "date": "2026-09-04T22:37:27-05:00",
+        "subject": "fix(ui): stop scroll hijack and keep input enabled during replies"
+      },
+      {
+        "name": "master",
+        "sha": "b071e4e4f0bb69faeecd811f31514af30d2e1f61",
+        "date": "2026-09-05T12:51:29-05:00",
+        "subject": "Merge pull request #29 from BradleyMatera/release/production-2026-09-05"
+      },
+      {
+        "name": "release/production-2026-09-05",
+        "sha": "2e90ed88a32b00f33d68736f08f18f98412f85a4",
+        "date": "2026-09-05T12:50:11-05:00",
+        "subject": "release: promote qualified develop tree to production"
+      },
+      {
+        "name": "release/public-refresh-2026-08-20",
+        "sha": "68a28ed524a9c62a3a7feeda5d0077835011ebbe",
+        "date": "2026-08-20T18:14:10-05:00",
+        "subject": "Merge knowledge-schema gate fix into public refresh"
+      },
+      {
+        "name": "release/scout-prod-2026-09-02",
+        "sha": "39afd75eedbe6f96e8b1a787e3b59d8ceb686e6d",
+        "date": "2026-09-02T16:04:49-05:00",
+        "subject": "ci: remove temporary release bundle helper"
+      },
+      {
+        "name": "revert/accidental-desktop-master-20260812",
+        "sha": "8981102bf236da8396cda50fef64434ae0915d8b",
+        "date": "2026-08-12T10:01:50-05:00",
+        "subject": "revert: remove accidental desktop file"
+      }
+    ],
+    "ProjectHub-dev": [
+      {
+        "name": "dependabot/npm_and_yarn/npm_and_yarn-116291eeda",
+        "sha": "abf2c3a02293a9b82ece7c1b914170ba196c3e24",
+        "date": "2026-08-09T12:42:59Z",
+        "subject": "Bump the npm_and_yarn group across 1 directory with 2 updates"
+      },
+      {
+        "name": "main",
+        "sha": "6d36433c040d0bbc903ec26b6968674bd937bcd0",
+        "date": "2026-09-05T12:46:11-05:00",
+        "subject": "staging: mirror from ProjectHub/develop 4f5ee971488e433ebdf66280cce82e163c5c7688"
+      }
+    ]
+  }
+}

@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#03080d" />
-  <meta name="color-scheme" content="dark" />
-  <meta name="description" content="Full Scout changelog and ProjectHub development history with production, integration, evaluation, release-control, and source-of-truth changes tied to commits and pull requests." />
-  <meta property="og:title" content="Scout Changelog" />
-  <meta property="og:description" content="Source-cited Scout and ProjectHub release and development history." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://bradleymatera.dev/scout/changelog.html" />
-  <meta property="og:image" content="https://bradleymatera.dev/scout/assets/scout-og.svg" />
-  <link rel="canonical" href="https://bradleymatera.dev/scout/changelog.html" />
-  <link rel="icon" href="./assets/scout-mark.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="./docs.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#03080d">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Full Scout changelog and ProjectHub development history with production, integration, evaluation, release-control, and source-of-truth changes tied to commits and pull requests.">
+  <meta property="og:title" content="Scout Changelog">
+  <meta property="og:description" content="Source-cited Scout and ProjectHub release and development history.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bradleymatera.dev/scout/changelog.html">
+  <meta property="og:image" content="https://bradleymatera.dev/scout/assets/scout-og.svg">
+  <link rel="canonical" href="https://bradleymatera.dev/scout/changelog.html">
+  <link rel="icon" href="./assets/scout-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./docs.css">
   <title>Scout Changelog</title>
-</head>
-<body class="product-subpage docs-page changelog-page">
+<link href="./enhancements.css" rel="stylesheet"><link href="./further-reading.css" rel="stylesheet"><link href="./launch.css" rel="stylesheet"></head>
+<body data-product-page="changelog" class="product-subpage docs-page changelog-page"><a class="skip-link" href="#main-content">Skip to content</a>
   <canvas id="ambient-three" aria-hidden="true"></canvas>
   <div class="page-grid" aria-hidden="true"></div>
   <div class="scan-line" aria-hidden="true"></div>
   <div class="scroll-progress" aria-hidden="true"><span></span></div>
 
-  <header class="site-header"><div class="shell nav-shell"></div></header>
+  <header class="site-header"><div class="shell nav-shell"><a aria-label="Scout overview" href="./index.html#overview" class="brand"><img src="./assets/scout-mark.svg" alt="" width="38" height="38"><span>Scout</span></a><nav aria-label="Scout product navigation" class="nav-links"><a data-nav-key="overview" href="./index.html#overview">Overview</a><a data-nav-key="features" href="./index.html#features">Features</a><a data-nav-key="how-it-works" href="./index.html#how-it-works">How It Works</a><a data-nav-key="docs" href="./docs.html">Docs</a><a data-nav-key="learn" href="./learn.html">Learn</a><a data-nav-key="api" href="./api.html">API</a><a class="active" aria-current="page" data-nav-key="changelog" href="./changelog.html">Changelog</a><a data-nav-key="roadmap" href="./index.html#roadmap">Roadmap</a></nav><a data-nav-key="pricing" href="./pricing.html" class="nav-source nav-pricing">Pricing</a></div></header>
 
-  <main>
+  <main id="main-content">
     <section class="subpage-hero">
-      <div class="shell reveal">
+      <div class="shell reveal visible">
         <div class="subpage-kicker">Scout / Changelog</div>
         <h1>What changed, where it landed, <span>and what proves it.</span></h1>
         <p>This changelog separates production releases from integration-only work and historical evaluation records. Entries summarize the actual change on this page. External links are included only as the source for that specific record.</p>
@@ -37,27 +37,25 @@
           <a class="button" href="./api.html">API reference</a>
         </div>
         <div class="docs-status-row" aria-label="Changelog source snapshot">
-          <div class="docs-status-card current"><span>Production</span><strong>master · 4a1eee7</strong></div>
-          <div class="docs-status-card"><span>Integration</span><strong>develop · 2d958e2</strong></div>
-          <div class="docs-status-card"><span>Develop vs master</span><strong>24 ahead · 4 behind</strong></div>
-          <div class="docs-status-card"><span>Snapshot</span><strong>August 22, 2026</strong></div>
+          <div class="docs-status-card current"><span>Production</span><strong>master · b071e4e4</strong></div>
+          <div class="docs-status-card"><span>Integration</span><strong>develop · 4f5ee971</strong></div>
+          <div class="docs-status-card"><span>Active unmerged</span><strong>cddb3bc · +3/-0</strong></div>
+          <div class="docs-status-card"><span>Audited</span><strong>September 5, 2026</strong></div>
         </div>
       </div>
     </section>
 
-    <div class="shell docs-mobile-nav"><label><span class="sr-only">Changelog section</span><select aria-label="Changelog section">
-      <option value="current-state">Current source state</option><option value="aug22-profile">Aug 22 · Profile evidence fixes</option><option value="post-release-develop">Aug 21–22 · Post-release develop</option><option value="aug21-model">Aug 21 · Cloudflare 8B Fast</option><option value="aug20-release">Aug 20 · Production release</option><option value="aug19-scorer">Aug 19 · Strict scorer</option><option value="aug12-recovery">Aug 12 · Repository recovery</option><option value="aug12-guardrails">Aug 12 · Git guardrails</option><option value="aug12-workspaces">Aug 12 · Workspace workflow</option><option value="jul17-staging">Jul 17 · Staging isolation</option><option value="jul17-ci">Jul 17 · CI hardening</option><option value="jul17-deploy">Jul 17 · Deploy safety</option><option value="jul17-release">Jul 17 · Coordinated releases</option><option value="evaluation-history">Evaluation history</option><option value="how-to-read">How to read this log</option>
-    </select></label></div>
+    <div class="shell docs-mobile-nav"><label><span class="sr-only">Changelog section</span><select aria-label="Changelog section"><option value="current-state">Production and integration share the released tree.</option><option value="sep5-site-overhaul">One static source for each page.</option><option value="sep5-active-discourse">Two discourse code commits and a handoff remain unmerged.</option><option value="sep5-release">Phase 7/8, widget fixes, and release hardening reached production source.</option><option value="sep2-release">The qualified August integration tree was promoted with a master-parented release branch.</option><option value="sep5-branch-audit">All visible branch heads were checked, then checked again before publication.</option><option value="aug23-neuron-accounting">Cloudflare neuron accounting moved to exact model identifiers.</option><option value="aug22-profile">Profile-summary evidence was narrowed and intent classification moved back to the original question.</option><option value="post-release-develop">Post-release changes continued across RAG, contracts, recovery, validation and conversation handling.</option><option value="aug21-model">Cloudflare Llama 3.1 8B Fast became the qualified runtime model configuration.</option><option value="aug20-release">A validated develop line was promoted to master.</option><option value="aug19-scorer">The earlier acceptance score was reclassified after a stricter semantic scorer found false positives.</option><option value="aug12-recovery">An accidental stale-desktop merge to master was reverted.</option><option value="aug12-guardrails">GitHub-first guardrails were added to local clones and coding agents.</option><option value="aug12-workspaces">Multi-PC, IDE and agent handoff checks were added.</option><option value="jul17-staging">Staging was isolated from production sources and routing.</option><option value="jul17-ci">CI added artifact, knowledge, secret and retrieval gates.</option><option value="jul17-deploy">Deployment scripts gained branch guards, backups, health checks and rollback.</option><option value="jul17-release">Frontend publication was gated behind backend verification.</option><option value="evaluation-history">Evaluation results are attached to the code/scorer that produced them.</option><option value="how-to-read">How entries are classified.</option></select></label></div>
 
     <div class="shell docs-shell">
       <aside class="docs-sidebar" aria-label="Changelog entries">
-        <div class="docs-sidebar-head"><div class="docs-sidebar-title"><span>Changelog</span><span>15 topics</span></div><input class="docs-search" type="search" placeholder="Search changes…" aria-label="Search changelog" /></div>
+        <div class="docs-sidebar-head"><div class="docs-sidebar-title"><span>Changelog</span><span>15 topics</span></div><input class="docs-search" type="search" placeholder="Search changes…" aria-label="Search changelog"></div>
         <nav class="docs-nav">
-          <div class="docs-nav-group"><span class="docs-nav-label">Current</span>
+          <div class="docs-nav-group"><a href="#sep5-active-discourse"><span class="nav-code">NEW</span>Active discourse branch</a><span class="docs-nav-label">Current</span>
             <a href="#current-state"><span class="nav-code">01</span>Current source state</a>
             <a href="#aug22-profile"><span class="nav-code">02</span>Profile evidence fixes</a>
             <a href="#post-release-develop"><span class="nav-code">03</span>Post-release develop</a>
-          </div>
+          <a href="#sep5-release"><span class="nav-code">SEP</span>Sep 5 release</a><a href="#sep2-release"><span class="nav-code">SEP</span>Sep 2 release</a><a href="#sep5-branch-audit"><span class="nav-code">AUD</span>Branch audit</a><a href="#aug23-neuron-accounting"><span class="nav-code">AUG</span>Neuron accounting correction</a></div>
           <div class="docs-nav-group"><span class="docs-nav-label">August 2026</span>
             <a href="#aug21-model"><span class="nav-code">04</span>Cloudflare 8B Fast</a>
             <a href="#aug20-release"><span class="nav-code">05</span>Production release</a>
@@ -76,23 +74,75 @@
             <a href="#evaluation-history"><span class="nav-code">14</span>Evaluation history</a>
             <a href="#how-to-read"><span class="nav-code">15</span>How to read this log</a>
           </div>
-        </nav>
+        <a href="#sep5-site-overhaul">One static source for each page.</a></nav>
       </aside>
 
       <article class="docs-content">
         <div class="docs-empty">No changelog entries match that search.</div>
 
         <section class="docs-section" id="current-state" data-search="current source branch master develop production staging ahead behind diverged snapshot">
-          <div class="docs-eyebrow">01 / Source snapshot · 2026-08-22</div><h2>Production and integration are currently different.</h2>
-          <p class="docs-lede">At the time this page was rebuilt, <code>master</code> and <code>develop</code> were diverged. <code>master</code> is still the production source line, while <code>develop</code> contains additional integrated work that has not been promoted as one new production release.</p>
+          <div class="docs-eyebrow">01 / Source snapshot · September 5, 2026</div><h2>Production and integration share the released tree.</h2>
+          <p class="docs-lede">Production master b071e4e4 and integration develop 4f5ee971 have different ancestry but the same Git tree, a0066cc8. Active discourse work at cddb3bc is three commits ahead of develop and remains unmerged.</p>
           <div class="docs-grid-3">
-            <div class="docs-card"><span class="label">Production</span><h3><code>master</code> · <code>4a1eee7</code></h3><p>Head message: <em>fix(cache): bump production ProjectHub.js bundle to v16</em>. The branch is protected and requires the Test and Verify status check for non-admins.</p></div>
-            <div class="docs-card"><span class="label">Integration</span><h3><code>develop</code> · <code>2d958e2</code></h3><p>Head message: <em>fix: tighten profile evidence and keep title in answer</em>. This branch is also protected with the Test and Verify check.</p></div>
-            <div class="docs-card"><span class="label">Comparison</span><h3>24 ahead · 4 behind</h3><p>The GitHub comparison reported the branches as diverged. Differences include RAG agent, response contracts, recovery contracts, validation, conversation resolution, tools, UI and knowledge changes.</p></div>
+            <div class="docs-card"><span class="label">Production source</span><h3><code>master</code> · <code>b071e4e4</code></h3><p>September 5 PR #29 source release; Git tree a0066cc8.</p></div>
+            <div class="docs-card"><span class="label">Qualified integration source</span><h3><code>develop</code> · <code>4f5ee971</code></h3><p>Same Git tree as production; includes release hardening and widget regressions.</p></div>
+            <div class="docs-card"><span class="label">Active unmerged work</span><h3><code>cddb3bc</code> · <code>+3/-0</code></h3><p>feat/generic-conversation-sets; newer than the released tree and not represented by staging.</p></div>
           </div>
           <div class="docs-callout warning"><strong>This is a dated snapshot, not a live branch widget.</strong> New commits can make these SHAs and ahead/behind counts stale; the linked branch/compare records are the evidence captured for this entry.</div>
           <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/tree/master" target="_blank" rel="noopener">Source: master branch snapshot ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/tree/develop" target="_blank" rel="noopener">Source: develop branch snapshot ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/compare/master...develop" target="_blank" rel="noopener">Source: master…develop comparison ↗</a></div>
-        </section>
+        </section><section class="docs-section" id="sep5-site-overhaul"><div class="docs-eyebrow">September 5, 2026 · Product documentation</div><h2>One static source for each page.</h2><p>Current release, accounting, roadmap, diagrams, and study material now live directly in HTML. Retired browser correction layers no longer compete with the original page text. Source references are pinned to audited revisions; navigation includes Learn and Roadmap, and documentation search includes full section text.</p><p>The discourse branch advanced to <code>cddb3bc</code> with a documentation-only handoff after the two implementation commits. It remains development work.</p></section><section data-search="september 5 post release generic discourse frames clarification active branch cache direct kb" id="sep5-active-discourse" class="docs-section">
+          <div class="docs-eyebrow">September 5, 2026 · Post-release active branch</div>
+          <h2>Two discourse code commits and a handoff remain unmerged.</h2>
+          <p><code>feat/generic-conversation-sets@cddb3bc</code> is +3/-0 from <code>develop@4f5ee971</code> at recheck. It is not in staging or production.</p>
+          <div class="docs-flow">
+            <div class="docs-flow-step"><div><strong><code>f145f8c</code> · discourse frames.</strong><span>Server-owned state tracks the active conversational relation and ordered user-introduced alternatives without domain vocabulary. Corrections/removals/ordinals mutate the set; assistant mentions do not become authoritative set members.</span></div></div>
+            <div class="docs-flow-step"><div><strong><code>cddb3bc</code> · cache-hit state + clarification.</strong><span>Discourse state is committed before cache/direct-KB early returns, and unresolved plural-set questions can route through a <code>CLARIFICATION</code> control mode instead of a scope decline.</span></div></div>
+            <div class="docs-flow-step"><div><strong>Test surface.</strong><span>The branch adds <code>test/discourse-frames.test.js</code>. No GitHub Actions run/status or PR for this head was exposed at the audit recheck, so no new pass count is asserted.</span></div></div>
+          </div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/commit/cddb3bca1410f9cee04372e0670037244ffc8d3d" target="_blank" rel="noopener">Source: active branch head ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/compare/4f5ee971488e433ebdf66280cce82e163c5c7688...cddb3bca1410f9cee04372e0670037244ffc8d3d" target="_blank" rel="noopener">Source: branch diff from develop ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/cddb3bca1410f9cee04372e0670037244ffc8d3d/test/discourse-frames.test.js" target="_blank" rel="noopener">Source: discourse-frame regression file ↗</a></div></section><section data-search="september 5 2026 release phase 7 8 hardening widget diagnostics staging production 1019" id="sep5-release" class="docs-section">
+          <div class="docs-eyebrow">September 5, 2026 · Qualified tree released</div>
+          <h2>Phase 7/8, widget fixes, and release hardening reached production source.</h2>
+          <p>The August 27 product-site snapshot still showed Phase 02 on an active feature branch. The accepted conversation-gate work was merged, widget initialization/input/scroll fixes were merged, release hardening was applied, staging was regenerated from <code>4f5ee971</code>, and PR #29 promoted the exact qualified tree to production.</p>
+          <div class="docs-flow">
+            <div class="docs-flow-step"><div><strong>PR #23 · conversation gate.</strong><span>Generic policy/contracts, follow-up/referent handling, evidence selection and validation regressions. Pre-release checkpoint: 94/132 turns, 21/33 conversations.</span></div></div>
+            <div class="docs-flow-step"><div><strong>PR #24 · idempotent embed.</strong><span>Guards repeated ProjectHub initialization and exposes an explicit initializer for dynamic embeds.</span></div></div>
+            <div class="docs-flow-step"><div><strong>PR #26 · composer/scroll.</strong><span>Typing stays available during replies, submitted follow-ups can queue, and auto-scroll no longer hijacks a user who has scrolled up.</span></div></div>
+            <div class="docs-flow-step"><div><strong>PR #28 · release hardening.</strong><span>Diagnostics require server authorization + request opt-in, debug turns are cache-isolated, partial widget setup rolls back for safe retry, and browser regressions cover drafts/bottom-follow.</span></div></div>
+            <div class="docs-flow-step"><div><strong>PR #29 · production source.</strong><span><code>master@b071e4e4</code> and <code>develop@4f5ee971</code> share Git tree <code>a0066cc8</code>; staging records <code>4f5ee971</code>.</span></div></div>
+          </div>
+
+      <div class="docs-table-wrap" data-sept5-verification=""><table class="docs-table"><thead><tr><th>September 5 released-tree verification</th><th>Recorded result</th><th>Scope</th></tr></thead><tbody>
+        <tr><td>Local test suite</td><td><strong>1019/1019</strong></td><td>Release-hardening tree; zero skipped in PR evidence.</td></tr>
+        <tr><td>Retrieval Recall@6</td><td><strong>1.000</strong></td><td>Released-tree retrieval verification.</td></tr>
+        <tr><td>Retrieval MRR@6</td><td><strong>0.942</strong></td><td>Released-tree retrieval verification.</td></tr>
+        <tr><td>Phase 7/8 live gate</td><td><strong>94/132</strong> turns · <strong>21/33</strong> conversations</td><td>Dated pre-release run at <code>4d39995</code>.</td></tr>
+        <tr><td>Inference-unavailable outcomes</td><td><strong>14/38 remaining failures</strong></td><td>Observed failure category in that dated run; not proof of external root cause.</td></tr>
+      </tbody></table></div>
+          <div class="docs-callout warning"><strong>Known residuals remain:</strong> the pre-release conversation run did not pass every turn. 14/38 remaining failures were classified as inference unavailable, and release evidence deferred remaining conversation failures rather than claiming all were fixed.</div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/pull/29" target="_blank" rel="noopener">Source: PR #29 production release ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/pull/28" target="_blank" rel="noopener">Source: PR #28 release hardening ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/pull/23" target="_blank" rel="noopener">Source: PR #23 conversation gate ↗</a><a href="https://github.com/BradleyMatera/ProjectHub-dev/blob/6d36433c040d0bbc903ec26b6968674bd937bcd0/STAGING-SOURCE.json" target="_blank" rel="noopener">Source: released staging source ↗</a></div></section><section data-search="september 2 2026 production release staging" id="sep2-release" class="docs-section"><div class="docs-eyebrow">September 2, 2026 · Earlier production promotion</div><h2>The qualified August integration tree was promoted with a master-parented release branch.</h2><p>PR #22 replaced a conflicting direct develop→master PR (#21) with a clean release branch based on production ancestry. The same release pattern was used again on September 5.</p><div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/pull/22" target="_blank" rel="noopener">Source: PR #22 Sep 2 release ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/pull/21" target="_blank" rel="noopener">Source: superseded direct release PR ↗</a></div></section><section data-search="branch audit 35 branches projecthub dev historical dependabot active discourse" id="sep5-branch-audit" class="docs-section">
+          <div class="docs-eyebrow">September 5, 2026 · Branch audit</div>
+          <h2>All visible branch heads were checked, then checked again before publication.</h2>
+          <p><strong>ProjectHub:</strong> 35 visible branches. Twelve branch heads are newer than the August 27 product-page cutoff; 23 point to older July/August work. <strong>ProjectHub-dev:</strong> two visible branches. During the audit, <code>feat/generic-conversation-sets</code> moved from the released develop pointer to <code>cddb3bc</code>, so the later branch state is the one documented here.</p>
+          <div class="docs-callout no-math"><strong>Git history nuance:</strong> old feature branches can still appear ahead/diverged after accepted changes were squash-merged. The site therefore uses merge state, current tree content, dates, branch tips, and staging provenance together rather than interpreting raw ahead/behind counts as release status.</div>
+          <p>Current post-release branch categories: runtime development <code>cddb3bc</code> (+3/-0 from develop) and dependency-only maintenance <code>c32e83b</code> (one lockfile-only commit ahead of master).</p>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/branches" target="_blank" rel="noopener">Source: ProjectHub branches ↗</a><a href="https://github.com/BradleyMatera/ProjectHub-dev/branches" target="_blank" rel="noopener">Source: ProjectHub-dev branches ↗</a><a href="https://github.com/BradleyMatera/Scout-product-page/blob/main/SCOUT-SOURCE-AUDIT.md" target="_blank" rel="noopener">Source: full branch audit ↗</a></div></section><section data-search="august 23 24 cloudflare neuron accounting exact model pricing fp8 fast unknown null cost telemetry correction" id="aug23-neuron-accounting" class="docs-section">
+      <div class="docs-eyebrow">August 23–24, 2026 · Accounting correction</div>
+      <h2>Cloudflare neuron accounting moved to exact model identifiers.</h2>
+      <p>Scout's hosted model remained <code>@cf/meta/llama-3.1-8b-instruct-fast</code>. The old metadata associated <code>4,119 / 34,868</code> neurons per million input/output tokens with that identifier. Cloudflare publishes those rates for <code>@cf/meta/llama-3.1-8b-instruct-fp8-fast</code> instead and does not document the identifiers as billing aliases.</p>
+      <div class="docs-flow">
+        <div class="docs-flow-step"><div><strong>Model unchanged.</strong><span>The correction did not switch Scout to FP8-fast.</span></div></div>
+        <div class="docs-flow-step"><div><strong>Exact identifier lookup.</strong><span><code>@cf/meta/llama-3.1-8b-instruct-fast</code> has no guessed rate. <code>@cf/meta/llama-3.1-8b-instruct-fp8-fast</code> and <code>@cf/meta/llama-3.1-8b-instruct-fp8</code> keep their own published rates.</span></div></div>
+        <div class="docs-flow-step"><div><strong>Unknown is not zero.</strong><span>No provider actual value + no verified exact-model rate means <code>null</code> / unknown.</span></div></div>
+        <div class="docs-flow-step"><div><strong>Completeness stays explicit.</strong><span>An unknown contributing call keeps a multi-call/session total incomplete.</span></div></div>
+      </div>
+      <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Cloudflare platform fact</th><th>Documented value</th></tr></thead><tbody>
+        <tr><td>Included Workers AI allocation</td><td><strong>10,000 neurons/day</strong></td></tr>
+        <tr><td>Daily reset</td><td><strong>00:00 UTC</strong></td></tr>
+        <tr><td>Workers Paid usage above the included allocation</td><td><strong>$0.011 / 1,000 neurons</strong></td></tr>
+      </tbody></table></div>
+      <div class="docs-callout warning"><strong>Capacity still cannot be derived for Scout's current model from token counts.</strong> A known daily allocation does not provide an exact requests-per-day estimate while the <code>@cf/meta/llama-3.1-8b-instruct-fast</code> token-to-neuron rate is unpublished.</div>
+      <div class="docs-source-row"><a href="https://developers.cloudflare.com/workers-ai/platform/pricing/" target="_blank" rel="noopener">Source: Cloudflare pricing ↗</a><a href="https://developers.cloudflare.com/workers-ai/models/llama-3.1-8b-instruct-fast/" target="_blank" rel="noopener">Source: Cloudflare -fast model ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/lib/cloudflare-provider.js" target="_blank" rel="noopener">Source: released provider adapter ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/docs/cloudflare-neuron-accounting-report.md" target="_blank" rel="noopener">Source: accounting correction report ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">Source: runtime self-knowledge record now tracked as truth debt ↗</a></div>
+    </section>
 
         <section class="docs-section" id="aug22-profile" data-search="2026 08 22 profile evidence intent original question title rag agent filter skills experience">
           <div class="docs-eyebrow">02 / August 22, 2026 · Integration</div><h2>Profile-summary evidence was narrowed and intent classification moved back to the original question.</h2>
@@ -116,7 +166,7 @@
             <tr><td><code>lib/conversation-resolver.js</code></td><td>36 changed lines around contextual resolution.</td></tr>
             <tr><td><code>data/recruiter-knowledge.json</code></td><td>Large knowledge-tree change in the comparison, 121 additions and 384 deletions.</td></tr>
           </tbody></table></div>
-          <p>Because these changes are integrated but not identical to the production tree, the product site continues to label released behavior separately from current <code>develop</code> behavior.</p>
+          <p>At this August checkpoint these changes were integrated separately from production. The September 5 release later promoted the qualified integration tree.</p>
           <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/compare/master...develop" target="_blank" rel="noopener">Source: branch comparison ↗</a></div>
         </section>
 
@@ -125,7 +175,7 @@
           <p>Commit <code>d32b75e</code> changed the configured Cloudflare model from Llama 3.2 3B Instruct to <code>@cf/meta/llama-3.1-8b-instruct-fast</code> across runtime documentation, model policy, runtime facts, UI usage display, cost configuration and provider-rate assumptions.</p>
           <div class="docs-grid-3">
             <div class="docs-card"><span class="label">Model</span><h3>Llama 3.1 8B Instruct Fast</h3><p>The current production runtime facts identify this as the normal Cloudflare Workers AI generative target.</p></div>
-            <div class="docs-card"><span class="label">Metering</span><h3>Model-specific neuron rates updated</h3><p>The same change updated the input/output neuron rates used for usage estimation.</p></div>
+            <div class="docs-card"><span class="label">Metering</span><h3>Initial rate mapping was later corrected</h3><p>The Aug. 21 model change also updated usage-rate assumptions. A later exact-model audit showed that <code>4,119 / 34,868</code> belongs to <code>-fp8-fast</code>, not Scout's configured <code>-fast</code> identifier. The model remained <code>@cf/meta/llama-3.1-8b-instruct-fast</code>; the accounting metadata was corrected.</p></div>
             <div class="docs-card"><span class="label">Fallback</span><h3>Ollama remained non-default</h3><p>The change retained Ollama as dev/test and optional fallback architecture rather than making it the normal production generation path.</p></div>
           </div>
           <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/commit/d32b75e945578f9b4261cc1decd2766b7e111873" target="_blank" rel="noopener">Source: d32b75e · model qualification/config update ↗</a></div>
@@ -246,7 +296,7 @@
             <tr><td>Recall@6 1.000 on 40-query retrieval set</td><td>Retrieval-specific evaluator/golden set, separate from conversational answer quality.</td><td>Can be reported only as the scoped retrieval benchmark and rerun with the repository evaluator.</td></tr>
           </tbody></table></div>
           <div class="docs-callout"><strong>Different evaluator, different claim.</strong> A retrieval ranking metric, a strict semantic answer scorer, and a live conversation acceptance suite measure different failure modes and should not be combined into one percentage.</div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/commit/e013a320d0495b56bd5cde0cee993d848f4323ec" target="_blank" rel="noopener">Source: strict re-score baseline ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/data/eval-golden.json" target="_blank" rel="noopener">Source: retrieval golden set ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/scripts/eval-retrieval.js" target="_blank" rel="noopener">Source: retrieval evaluator ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/commit/e013a320d0495b56bd5cde0cee993d848f4323ec" target="_blank" rel="noopener">Source: strict re-score baseline ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/data/eval-golden.json" target="_blank" rel="noopener">Source: retrieval golden set ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/scripts/eval-retrieval.js" target="_blank" rel="noopener">Source: retrieval evaluator ↗</a></div>
         </section>
 
         <section class="docs-section" id="how-to-read" data-search="how to read changelog released integration historical source citations dates status">
@@ -257,13 +307,136 @@
             <div class="docs-card"><span class="label">Historical</span><h3>Preserved for provenance</h3><p>Old architecture, workflows and scores stay useful for explaining how the system changed, but are not silently converted into current behavior.</p></div>
           </div>
           <p>Dates are based on the cited commit/PR records. Branch-head and ahead/behind values are snapshots captured when this page was rebuilt and can change after new repository activity.</p>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/PROJECTHUB-DEVELOPMENT-AND-RELEASE-SPEC.md" target="_blank" rel="noopener">Source: branch/release roles ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/PROJECTHUB-DEVELOPMENT-AND-RELEASE-SPEC.md" target="_blank" rel="noopener">Source: branch/release roles ↗</a></div>
         </section>
       </article>
     </div>
   </main>
 
-  <footer class="site-footer"><div class="shell"><div><strong>Scout</strong><span> · ProjectHub runtime</span></div><a href="https://www.linkedin.com/in/bradmatera" target="_blank" rel="noopener">LinkedIn ↗</a></div></footer>
+  <footer class="site-footer"><section aria-labelledby="further-reading-title" class="further-reading"><div class="shell"><div class="further-reading-head">
+    <div>
+      <span class="further-reading-kicker">Further reading</span>
+      <h2 id="further-reading-title">AI, LLMs, agents and AI-assisted development.</h2>
+    </div>
+    <p>Published articles and guides grouped by their original source. Duplicate subjects are kept when they were separately published on more than one source.</p>
+  </div><details class="reading-source"><summary>
+      <span class="reading-source-name">bradleymatera.dev</span>
+      <span class="reading-source-count">4 articles</span>
+    </summary><div class="reading-list"><a rel="noopener" target="_blank" href="https://bradleymatera.dev/coding-style-gpt-agent-external-reviewer/" class="reading-link">
+        <span>
+          <span class="reading-link-title">How We Built This Coding Style With a GPT Agent and an External Reviewer</span>
+          <span class="reading-link-meta">bradleymatera.dev</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://bradleymatera.dev/ai-end-to-end-projects/" class="reading-link">
+        <span>
+          <span class="reading-link-title">End to End Projects With AI: A Strict, Verifiable Workflow</span>
+          <span class="reading-link-meta">bradleymatera.dev</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://bradleymatera.dev/my-real-ai-development-setup/" class="reading-link">
+        <span>
+          <span class="reading-link-title">My Real AI Development Setup: Tools and Checks</span>
+          <span class="reading-link-meta">bradleymatera.dev</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://bradleymatera.dev/projecthub-embeddable-ai-recruiter-free-tiers/" class="reading-link">
+        <span>
+          <span class="reading-link-title">How I Built ProjectHub: An Embeddable AI Recruiter Assistant That Runs on Free Tiers</span>
+          <span class="reading-link-meta">bradleymatera.dev</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a></div><div class="reading-source-footer"><a rel="noopener" target="_blank" href="https://bradleymatera.dev/blog/">View bradleymatera.dev source ↗</a></div></details><details class="reading-source"><summary>
+      <span class="reading-source-name">DEV Community</span>
+      <span class="reading-source-count">13 articles</span>
+    </summary><div class="reading-list"><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/switching-llms-mid-task-is-not-as-seamless-as-it-looks-2cm3" class="reading-link">
+        <span>
+          <span class="reading-link-title">Switching LLMs Mid-Task Is Not as Seamless as It Looks</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/im-building-free-ai-on-a-vm-that-barely-qualifies-as-a-computer-342" class="reading-link">
+        <span>
+          <span class="reading-link-title">I’m Building Free AI on a VM That Barely Qualifies as a Computer</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/how-i-built-projecthub-an-embeddable-ai-recruiter-assistant-that-runs-on-free-tiers-bif" class="reading-link">
+        <span>
+          <span class="reading-link-title">How I Built ProjectHub: An Embeddable AI Recruiter Assistant That Runs on Free Tiers</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/how-i-actually-build-full-end-to-end-projects-using-ai-42do" class="reading-link">
+        <span>
+          <span class="reading-link-title">How I Actually Build Full End To End Projects Using AI</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/are-ai-models-hardwired-to-fail-2741" class="reading-link">
+        <span>
+          <span class="reading-link-title">Are AI Models Hardwired to Fail?</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/ai-didnt-replace-junior-developers-it-replaced-safe-places-to-be-one-d91" class="reading-link">
+        <span>
+          <span class="reading-link-title">AI Didn’t Replace Junior Developers. It Replaced Safe Places To Be One.</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/the-ai-review-trap-why-verification-matters-more-than-prompting-3lak" class="reading-link">
+        <span>
+          <span class="reading-link-title">The AI Review Trap: Why Verification Matters More Than Prompting</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/the-developer-pay-paradox-are-junior-devs-staff-engineers-and-most-developers-over-or-under-paid-oid" class="reading-link">
+        <span>
+          <span class="reading-link-title">The Developer Pay Paradox: Are Junior Devs, Staff Engineers and Most Developers Over- or Under-paid?</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/ai-policy-is-becoming-the-new-entry-level-gatekeeping-1d4o" class="reading-link">
+        <span>
+          <span class="reading-link-title">AI Policy Is Becoming the New Entry-Level Gatekeeping</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/senior-engineers-complaining-about-juniors-are-missing-the-point-2ch6" class="reading-link">
+        <span>
+          <span class="reading-link-title">Senior Engineers Complaining About Juniors Are Missing the Point</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/entry-level-job-descriptions-are-becoming-broken-product-specs-hgc" class="reading-link">
+        <span>
+          <span class="reading-link-title">Entry-Level Job Descriptions Are Becoming Broken Product Specs</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/testing-bifrost-cli-and-code-mode-what-worked-what-broke-and-what-i-verified-7c3" class="reading-link">
+        <span>
+          <span class="reading-link-title">Testing Bifrost CLI and Code Mode: What Worked, What Broke, and What I Verified</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/how-i-actually-use-agentic-ai-tools-in-vs-code-webflow-and-aws-2kad" class="reading-link">
+        <span>
+          <span class="reading-link-title">My Real AI Development Setup</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a></div><div class="reading-source-footer"><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera">View DEV Community source ↗</a></div></details><details class="reading-source"><summary>
+      <span class="reading-source-name">SLOPSTACK</span>
+      <span class="reading-source-count">1 article</span>
+    </summary><div class="reading-list"><a rel="noopener" target="_blank" href="https://www.slopstack.dev/guides/ai-review-trap-verification-over-confidence" class="reading-link">
+        <span>
+          <span class="reading-link-title">The AI Review Trap: Why Junior Developers Need Verification, Not Confidence</span>
+          <span class="reading-link-meta">SLOPSTACK</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a></div><div class="reading-source-footer"><a rel="noopener" target="_blank" href="https://www.slopstack.dev/guides">View SLOPSTACK source ↗</a></div></details><p class="further-reading-note">This list is limited to public articles and guides identified as AI or AI-related writing. Social posts, drafts and unpublished notes are not included.</p></div></section><div class="shell"><div><strong>Scout</strong><span> · ProjectHub runtime</span></div><a href="https://www.linkedin.com/in/bradmatera" target="_blank" rel="noopener">LinkedIn ↗</a></div></footer>
   <script type="module" src="./scene.js"></script>
   <script src="./site.js" defer></script>
   <script src="./docs.js" defer></script>

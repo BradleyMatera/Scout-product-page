@@ -1,3 +1,66 @@
+# Product-site overhaul audit — September 5, 2026
+
+Starting product revision: `c6bc2973fd03ce2846c75081fdda883306c88045`.
+The earlier Pages deployment was independently confirmed successful: [run 33985823204](https://github.com/BradleyMatera/Scout-product-page/actions/runs/33985823204).
+
+## Fresh source inspection
+
+All remote refs were fetched in read-only checkouts. [source-state.json](./source-state.json)
+records 35 ProjectHub branches and two ProjectHub-dev branches with full SHAs, dates, and subjects.
+Production/integration remain `b071e4e4` / `4f5ee971`, with identical Git trees.
+Staging remains `6d36433c` and records `4f5ee971`.
+The active branch advanced to `cddb3bc`, three ahead / zero behind develop, via a
+[documentation-only handoff](https://github.com/BradleyMatera/ProjectHub/commit/cddb3bca1410f9cee04372e0670037244ffc8d3d).
+The handoff reports dev-VM deployment of `5bd9437`, 12 discourse tests, a green suite
+without a total, and unresolved thin-evidence recovery. No Actions run was returned
+for that branch. It remains unmerged; no new production capability is inferred.
+
+The accompanying ChatGPT review was retrieved for continuity and indicates further review
+failures. Its conversational claims are not used as independently verified public benchmark data.
+
+## Corrections made against executable source
+
+- Static HTML replaces browser-time factual patching on all six pages.
+- Current production/integration labels and Learn temperature corrected in original content.
+- Source code references pinned to the audited revisions; 44 distinct referenced files checked with `git cat-file -e`.
+- Learn ranking now explains PROFILE filtering, pinned evidence, skills/certification special cases, and current intent boosts.
+- Removed an invalid PROFILE/blog ranking example: blog is filtered before scoring.
+- Validator lesson now uses the executable 15-character short-answer threshold. The code's older diagnostic string still says 20.
+- The long-answer check compares an already 800-character-capped string with 800; the old diagnostic string says 600. Documentation describes the actual code rather than promoting that string to a limit.
+- Exact-model neuron accounting preserved, including unknown/completeness semantics and the explicitly FP8-fast-only example.
+- API request table includes server-gated opt-in diagnostics and debug-cache isolation.
+- Navigation includes Learn and Roadmap without scripts. Search matches both tags and full section text.
+- Early-access prices preserved; delivery status distinguished from planned portable packaging.
+
+Primary implementation evidence:
+[provider](https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/lib/cloudflare-provider.js),
+[RAG selection](https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/lib/rag-agent.js),
+[validator](https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/lib/grounding-validator.js),
+[server routes](https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/server-gemini.js).
+
+## Independent checks in this pass
+
+- `node scripts/eval-retrieval.js` in the read-only production checkout: 1173 chunks; Recall@6 1.000 (40/40); MRR@6 0.942; PASS.
+- `node --test test/cloudflare-provider.test.js`: 26 tests; 26 pass; 0 fail; 0 skipped.
+- `python3 scripts/verify-site.py`: all six static pages; 259 local links/assets, IDs, navigation, and accounting checks.
+- `node scripts/prepare-site.js`: validates six pages without modifying them.
+- JavaScript syntax and DOM interaction checks performed for shared site and documentation behavior.
+
+Primary-domain sync compatibility was inspected read-only in `gatsby-starter-minimal-blog/scripts/sync-scout-product.js`: all required page assets remain within its fixed copy list. New styling is included in the already-synced `launch.css`. Audit and source-state links point to GitHub because Markdown/JSON audit files are not copied by that host.
+
+## Verification boundaries
+
+This is source/documentation verification, not a claim of perfect model answers.
+Historical 1019/1019 release tests and 94/132 live turns remain attributed to their original reports.
+This pass did not reproduce the full Scout live conversation suite or inspect private VM configuration.
+Visual browser rendering has not been independently checked in this environment.
+External study links are supplementary references; availability can change independently of this repository.
+
+## Previous audit record (historical)
+
+The record below preserves the earlier September 5 audit. Its active-branch tip and browser-script
+implementation descriptions are superseded by the audit above.
+
 # Scout Source Audit — 2026-09-05
 
 This is the source record behind the current Scout product-site sync.

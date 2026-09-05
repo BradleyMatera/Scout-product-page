@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#03080d" />
-  <meta name="color-scheme" content="dark" />
-  <meta name="description" content="Full Scout API reference for the current ProjectHub runtime: routes, chat contract, errors, health probes, diagnostics, browser-local inference, telemetry, CORS, limits, and compatibility boundaries." />
-  <meta property="og:title" content="Scout API Reference" />
-  <meta property="og:description" content="Source-cited API documentation for the current Scout / ProjectHub runtime." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://bradleymatera.dev/scout/api.html" />
-  <meta property="og:image" content="https://bradleymatera.dev/scout/assets/scout-og.svg" />
-  <link rel="canonical" href="https://bradleymatera.dev/scout/api.html" />
-  <link rel="icon" href="./assets/scout-mark.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="./docs.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#03080d">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Full Scout API reference for the current ProjectHub runtime: routes, chat contract, errors, health probes, diagnostics, browser-local inference, telemetry, CORS, limits, and compatibility boundaries.">
+  <meta property="og:title" content="Scout API Reference">
+  <meta property="og:description" content="Source-cited API documentation for the current Scout / ProjectHub runtime.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bradleymatera.dev/scout/api.html">
+  <meta property="og:image" content="https://bradleymatera.dev/scout/assets/scout-og.svg">
+  <link rel="canonical" href="https://bradleymatera.dev/scout/api.html">
+  <link rel="icon" href="./assets/scout-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./docs.css">
   <title>Scout API Reference</title>
-</head>
-<body class="product-subpage docs-page api-reference-page">
+<link href="./enhancements.css" rel="stylesheet"><link href="./further-reading.css" rel="stylesheet"><link href="./launch.css" rel="stylesheet"></head>
+<body data-product-page="api" class="product-subpage docs-page api-reference-page"><a class="skip-link" href="#main-content">Skip to content</a>
   <canvas id="ambient-three" aria-hidden="true"></canvas>
   <div class="page-grid" aria-hidden="true"></div>
   <div class="scan-line" aria-hidden="true"></div>
   <div class="scroll-progress" aria-hidden="true"><span></span></div>
 
-  <header class="site-header"><div class="shell nav-shell"></div></header>
+  <header class="site-header"><div class="shell nav-shell"><a aria-label="Scout overview" href="./index.html#overview" class="brand"><img src="./assets/scout-mark.svg" alt="" width="38" height="38"><span>Scout</span></a><nav aria-label="Scout product navigation" class="nav-links"><a data-nav-key="overview" href="./index.html#overview">Overview</a><a data-nav-key="features" href="./index.html#features">Features</a><a data-nav-key="how-it-works" href="./index.html#how-it-works">How It Works</a><a data-nav-key="docs" href="./docs.html">Docs</a><a data-nav-key="learn" href="./learn.html">Learn</a><a class="active" aria-current="page" data-nav-key="api" href="./api.html">API</a><a data-nav-key="changelog" href="./changelog.html">Changelog</a><a data-nav-key="roadmap" href="./index.html#roadmap">Roadmap</a></nav><a data-nav-key="pricing" href="./pricing.html" class="nav-source nav-pricing">Pricing</a></div></header>
 
-  <main>
+  <main id="main-content">
     <section class="subpage-hero">
-      <div class="shell reveal">
+      <div class="shell reveal visible">
         <div class="subpage-kicker">Scout / API reference</div>
         <h1>The runtime interface, <span>not a placeholder.</span></h1>
         <p>This reference documents the Express interface currently implemented by ProjectHub/Scout. It describes route behavior, request and response fields, diagnostics, browser-local inference support, rate/CORS behavior, failure semantics, and compatibility limits. It does not claim a public multi-tenant API-key product or external SLA.</p>
@@ -45,13 +45,11 @@
       </div>
     </section>
 
-    <div class="shell docs-mobile-nav"><label><span class="sr-only">API section</span><select aria-label="API section">
-      <option value="scope">Scope and precedence</option><option value="environments">Environments</option><option value="transport">Transport and CORS</option><option value="routes">Route inventory</option><option value="chat">POST /api/chat</option><option value="chat-response">Chat response</option><option value="errors">Failure contract</option><option value="health">Health probes</option><option value="retrieval">Retrieval diagnostics</option><option value="diagnostics">Model diagnostics</option><option value="knowledge-health">Knowledge health</option><option value="client-local">Browser-local inference</option><option value="telemetry">Operational telemetry</option><option value="costs">Cost ledger</option><option value="security">Security boundary</option><option value="compatibility">Compatibility</option><option value="examples">Copyable examples</option><option value="sources">Source map</option>
-    </select></label></div>
+    <div class="shell docs-mobile-nav"><label><span class="sr-only">API section</span><select aria-label="API section"><option value="scope">What this API is.</option><option value="environments">Runtime environments.</option><option value="transport">JSON, CORS, limits.</option><option value="routes">Routes present in the September 5 released source.</option><option value="chat">POST /api/chat</option><option value="chat-response">Success payload.</option><option value="errors">Check ok, not just HTTP status.</option><option value="health">Three different health surfaces.</option><option value="retrieval">GET /api/retrieve</option><option value="diagnostics">Model probes are engineering surfaces.</option><option value="knowledge-health">GET /api/knowledge-health</option><option value="client-local">Browser-local packet/validate flow.</option><option value="telemetry">Operational telemetry.</option><option value="costs">GET /api/costs</option><option value="security">Current application controls.</option><option value="compatibility">No frozen public schema yet.</option><option value="examples">Copyable requests.</option><option value="sources">Where each contract comes from.</option></select></label></div>
 
     <div class="shell docs-shell">
       <aside class="docs-sidebar" aria-label="API sections">
-        <div class="docs-sidebar-head"><div class="docs-sidebar-title"><span>API reference</span><span>18 topics</span></div><input class="docs-search" type="search" placeholder="Search API docs…" aria-label="Search API documentation" /></div>
+        <div class="docs-sidebar-head"><div class="docs-sidebar-title"><span>API reference</span><span>18 topics</span></div><input class="docs-search" type="search" placeholder="Search API docs…" aria-label="Search API documentation"></div>
         <nav class="docs-nav">
           <div class="docs-nav-group"><span class="docs-nav-label">Contract</span>
             <a href="#scope"><span class="nav-code">01</span>Scope and precedence</a>
@@ -94,8 +92,12 @@
             <div class="docs-card"><span class="label">Precedence</span><h3>Executable source wins</h3><p>When older prose disagrees with current server code or runtime facts, this reference follows current executable behavior.</p></div>
           </div>
           <div class="docs-callout warning"><strong>Documentation drift:</strong> the older repository API guide still references routes and Ollama-era behavior that are not all present in current <code>develop</code>. This page inventories the current server source instead.</div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: server-gemini.js ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">Source: production runtime facts ↗</a></div>
-        </section>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: server-gemini.js ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">Source: production runtime facts ↗</a></div>
+
+      <div class="docs-callout production" data-sept5-release="">
+        <strong>September 5 released source:</strong> production <code>b071e4e4</code> and protected integration <code>4f5ee971</code> have different Git ancestry but the same Git tree <code>a0066cc8</code>. ProjectHub-dev records <code>4f5ee971</code> as its staging source. PR #29 used an ancestry-preserving release commit rather than forcing the conflicting direct develop→master PR #25.
+      </div>
+      <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/pull/29" target="_blank" rel="noopener">Source: PR #29 release evidence ↗</a><a href="https://github.com/BradleyMatera/ProjectHub-dev/blob/6d36433c040d0bbc903ec26b6968674bd937bcd0/STAGING-SOURCE.json" target="_blank" rel="noopener">Source: staging source marker ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/docs/current-feature-handoff.md" target="_blank" rel="noopener">Source: current handoff ↗</a></div></section>
 
         <section class="docs-section" id="environments" data-search="production staging development base url endpoint host">
           <div class="docs-eyebrow">02 / Environments</div><h2>Runtime environments.</h2>
@@ -106,7 +108,7 @@
             <tr><td>Local</td><td><code>http://127.0.0.1:3000</code> by default</td><td>Current checkout and local environment</td></tr>
           </tbody></table></div>
           <div class="docs-callout"><strong>Branch and runtime are separate facts.</strong> The backend exposes build provenance in <code>/health</code>; use that rather than assuming a hostname proves which commit is running.</div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/PROJECTHUB-DEVELOPMENT-AND-RELEASE-SPEC.md" target="_blank" rel="noopener">Source: release specification ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: build provenance fields ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/PROJECTHUB-DEVELOPMENT-AND-RELEASE-SPEC.md" target="_blank" rel="noopener">Source: release specification ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: build provenance fields ↗</a></div>
         </section>
 
         <section class="docs-section" id="transport" data-search="cors rate limit body json methods headers authorization 20 600">
@@ -118,11 +120,11 @@
             <div class="docs-card"><span class="label">Headers</span><h3>Content-Type + Authorization accepted</h3><p>The server CORS configuration permits both headers, but current source does not expose a self-service API-key authentication product.</p></div>
           </div>
           <div class="docs-callout limit"><strong>Do not infer authentication from the allowed <code>Authorization</code> header.</strong> A permitted CORS header is not the same thing as an implemented public authentication scheme.</div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: Express/CORS/rate-limit setup ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: Express/CORS/rate-limit setup ↗</a></div>
         </section>
 
         <section class="docs-section" id="routes" data-search="route inventory endpoints chat health live ready retrieve diagnose agent probe knowledge health client packet validate status chat log costs root">
-          <div class="docs-eyebrow">04 / Route inventory</div><h2>Routes present in current <code>develop</code>.</h2>
+          <div class="docs-eyebrow">04 / Route inventory</div><h2>Routes present in the September 5 released source.</h2>
           <p>This table deliberately omits routes that only survive in older documentation. In particular, <code>/api/think</code> and <code>/api/stats</code> are not listed as current server routes because they are not present in the current server source reviewed for this page.</p>
           <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Audience</th></tr></thead><tbody>
             <tr><td><span class="docs-badge">GET</span></td><td><code>/</code></td><td>Basic service/status identity</td><td>Runtime</td></tr>
@@ -140,7 +142,7 @@
             <tr><td><span class="docs-badge">GET</span></td><td><code>/api/chat-log</code></td><td>Grouped persisted chat-log telemetry</td><td>Operations</td></tr>
             <tr><td><span class="docs-badge">GET</span></td><td><code>/api/costs</code></td><td>Cost ledger snapshot or explicit offline state</td><td>Operations</td></tr>
           </tbody></table></div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: route implementations ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: route implementations ↗</a></div>
         </section>
 
         <section class="docs-section" id="chat" data-search="post api chat request message session history clear action 600 deadline cache policy rag">
@@ -152,7 +154,7 @@
             <tr><td><code>sessionId</code></td><td>string</td><td>No</td><td>Truncated to 128 characters and used for server-owned conversation state and memory.</td></tr>
             <tr><td><code>history</code></td><td>array</td><td>No</td><td>Recent conversation supplied by the client; server-side helpers sanitize/bound it before use.</td></tr>
             <tr><td><code>action</code></td><td>string</td><td>No</td><td><code>clear</code> clears conversation memory/state for the supplied session and returns immediately.</td></tr>
-          </tbody></table></div>
+          <tr><td><code>gateDebug</code></td><td>boolean</td><td>No</td><td>Detailed diagnostics require both server <code>SCOUT_GATE_DEBUG=true</code> and request <code>gateDebug:true</code> (or query <code>gateDebug=1</code>). Debug turns bypass response-cache reads and writes.</td></tr></tbody></table></div>
           <div class="docs-code"><div class="docs-code-head"><span>Request</span><button class="docs-copy" type="button">Copy</button></div><pre>curl -sS https://projecthub-chat.bradleymatera.dev/api/chat \
   -H 'Content-Type: application/json' \
   -d '{
@@ -175,7 +177,7 @@
             <div class="docs-flow-step"><div><strong>Generation and validation run.</strong><span>The configured inference provider produces prose; the agent returns validation, evidence, generation-call and repair metadata.</span></div></div>
             <div class="docs-flow-step"><div><strong>Format and state are finalized.</strong><span>The server shapes format without authoring replacement prose, records telemetry, remembers the turn, and updates structured session state.</span></div></div>
           </div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: /api/chat implementation ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rag-agent.js" target="_blank" rel="noopener">Source: RAG-primary agent ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: /api/chat implementation ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/lib/rag-agent.js" target="_blank" rel="noopener">Source: RAG-primary agent ↗</a></div>
         </section>
 
         <section class="docs-section" id="chat-response" data-search="chat response payload ok reply provider model fallback grounded pipeline proseSource contract sessionMemory agent metadata generation calls retrieval selected evidence">
@@ -216,7 +218,7 @@
             <div class="docs-card"><span class="label">TECHNICAL_ERROR</span><h3>Failure response</h3><p>The service did not return a normal chatbot answer because generation, validation, or infrastructure failed.</p></div>
           </div>
           <div class="docs-callout warning"><strong>Legacy field naming exists.</strong> Some fields such as <code>local.only</code>, <code>mode</code>, and older provider labels survive from earlier architecture phases. Use <code>provider</code>, <code>model</code>, <code>proseSource</code>, <code>contract</code>, <code>agent</code>, and <code>/health.buildEnv</code> together when diagnosing current behavior.</div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: chat payload construction ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">Source: runtime telemetry definitions ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: chat payload construction ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">Source: runtime telemetry definitions ↗</a></div>
         </section>
 
         <section class="docs-section" id="errors" data-search="errors 400 429 503 inference unavailable internal tenant knowledge agent engine deadline status ok false">
@@ -240,7 +242,7 @@ if (!response.ok || payload.ok === false) {
 }
 
 console.log(payload.reply);</pre></div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: chat errors and deadline behavior ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: chat errors and deadline behavior ↗</a></div>
         </section>
 
         <section class="docs-section" id="health" data-search="health live ready build provenance model verified knowledge ready runtime provider model deadline telemetry">
@@ -252,7 +254,7 @@ console.log(payload.reply);</pre></div>
           </div>
           <div class="docs-code"><div class="docs-code-head"><span>Readiness check</span><button class="docs-copy" type="button">Copy</button></div><pre>curl -fsS https://projecthub-chat.bradleymatera.dev/health/ready</pre></div>
           <div class="docs-callout production"><strong>Deployment verification:</strong> use <code>/health.buildEnv.sourceCommit</code> to verify what was actually deployed. A healthy hostname alone does not prove source provenance.</div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: health endpoints ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: health endpoints ↗</a></div>
         </section>
 
         <section class="docs-section" id="retrieval" data-search="api retrieve q history bm25 rrf normalized rewritten intent local bm25 dev only">
@@ -264,7 +266,7 @@ console.log(payload.reply);</pre></div>
           </tbody></table></div>
           <div class="docs-code"><div class="docs-code-head"><span>Standalone retrieval</span><button class="docs-copy" type="button">Copy</button></div><pre>curl -sS 'http://127.0.0.1:3000/api/retrieve?q=what%20did%20he%20build'</pre></div>
           <p>The response exposes <code>rewritten</code>, <code>normalized</code>, <code>intent</code>, <code>retrievalMethod</code>, BM25 results, and the legacy substring fallback results for comparison.</p>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: /api/retrieve ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/rrf.js" target="_blank" rel="noopener">Source: RRF implementation ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: /api/retrieve ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/lib/rrf.js" target="_blank" rel="noopener">Source: RRF implementation ↗</a></div>
         </section>
 
         <section class="docs-section" id="diagnostics" data-search="diagnose agent probe ollama cloudflare structured json legacy diagnostics">
@@ -274,8 +276,8 @@ console.log(payload.reply);</pre></div>
           <h3><code>GET /api/agent-probe</code></h3>
           <p>This endpoint runs the agent probe through the current model router, reports engine/agent mode, reachability, structured-output capability, latency, available/pinned local models, and the session-state store size.</p>
           <div class="docs-callout warning"><strong>Provider distinction:</strong> current production runtime facts identify Cloudflare Workers AI as normal generation. The presence of Ollama-oriented diagnostics reflects the retained dev/evaluation path, not an Ollama-only production architecture.</div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: diagnostic routes ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">Source: current production provider facts ↗</a></div>
-        </section>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: diagnostic routes ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">Source: current production provider facts ↗</a></div>
+        <div data-sept5-diagnostics="true" class="docs-callout production"><strong>Per-turn gate diagnostics are opt-in twice:</strong> <code>/api/chat</code> exposes gate-debug detail only when the server has <code>SCOUT_GATE_DEBUG=true</code> and the request explicitly opts in with <code>gateDebug: true</code> (or query <code>gateDebug=1</code>). Authorized debug responses are <code>Cache-Control: no-store</code> and bypass normal response-cache reuse. A public request cannot enable diagnostics by itself.</div><div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/server-gemini.js" target="_blank" rel="noopener">Source: released chat diagnostic authorization/cache behavior ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/test/gate-debug-authorization.test.js" target="_blank" rel="noopener">Source: authorization regression tests ↗</a></div></section>
 
         <section class="docs-section" id="knowledge-health" data-search="knowledge health coverage fields gaps hot topics learned legacy telemetry think removed">
           <div class="docs-eyebrow">11 / Knowledge</div><h2><code>GET /api/knowledge-health</code></h2>
@@ -285,7 +287,7 @@ console.log(payload.reply);</pre></div>
             <div class="docs-card"><span class="label">Legacy compatibility</span><h3>Learning fields remain</h3><p>The current server initializes legacy learning objects so health responses remain well-formed even though Think Mode/background learning has been removed from runtime.</p></div>
           </div>
           <div class="docs-callout warning"><strong>Removed runtime behavior:</strong> do not interpret <code>learning</code> telemetry fields as proof that background Think Mode is active. Current server comments explicitly state it was removed.</div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: knowledge-health + Think Mode removal ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: knowledge-health + Think Mode removal ↗</a></div>
         </section>
 
         <section class="docs-section" id="client-local" data-search="browser local WebGPU client packet validate status runId 60 seconds experimental">
@@ -303,7 +305,7 @@ console.log(payload.reply);</pre></div>
             <tr><td>Expired run id</td><td><code>/api/client-validate</code> returns HTTP 404 with <code>verdict:"expired"</code>.</td></tr>
             <tr><td>Production status</td><td>Experimental; not represented as the normal production generation path.</td></tr>
           </tbody></table></div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: client-local endpoints ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: client-local endpoints ↗</a></div>
         </section>
 
         <section class="docs-section" id="telemetry" data-search="chat log telemetry sessions recent provider topic referrer latency pipeline build usage">
@@ -314,7 +316,7 @@ console.log(payload.reply);</pre></div>
             <div class="docs-card"><span class="label">/api/chat-log</span><h3>Grouped chat history</h3><p>Groups persisted log records by truncated session id and returns up to 100 sessions with message counts, timing, topics, provider mix, questions, replies, and latency.</p></div>
           </div>
           <div class="docs-callout limit"><strong>Privacy/operations note:</strong> chat-log and recent-session data are operational records. Their presence in the current application backend does not make them appropriate customer-facing endpoints in a future generalized Scout API.</div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: telemetry + chat-log implementation ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: telemetry + chat-log implementation ↗</a></div>
         </section>
 
         <section class="docs-section" id="costs" data-search="cost costs ledger tracker metering offline gcp egress neurons cloudflare">
@@ -324,8 +326,12 @@ console.log(payload.reply);</pre></div>
             <div class="docs-card"><span class="label">Tracker enabled</span><h3>Ledger snapshot + insights</h3><p>Returns the cost-ledger snapshot and computed insights. The backend also samples VM compute and local state-file storage every 60 seconds.</p></div>
             <div class="docs-card"><span class="label">Tracker disabled</span><h3>Explicit offline payload</h3><p>Returns HTTP 200 with <code>{ ok:false, offline:true, reason:"COST_TRACKER is not enabled on this backend" }</code> rather than a 404.</p></div>
           </div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: /api/costs and sampler ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/cost-ledger.js" target="_blank" rel="noopener">Source: cost ledger ↗</a></div>
-        </section>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: /api/costs and sampler ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/lib/cost-ledger.js" target="_blank" rel="noopener">Source: cost ledger ↗</a></div>
+
+      <div class="docs-callout warning" data-runtime-truth-debt="">
+        <strong>Known source-truth debt:</strong> current executable provider/accounting code is exact-model and null-safe, but <code>data/scout-runtime-knowledge.json</code> is still marked <code>lastVerified: 2026-08-21</code> and retains the superseded sentence assigning <code>4,119 / 34,868</code> to Scout's normal <code>-fast</code> model. This site treats that sentence as stale and follows executable provider/accounting code instead.
+      </div>
+      <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/lib/cloudflare-provider.js" target="_blank" rel="noopener">Source: current production provider code ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">Source: stale runtime self-knowledge record ↗</a></div><div data-neuron-accounting="true" class="docs-callout warning"><strong>Actual, estimated, and unknown are different states:</strong> <code>actualNeurons</code> is provider-reported usage when available. <code>estimatedNeurons</code> is calculated only when the exact model has a verified rate. For <code>@cf/meta/llama-3.1-8b-instruct-fast</code>, token-derived usage remains unknown when no provider actual value exists. Unknown is not zero and is not a verified <code>$0</code> cost.</div><div class="docs-source-row"><a href="https://developers.cloudflare.com/workers-ai/platform/pricing/" target="_blank" rel="noopener">Source: Cloudflare pricing ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/lib/cloudflare-provider.js" target="_blank" rel="noopener">Source: production provider adapter ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/docs/cloudflare-neuron-accounting-report.md" target="_blank" rel="noopener">Source: accounting correction report ↗</a></div></section>
 
         <section class="docs-section" id="security" data-search="security cors helmet auth api key secrets rate limit injection xss allowed origins">
           <div class="docs-eyebrow">15 / Security boundary</div><h2>Current application controls.</h2>
@@ -336,7 +342,7 @@ console.log(payload.reply);</pre></div>
           </div>
           <p>Scout also has application-level response-policy, safety, grounding, relationship, provenance and false-claim controls, but those are answer-quality/security layers rather than HTTP authentication.</p>
           <div class="docs-callout warning"><strong>No public auth contract:</strong> this reference does not describe a customer API-key scheme because current ProjectHub source does not define one as a public product interface.</div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: HTTP/CORS/rate-limit controls ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/grounding-validator.js" target="_blank" rel="noopener">Source: answer validation ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: HTTP/CORS/rate-limit controls ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/lib/grounding-validator.js" target="_blank" rel="noopener">Source: answer validation ↗</a></div>
         </section>
 
         <section class="docs-section" id="compatibility" data-search="compatibility versioning backward stable api public product removed stats think deprecated legacy">
@@ -349,7 +355,7 @@ console.log(payload.reply);</pre></div>
             <tr><td>Learning telemetry fields</td><td><span class="docs-badge dev">Compatibility stub</span></td><td>Fields can remain well-formed while background Think Mode itself is removed.</td></tr>
             <tr><td>Browser-local endpoints</td><td><span class="docs-badge exp">Experimental</span></td><td>Do not treat as the normal production generation contract.</td></tr>
           </tbody></table></div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: current route surface ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/docs/api-guide.md" target="_blank" rel="noopener">Source: older API guide for drift comparison ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: current route surface ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/docs/api-guide.md" target="_blank" rel="noopener">Source: older API guide for drift comparison ↗</a></div>
         </section>
 
         <section class="docs-section" id="examples" data-search="examples curl clear health ready retrieve client packet validate code">
@@ -369,7 +375,7 @@ curl -sS --get http://127.0.0.1:3000/api/retrieve \
           <div class="docs-code"><div class="docs-code-head"><span>POST /api/client-packet</span><button class="docs-copy" type="button">Copy</button></div><pre>curl -sS http://127.0.0.1:3000/api/client-packet \
   -H 'Content-Type: application/json' \
   -d '{"message":"Does he know AWS?","sessionId":"local-demo"}'</pre></div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: request contracts ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: request contracts ↗</a></div>
         </section>
 
         <section class="docs-section" id="sources" data-search="source map files server router cloudflare rag agent session validation tools runtime facts release">
@@ -384,13 +390,136 @@ curl -sS --get http://127.0.0.1:3000/api/retrieve \
             <tr><td>Read-only tools</td><td><code>lib/agent-tools.js</code></td><td>Tool names, schemas, evidence-only behavior.</td></tr>
             <tr><td>Release environments</td><td><code>PROJECTHUB-DEVELOPMENT-AND-RELEASE-SPEC.md</code></td><td>Production/staging source and deployment sequence.</td></tr>
           </tbody></table></div>
-          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/server-gemini.js" target="_blank" rel="noopener">Source: server ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">Source: runtime facts ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/develop/lib/local-model-router.js" target="_blank" rel="noopener">Source: inference router ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/master/lib/cloudflare-provider.js" target="_blank" rel="noopener">Source: Cloudflare adapter ↗</a></div>
+          <div class="docs-source-row"><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/server-gemini.js" target="_blank" rel="noopener">Source: server ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/data/scout-runtime-knowledge.json" target="_blank" rel="noopener">Source: runtime facts ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/4f5ee971488e433ebdf66280cce82e163c5c7688/lib/local-model-router.js" target="_blank" rel="noopener">Source: inference router ↗</a><a href="https://github.com/BradleyMatera/ProjectHub/blob/b071e4e4f0bb69faeecd811f31514af30d2e1f61/lib/cloudflare-provider.js" target="_blank" rel="noopener">Source: Cloudflare adapter ↗</a></div>
         </section>
       </article>
     </div>
   </main>
 
-  <footer class="site-footer"><div class="shell"><div><strong>Scout</strong><span> · ProjectHub runtime</span></div><a href="https://www.linkedin.com/in/bradmatera" target="_blank" rel="noopener">LinkedIn ↗</a></div></footer>
+  <footer class="site-footer"><section aria-labelledby="further-reading-title" class="further-reading"><div class="shell"><div class="further-reading-head">
+    <div>
+      <span class="further-reading-kicker">Further reading</span>
+      <h2 id="further-reading-title">AI, LLMs, agents and AI-assisted development.</h2>
+    </div>
+    <p>Published articles and guides grouped by their original source. Duplicate subjects are kept when they were separately published on more than one source.</p>
+  </div><details class="reading-source"><summary>
+      <span class="reading-source-name">bradleymatera.dev</span>
+      <span class="reading-source-count">4 articles</span>
+    </summary><div class="reading-list"><a rel="noopener" target="_blank" href="https://bradleymatera.dev/coding-style-gpt-agent-external-reviewer/" class="reading-link">
+        <span>
+          <span class="reading-link-title">How We Built This Coding Style With a GPT Agent and an External Reviewer</span>
+          <span class="reading-link-meta">bradleymatera.dev</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://bradleymatera.dev/ai-end-to-end-projects/" class="reading-link">
+        <span>
+          <span class="reading-link-title">End to End Projects With AI: A Strict, Verifiable Workflow</span>
+          <span class="reading-link-meta">bradleymatera.dev</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://bradleymatera.dev/my-real-ai-development-setup/" class="reading-link">
+        <span>
+          <span class="reading-link-title">My Real AI Development Setup: Tools and Checks</span>
+          <span class="reading-link-meta">bradleymatera.dev</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://bradleymatera.dev/projecthub-embeddable-ai-recruiter-free-tiers/" class="reading-link">
+        <span>
+          <span class="reading-link-title">How I Built ProjectHub: An Embeddable AI Recruiter Assistant That Runs on Free Tiers</span>
+          <span class="reading-link-meta">bradleymatera.dev</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a></div><div class="reading-source-footer"><a rel="noopener" target="_blank" href="https://bradleymatera.dev/blog/">View bradleymatera.dev source ↗</a></div></details><details class="reading-source"><summary>
+      <span class="reading-source-name">DEV Community</span>
+      <span class="reading-source-count">13 articles</span>
+    </summary><div class="reading-list"><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/switching-llms-mid-task-is-not-as-seamless-as-it-looks-2cm3" class="reading-link">
+        <span>
+          <span class="reading-link-title">Switching LLMs Mid-Task Is Not as Seamless as It Looks</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/im-building-free-ai-on-a-vm-that-barely-qualifies-as-a-computer-342" class="reading-link">
+        <span>
+          <span class="reading-link-title">I’m Building Free AI on a VM That Barely Qualifies as a Computer</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/how-i-built-projecthub-an-embeddable-ai-recruiter-assistant-that-runs-on-free-tiers-bif" class="reading-link">
+        <span>
+          <span class="reading-link-title">How I Built ProjectHub: An Embeddable AI Recruiter Assistant That Runs on Free Tiers</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/how-i-actually-build-full-end-to-end-projects-using-ai-42do" class="reading-link">
+        <span>
+          <span class="reading-link-title">How I Actually Build Full End To End Projects Using AI</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/are-ai-models-hardwired-to-fail-2741" class="reading-link">
+        <span>
+          <span class="reading-link-title">Are AI Models Hardwired to Fail?</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/ai-didnt-replace-junior-developers-it-replaced-safe-places-to-be-one-d91" class="reading-link">
+        <span>
+          <span class="reading-link-title">AI Didn’t Replace Junior Developers. It Replaced Safe Places To Be One.</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/the-ai-review-trap-why-verification-matters-more-than-prompting-3lak" class="reading-link">
+        <span>
+          <span class="reading-link-title">The AI Review Trap: Why Verification Matters More Than Prompting</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/the-developer-pay-paradox-are-junior-devs-staff-engineers-and-most-developers-over-or-under-paid-oid" class="reading-link">
+        <span>
+          <span class="reading-link-title">The Developer Pay Paradox: Are Junior Devs, Staff Engineers and Most Developers Over- or Under-paid?</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/ai-policy-is-becoming-the-new-entry-level-gatekeeping-1d4o" class="reading-link">
+        <span>
+          <span class="reading-link-title">AI Policy Is Becoming the New Entry-Level Gatekeeping</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/senior-engineers-complaining-about-juniors-are-missing-the-point-2ch6" class="reading-link">
+        <span>
+          <span class="reading-link-title">Senior Engineers Complaining About Juniors Are Missing the Point</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/entry-level-job-descriptions-are-becoming-broken-product-specs-hgc" class="reading-link">
+        <span>
+          <span class="reading-link-title">Entry-Level Job Descriptions Are Becoming Broken Product Specs</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/testing-bifrost-cli-and-code-mode-what-worked-what-broke-and-what-i-verified-7c3" class="reading-link">
+        <span>
+          <span class="reading-link-title">Testing Bifrost CLI and Code Mode: What Worked, What Broke, and What I Verified</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/how-i-actually-use-agentic-ai-tools-in-vs-code-webflow-and-aws-2kad" class="reading-link">
+        <span>
+          <span class="reading-link-title">My Real AI Development Setup</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a></div><div class="reading-source-footer"><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera">View DEV Community source ↗</a></div></details><details class="reading-source"><summary>
+      <span class="reading-source-name">SLOPSTACK</span>
+      <span class="reading-source-count">1 article</span>
+    </summary><div class="reading-list"><a rel="noopener" target="_blank" href="https://www.slopstack.dev/guides/ai-review-trap-verification-over-confidence" class="reading-link">
+        <span>
+          <span class="reading-link-title">The AI Review Trap: Why Junior Developers Need Verification, Not Confidence</span>
+          <span class="reading-link-meta">SLOPSTACK</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a></div><div class="reading-source-footer"><a rel="noopener" target="_blank" href="https://www.slopstack.dev/guides">View SLOPSTACK source ↗</a></div></details><p class="further-reading-note">This list is limited to public articles and guides identified as AI or AI-related writing. Social posts, drafts and unpublished notes are not included.</p></div></section><div class="shell"><div><strong>Scout</strong><span> · ProjectHub runtime</span></div><a href="https://www.linkedin.com/in/bradmatera" target="_blank" rel="noopener">LinkedIn ↗</a></div></footer>
   <script type="module" src="./scene.js"></script>
   <script src="./site.js" defer></script>
   <script src="./docs.js" defer></script>

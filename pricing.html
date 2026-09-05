@@ -1,49 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#070a0f" />
-  <meta name="color-scheme" content="dark" />
-  <meta name="description" content="Scout early-access pricing: paid pilots, hosted plans, managed deployments, and separately negotiated licensing options." />
-  <meta property="og:title" content="Scout Pricing — Early Access and Deployment Models" />
-  <meta property="og:description" content="Scoped pilot, hosted Scout plans, managed deployments, and separately negotiated licensing options." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://bradleymatera.github.io/Scout-product-page/pricing.html" />
-  <meta property="og:image" content="https://bradleymatera.github.io/Scout-product-page/assets/scout-og.svg" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Scout Pricing" />
-  <meta name="twitter:description" content="Early-access pricing for scoped Scout deployments." />
-  <link rel="canonical" href="https://bradleymatera.github.io/Scout-product-page/pricing.html" />
-  <link rel="icon" href="./assets/scout-mark.svg" type="image/svg+xml" />
-  <link rel="manifest" href="./site.webmanifest" />
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="./enhancements.css" />
-  <link rel="stylesheet" href="./pricing.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#070a0f">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Scout early-access pricing: paid pilots, hosted plans, managed deployments, and separately negotiated licensing options.">
+  <meta property="og:title" content="Scout Pricing — Early Access and Deployment Models">
+  <meta property="og:description" content="Scoped pilot, hosted Scout plans, managed deployments, and separately negotiated licensing options.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bradleymatera.github.io/Scout-product-page/pricing.html">
+  <meta property="og:image" content="https://bradleymatera.github.io/Scout-product-page/assets/scout-og.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Scout Pricing">
+  <meta name="twitter:description" content="Early-access pricing for scoped Scout deployments.">
+  <link rel="canonical" href="https://bradleymatera.github.io/Scout-product-page/pricing.html">
+  <link rel="icon" href="./assets/scout-mark.svg" type="image/svg+xml">
+  <link rel="manifest" href="./site.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./enhancements.css">
+  <link rel="stylesheet" href="./pricing.css">
   <title>Scout Pricing — Early Access</title>
-</head>
-<body class="pricing-page">
+<link href="./further-reading.css" rel="stylesheet"><link href="./launch.css" rel="stylesheet"></head>
+<body data-product-page="pricing" class="pricing-page"><a class="skip-link" href="#main-content">Skip to content</a>
   <canvas id="ambient-three" aria-hidden="true"></canvas>
   <div class="page-grid" aria-hidden="true"></div>
   <div class="scan-line" aria-hidden="true"></div>
   <div class="scroll-progress" aria-hidden="true"><span></span></div>
 
   <header class="site-header">
-    <div class="shell nav-shell">
-      <a class="brand" href="./index.html" aria-label="Scout product page">
-        <img src="./assets/scout-mark.svg" alt="" width="34" height="34" />
-        <span>Scout</span>
-      </a>
-      <a class="nav-home nav-source" href="./index.html">Product</a>
-      <a class="nav-source nav-pricing" data-pricing-link href="./pricing.html" aria-current="page">Pricing</a>
-      <a class="nav-source" href="https://www.linkedin.com/in/bradmatera" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a>
-    </div>
+    <div class="shell nav-shell"><a aria-label="Scout overview" href="./index.html#overview" class="brand"><img src="./assets/scout-mark.svg" alt="" width="38" height="38"><span>Scout</span></a><nav aria-label="Scout product navigation" class="nav-links"><a data-nav-key="overview" href="./index.html#overview">Overview</a><a data-nav-key="features" href="./index.html#features">Features</a><a data-nav-key="how-it-works" href="./index.html#how-it-works">How It Works</a><a data-nav-key="docs" href="./docs.html">Docs</a><a data-nav-key="learn" href="./learn.html">Learn</a><a data-nav-key="api" href="./api.html">API</a><a data-nav-key="changelog" href="./changelog.html">Changelog</a><a data-nav-key="roadmap" href="./index.html#roadmap">Roadmap</a></nav><a aria-current="page" data-nav-key="pricing" href="./pricing.html" class="nav-source nav-pricing">Pricing</a></div>
   </header>
 
-  <main id="top">
+  <main id="main-content">
     <section class="pricing-hero">
       <div class="shell pricing-hero-grid">
-        <div class="reveal">
+        <div class="reveal visible">
           <div class="eyebrow">Scout · early-access pricing</div>
           <h1>Start with a scoped problem.<br><span>Expand when it works.</span></h1>
           <p class="pricing-lede"><strong>Scout is not sold as an undefined “AI transformation” package.</strong> Early deployments begin with a written scope, a specific use case, defined acceptance criteria, and a known delivery model. Hosted plans and licensing are separated because they create different implementation and support requirements.</p>
@@ -55,7 +47,7 @@
           <p class="pricing-disclaimer"><strong>Pricing status:</strong> early access. Final scope, included usage, integrations, support expectations, and any third-party service costs are documented before work begins.</p>
         </div>
 
-        <aside class="pricing-status fx-card reveal" data-tilt="4" aria-label="Scout pricing status">
+        <aside class="pricing-status fx-card reveal visible" data-tilt="4" aria-label="Scout pricing status">
           <div class="status-kicker">Commercial model</div>
           <h2>Scoped implementation + recurring service</h2>
           <p>The default path is a paid pilot followed by a hosted plan if the deployment meets the agreed acceptance criteria.</p>
@@ -65,7 +57,7 @@
             <div><dt>Usage</dt><dd>Defined in the written order scope; not sold as unbounded usage</dd></div>
             <div><dt>Contact</dt><dd>LinkedIn only</dd></div>
           </dl>
-        </aside>
+        <p><strong>Implementation status:</strong> ProjectHub Recruiter Alpha is the released application. The plans below describe scoped early-access work; they do not establish that a generic SDK, self-service tenant platform, or portable licensed package is already delivered. <a href="./index.html#roadmap">See the engineering roadmap.</a></p></aside>
       </div>
     </section>
 
@@ -78,7 +70,7 @@
 
     <section class="pricing-section" id="plans">
       <div class="shell">
-        <header class="pricing-head reveal">
+        <header class="pricing-head reveal visible">
           <div class="section-index">01 / Hosted pricing</div>
           <div>
             <h2>Four ways to start.</h2>
@@ -86,7 +78,7 @@
           </div>
         </header>
 
-        <div class="plan-grid reveal">
+        <div class="plan-grid reveal visible">
           <article class="plan-card fx-card" data-tilt="3">
             <div class="plan-code">Pilot</div>
             <h3>Design Partner Pilot</h3>
@@ -158,7 +150,7 @@
           </article>
         </div>
 
-        <div class="pricing-rule reveal">
+        <div class="pricing-rule reveal visible">
           <article class="rule-card fx-card" data-tilt="2">
             <h3>Usage is written into the order.</h3>
             <p>The early-access plans do not make a blanket “unlimited” usage promise. Included usage, enabled providers/tools, and any overage or pass-through third-party costs are stated before launch so the customer knows what the recurring price covers.</p>
@@ -175,7 +167,7 @@
 
     <section class="pricing-section alt" id="licensing">
       <div class="shell">
-        <header class="pricing-head reveal">
+        <header class="pricing-head reveal visible">
           <div class="section-index">02 / Licensing</div>
           <div>
             <h2>Hosted access is not source ownership.</h2>
@@ -183,7 +175,7 @@
           </div>
         </header>
 
-        <div class="license-grid reveal">
+        <div class="license-grid reveal visible">
           <article class="license-card fx-card" data-tilt="3">
             <span class="license-state">Case-by-case availability</span>
             <h3>Portable runtime license</h3>
@@ -211,11 +203,11 @@
 
     <section class="pricing-section" id="process">
       <div class="shell">
-        <header class="pricing-head reveal">
+        <header class="pricing-head reveal visible">
           <div class="section-index">03 / Process</div>
           <div><h2>How an early deployment is scoped.</h2><p>The goal is to know the problem, expected behavior, and commercial boundaries before implementation starts.</p></div>
         </header>
-        <div class="process-grid reveal">
+        <div class="process-grid reveal visible">
           <article class="process-step"><span>01</span><h3>Use case</h3><p>Identify the business question, workflow, or customer interaction Scout is expected to handle.</p></article>
           <article class="process-step"><span>02</span><h3>Inputs and systems</h3><p>Identify the knowledge, data, APIs, tools, authentication, and deployment constraints involved.</p></article>
           <article class="process-step"><span>03</span><h3>Acceptance criteria</h3><p>Define what has to work, what is out of scope, and how the result will be evaluated.</p></article>
@@ -227,11 +219,11 @@
 
     <section class="pricing-section alt" id="faq">
       <div class="shell">
-        <header class="pricing-head reveal">
+        <header class="pricing-head reveal visible">
           <div class="section-index">04 / Pricing notes</div>
           <div><h2>Common commercial questions.</h2><p>Specific terms are stated in the written quote, order form, or license agreement for the deployment.</p></div>
         </header>
-        <div class="faq-grid reveal">
+        <div class="faq-grid reveal visible">
           <article class="faq-card"><h3>Is there a public free plan?</h3><p>No public free commercial plan is listed here. The current ProjectHub Scout deployment can be viewed separately as a working implementation.</p></article>
           <article class="faq-card"><h3>Is monthly usage unlimited?</h3><p>No blanket unlimited promise is made. Included usage and any additional charges are defined in the written scope before launch.</p></article>
           <article class="faq-card"><h3>Does a hosted subscription include Scout source code?</h3><p>No. Hosted access and source licensing are separate commercial models.</p></article>
@@ -244,7 +236,7 @@
 
     <section class="pricing-section">
       <div class="shell">
-        <div class="contact-panel fx-card reveal" data-tilt="2">
+        <div class="contact-panel fx-card reveal visible" data-tilt="2">
           <div>
             <div class="eyebrow">Pricing inquiry</div>
             <h2>Start with the use case.</h2>
@@ -259,7 +251,130 @@
     </section>
   </main>
 
-  <footer>
+  <footer><section aria-labelledby="further-reading-title" class="further-reading"><div class="shell"><div class="further-reading-head">
+    <div>
+      <span class="further-reading-kicker">Further reading</span>
+      <h2 id="further-reading-title">AI, LLMs, agents and AI-assisted development.</h2>
+    </div>
+    <p>Published articles and guides grouped by their original source. Duplicate subjects are kept when they were separately published on more than one source.</p>
+  </div><details class="reading-source"><summary>
+      <span class="reading-source-name">bradleymatera.dev</span>
+      <span class="reading-source-count">4 articles</span>
+    </summary><div class="reading-list"><a rel="noopener" target="_blank" href="https://bradleymatera.dev/coding-style-gpt-agent-external-reviewer/" class="reading-link">
+        <span>
+          <span class="reading-link-title">How We Built This Coding Style With a GPT Agent and an External Reviewer</span>
+          <span class="reading-link-meta">bradleymatera.dev</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://bradleymatera.dev/ai-end-to-end-projects/" class="reading-link">
+        <span>
+          <span class="reading-link-title">End to End Projects With AI: A Strict, Verifiable Workflow</span>
+          <span class="reading-link-meta">bradleymatera.dev</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://bradleymatera.dev/my-real-ai-development-setup/" class="reading-link">
+        <span>
+          <span class="reading-link-title">My Real AI Development Setup: Tools and Checks</span>
+          <span class="reading-link-meta">bradleymatera.dev</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://bradleymatera.dev/projecthub-embeddable-ai-recruiter-free-tiers/" class="reading-link">
+        <span>
+          <span class="reading-link-title">How I Built ProjectHub: An Embeddable AI Recruiter Assistant That Runs on Free Tiers</span>
+          <span class="reading-link-meta">bradleymatera.dev</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a></div><div class="reading-source-footer"><a rel="noopener" target="_blank" href="https://bradleymatera.dev/blog/">View bradleymatera.dev source ↗</a></div></details><details class="reading-source"><summary>
+      <span class="reading-source-name">DEV Community</span>
+      <span class="reading-source-count">13 articles</span>
+    </summary><div class="reading-list"><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/switching-llms-mid-task-is-not-as-seamless-as-it-looks-2cm3" class="reading-link">
+        <span>
+          <span class="reading-link-title">Switching LLMs Mid-Task Is Not as Seamless as It Looks</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/im-building-free-ai-on-a-vm-that-barely-qualifies-as-a-computer-342" class="reading-link">
+        <span>
+          <span class="reading-link-title">I’m Building Free AI on a VM That Barely Qualifies as a Computer</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/how-i-built-projecthub-an-embeddable-ai-recruiter-assistant-that-runs-on-free-tiers-bif" class="reading-link">
+        <span>
+          <span class="reading-link-title">How I Built ProjectHub: An Embeddable AI Recruiter Assistant That Runs on Free Tiers</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/how-i-actually-build-full-end-to-end-projects-using-ai-42do" class="reading-link">
+        <span>
+          <span class="reading-link-title">How I Actually Build Full End To End Projects Using AI</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/are-ai-models-hardwired-to-fail-2741" class="reading-link">
+        <span>
+          <span class="reading-link-title">Are AI Models Hardwired to Fail?</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/ai-didnt-replace-junior-developers-it-replaced-safe-places-to-be-one-d91" class="reading-link">
+        <span>
+          <span class="reading-link-title">AI Didn’t Replace Junior Developers. It Replaced Safe Places To Be One.</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/the-ai-review-trap-why-verification-matters-more-than-prompting-3lak" class="reading-link">
+        <span>
+          <span class="reading-link-title">The AI Review Trap: Why Verification Matters More Than Prompting</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/the-developer-pay-paradox-are-junior-devs-staff-engineers-and-most-developers-over-or-under-paid-oid" class="reading-link">
+        <span>
+          <span class="reading-link-title">The Developer Pay Paradox: Are Junior Devs, Staff Engineers and Most Developers Over- or Under-paid?</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/ai-policy-is-becoming-the-new-entry-level-gatekeeping-1d4o" class="reading-link">
+        <span>
+          <span class="reading-link-title">AI Policy Is Becoming the New Entry-Level Gatekeeping</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/senior-engineers-complaining-about-juniors-are-missing-the-point-2ch6" class="reading-link">
+        <span>
+          <span class="reading-link-title">Senior Engineers Complaining About Juniors Are Missing the Point</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/entry-level-job-descriptions-are-becoming-broken-product-specs-hgc" class="reading-link">
+        <span>
+          <span class="reading-link-title">Entry-Level Job Descriptions Are Becoming Broken Product Specs</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/testing-bifrost-cli-and-code-mode-what-worked-what-broke-and-what-i-verified-7c3" class="reading-link">
+        <span>
+          <span class="reading-link-title">Testing Bifrost CLI and Code Mode: What Worked, What Broke, and What I Verified</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera/how-i-actually-use-agentic-ai-tools-in-vs-code-webflow-and-aws-2kad" class="reading-link">
+        <span>
+          <span class="reading-link-title">My Real AI Development Setup</span>
+          <span class="reading-link-meta">DEV Community</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a></div><div class="reading-source-footer"><a rel="noopener" target="_blank" href="https://dev.to/bradleymatera">View DEV Community source ↗</a></div></details><details class="reading-source"><summary>
+      <span class="reading-source-name">SLOPSTACK</span>
+      <span class="reading-source-count">1 article</span>
+    </summary><div class="reading-list"><a rel="noopener" target="_blank" href="https://www.slopstack.dev/guides/ai-review-trap-verification-over-confidence" class="reading-link">
+        <span>
+          <span class="reading-link-title">The AI Review Trap: Why Junior Developers Need Verification, Not Confidence</span>
+          <span class="reading-link-meta">SLOPSTACK</span>
+        </span>
+        <span class="reading-link-arrow" aria-hidden="true">↗</span>
+      </a></div><div class="reading-source-footer"><a rel="noopener" target="_blank" href="https://www.slopstack.dev/guides">View SLOPSTACK source ↗</a></div></details><p class="further-reading-note">This list is limited to public articles and guides identified as AI or AI-related writing. Social posts, drafts and unpublished notes are not included.</p></div></section>
     <div class="shell footer-row">
       <div>Scout pricing · early access</div>
       <div class="footer-links">

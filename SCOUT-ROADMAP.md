@@ -1,3 +1,9 @@
+> September 5 follow-up: active discourse branch is now `cddb3bc`, +3/-0 from develop.
+> Its third commit is a handoff after the two code commits; implementation remains `5bd9437`.
+> It is still unmerged, and the handoff acknowledges thin-evidence recovery failures.
+> Production/integration/staging are unchanged. Current page rendering is static HTML;
+> old renderer/copy scripts are compatibility markers. See `source-state.json` and the latest source audit.
+
 # Scout Roadmap
 
 Last refreshed: **September 5, 2026**

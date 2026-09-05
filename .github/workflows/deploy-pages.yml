@@ -27,6 +27,9 @@ jobs:
 
       - name: Validate site scripts
         run: |
+          node --check site.js
+          node --check docs.js
+          node --check learn.js
           node --check freshness.js
           node --check snapshot-refresh.js
           node --check docs-graphics.js
@@ -38,6 +41,9 @@ jobs:
 
       - name: Prepare static site
         run: node scripts/prepare-site.js
+
+      - name: Verify page links and content contracts
+        run: python3 scripts/verify-site.py
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
