@@ -1,6 +1,6 @@
 # Scout Product Site
 
-Public customer-facing and implementation-reference site for **Scout**, the orchestration layer used by **ProjectHub Recruiter Alpha**.
+Public customer-facing and implementation-reference site for **Scout**, a reusable conversational runtime. **ProjectHub Recruiter Alpha** is the current reference application.
 
 ## Primary site
 
