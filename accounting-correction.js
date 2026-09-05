@@ -1,26 +1,16 @@
 (() => {
   'use strict';
 
-  // Shared Cloudflare accounting notes for the product pages that summarize runtime
-  // behavior. Learn Scout owns its full accounting lesson directly in learn.html;
-  // this file only keeps Overview, Docs, API, and Changelog consistent.
-  //
-  // Current facts:
-  // - Scout generation remains @cf/meta/llama-3.1-8b-instruct-fast.
-  // - Cloudflare does not publish token-to-neuron rates for that exact identifier.
-  // - 4119 / 34868 belongs to @cf/meta/llama-3.1-8b-instruct-fp8-fast.
-  // - ProjectHub accounting treats current -fast token-derived usage as unknown unless
-  //   provider-reported neuron usage is available.
-
+  // Shared exact-model Cloudflare accounting notes. Current source/release state
+  // belongs to snapshot-refresh.js; this file only owns accounting explanations.
   const CURRENT_MODEL = '@cf/meta/llama-3.1-8b-instruct-fast';
   const FP8_FAST_MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8-fast';
   const FP8_MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8';
   const PRICING_SOURCE = 'https://developers.cloudflare.com/workers-ai/platform/pricing/';
   const MODEL_SOURCE = 'https://developers.cloudflare.com/ai/models/%40cf/meta/llama-3.1-8b-instruct-fast/';
-  const FIX_COMMIT = 'https://github.com/BradleyMatera/ProjectHub/commit/26b6fa032d864ab7312faa8092d8a6b7d8572c89';
-  const COMPLETENESS_COMMIT = 'https://github.com/BradleyMatera/ProjectHub/commit/2c140ba747d09cd51d9fcd48f350b66dc6683efc';
-  const REPORT = 'https://github.com/BradleyMatera/ProjectHub/blob/develop/docs/cloudflare-neuron-accounting-report.md';
   const MASTER_PROVIDER = 'https://github.com/BradleyMatera/ProjectHub/blob/master/lib/cloudflare-provider.js';
+  const REPORT = 'https://github.com/BradleyMatera/ProjectHub/blob/master/docs/cloudflare-neuron-accounting-report.md';
+  const RUNTIME_KNOWLEDGE = 'https://github.com/BradleyMatera/ProjectHub/blob/master/data/scout-runtime-knowledge.json';
 
   function sourceRow(items) {
     return `<div class="docs-source-row">${items.map(([href, label]) => `<a href="${href}" target="_blank" rel="noopener">Source: ${label} ↗</a>`).join('')}</div>`;
@@ -43,13 +33,23 @@
     }
   }
 
+  function updateLearn() {
+    // learn-resources.js historically inserted an Aug. 23 warning after the main
+    // Learn lesson. Keep the external-study block but replace the obsolete warning
+    // after that script has run.
+    const warning = document.querySelector('#cost-math .learn-source-warning');
+    if (warning) {
+      warning.innerHTML = `<strong>Current exact-model accounting:</strong> Scout still uses <code>${CURRENT_MODEL}</code>. Cloudflare's current pricing table does not publish a token-to-neuron rate for that exact identifier, so Scout does not estimate current <code>-fast</code> neuron consumption from token counts. The published <code>4,119 / 34,868</code> rates belong to the distinct <code>${FP8_FAST_MODEL}</code> identifier. Provider-reported actual neurons are retained when available; otherwise current-model token-derived usage remains unknown.`;
+    }
+  }
+
   function updateDocs() {
     const inference = document.getElementById('inference');
     if (inference && !inference.querySelector('[data-neuron-accounting]')) {
-      const note = callout(`<strong>Exact-model accounting:</strong> Scout still uses <code>${CURRENT_MODEL}</code>. Cloudflare documents that model as active but does not publish a token-to-neuron rate for that exact identifier on its current pricing table. Scout therefore keeps token-derived neuron usage <strong>unknown / unverified</strong> unless the provider supplies actual neuron usage. The published <code>4,119 / 34,868</code> rates belong to the distinct <code>${FP8_FAST_MODEL}</code> identifier.`, 'warning');
+      const note = callout(`<strong>Exact-model accounting:</strong> Scout uses <code>${CURRENT_MODEL}</code>. Cloudflare does not publish a token-to-neuron rate for that exact identifier on its current pricing table. Token-derived neuron usage is therefore <strong>unknown / unverified</strong> unless the provider supplies actual neuron usage. The published <code>4,119 / 34,868</code> rates belong to <code>${FP8_FAST_MODEL}</code>.`);
       note.dataset.neuronAccounting = 'true';
       inference.appendChild(note);
-      inference.insertAdjacentHTML('beforeend', sourceRow([[PRICING_SOURCE, 'Cloudflare pricing'], [MODEL_SOURCE, 'Cloudflare -fast model'], [MASTER_PROVIDER, 'ProjectHub production provider adapter']]));
+      inference.insertAdjacentHTML('beforeend', sourceRow([[PRICING_SOURCE, 'Cloudflare pricing'], [MODEL_SOURCE, 'Cloudflare -fast model'], [MASTER_PROVIDER, 'production provider adapter']]));
     }
 
     const telemetry = document.getElementById('telemetry');
@@ -57,22 +57,16 @@
       replaceText(telemetry, 'token/neuron estimates, and response egress when enabled.', 'token usage, provider-reported neuron usage when available, exact-model estimates when verified, unknown/unpriced markers when not verified, and response egress when enabled.');
       replaceText(telemetry, 'Attempt index/type, success, accepted state, model, tokens, and neuron information when available.', 'Attempt index/type, success, accepted state, model, tokens, actual neurons when supplied, and an exact-model estimate only when a verified rate exists.');
     }
-
-    const sourceMap = document.getElementById('source-map');
-    if (sourceMap) replaceText(sourceMap, 'Workers AI REST adapter, model restrictions, usage/neuron accounting and provider errors.', 'Workers AI REST adapter, exact-model pricing lookup, null-safe usage/neuron accounting, provider errors, and actual-versus-estimated usage handling.');
   }
 
   function updateApi() {
     const costs = document.getElementById('costs');
     if (costs && !costs.querySelector('[data-neuron-accounting]')) {
-      const note = callout(`<strong>Actual, estimated, and unknown are different states:</strong> <code>actualNeurons</code> is provider-reported usage when available. <code>estimatedNeurons</code> is calculated only when the exact model has a verified published rate. For the current <code>${CURRENT_MODEL}</code> identifier, token-derived usage remains unknown when no provider actual value exists. Unknown is not represented as zero or as a verified <code>$0</code> cost.`, 'warning');
+      const note = callout(`<strong>Actual, estimated, and unknown are different states:</strong> <code>actualNeurons</code> is provider-reported usage when available. <code>estimatedNeurons</code> is calculated only when the exact model has a verified rate. For <code>${CURRENT_MODEL}</code>, token-derived usage remains unknown when no provider actual value exists. Unknown is not zero and is not a verified <code>$0</code> cost.`);
       note.dataset.neuronAccounting = 'true';
       costs.appendChild(note);
-      costs.insertAdjacentHTML('beforeend', sourceRow([[PRICING_SOURCE, 'Cloudflare pricing'], [MASTER_PROVIDER, 'production provider adapter'], [FIX_COMMIT, 'exact-model accounting change'], [COMPLETENESS_COMMIT, 'session completeness change']]));
+      costs.insertAdjacentHTML('beforeend', sourceRow([[PRICING_SOURCE, 'Cloudflare pricing'], [MASTER_PROVIDER, 'production provider adapter'], [REPORT, 'accounting correction report']]));
     }
-
-    const sourceMap = document.getElementById('sources');
-    if (sourceMap) replaceText(sourceMap, 'Credentials, request shape, free-allocation errors, neuron estimation.', 'Credentials, request shape, free-allocation errors, exact-model pricing, actual-neuron preservation, and null-safe estimation.');
   }
 
   function updateChangelog() {
@@ -95,37 +89,39 @@
     const section = document.createElement('section');
     section.className = 'docs-section';
     section.id = 'aug23-neuron-accounting';
-    section.dataset.search = 'august 23 24 cloudflare neuron accounting production hotfix exact model pricing fp8 fast unknown null cost telemetry correction';
+    section.dataset.search = 'august 23 24 cloudflare neuron accounting exact model pricing fp8 fast unknown null cost telemetry correction';
     section.innerHTML = `
-      <div class="docs-eyebrow">Update / August 23–24, 2026 · Production accounting hotfix</div>
-      <h2>Cloudflare neuron accounting now uses exact model identifiers instead of a similarly named model's rates.</h2>
-      <p>Scout's active hosted model remains <code>${CURRENT_MODEL}</code>. The old accounting metadata associated <code>4,119 / 34,868</code> neurons per million input/output tokens with that identifier. Cloudflare publishes those rates for <code>${FP8_FAST_MODEL}</code> instead and does not document the two identifiers as billing aliases.</p>
+      <div class="docs-eyebrow">August 23–24, 2026 · Accounting correction</div>
+      <h2>Cloudflare neuron accounting moved to exact model identifiers.</h2>
+      <p>Scout's hosted model remained <code>${CURRENT_MODEL}</code>. The old metadata associated <code>4,119 / 34,868</code> neurons per million input/output tokens with that identifier. Cloudflare publishes those rates for <code>${FP8_FAST_MODEL}</code> instead and does not document the identifiers as billing aliases.</p>
       <div class="docs-flow">
-        <div class="docs-flow-step"><div><strong>Model unchanged.</strong><span>The correction did not switch Scout to FP8-fast. Hosted generation remains <code>${CURRENT_MODEL}</code>.</span></div></div>
-        <div class="docs-flow-step"><div><strong>Exact identifier lookup.</strong><span><code>${CURRENT_MODEL}</code> has no guessed token-to-neuron rate. <code>${FP8_FAST_MODEL}</code> and <code>${FP8_MODEL}</code> keep their own published rates.</span></div></div>
-        <div class="docs-flow-step"><div><strong>Unknown is not zero.</strong><span>Requests without a provider actual value or verified exact-model estimate remain <code>null</code> / unknown rather than becoming a fabricated zero.</span></div></div>
-        <div class="docs-flow-step"><div><strong>Completeness remains explicit.</strong><span>If a billable session contains unknown neuron usage, later known calls cannot turn the partial total into a falsely complete total.</span></div></div>
+        <div class="docs-flow-step"><div><strong>Model unchanged.</strong><span>The correction did not switch Scout to FP8-fast.</span></div></div>
+        <div class="docs-flow-step"><div><strong>Exact identifier lookup.</strong><span><code>${CURRENT_MODEL}</code> has no guessed rate. <code>${FP8_FAST_MODEL}</code> and <code>${FP8_MODEL}</code> keep their own published rates.</span></div></div>
+        <div class="docs-flow-step"><div><strong>Unknown is not zero.</strong><span>No provider actual value + no verified exact-model rate means <code>null</code> / unknown.</span></div></div>
+        <div class="docs-flow-step"><div><strong>Completeness stays explicit.</strong><span>An unknown contributing call keeps a multi-call/session total incomplete.</span></div></div>
       </div>
-      <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Cloudflare platform fact</th><th>Current documented value</th></tr></thead><tbody>
+      <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Cloudflare platform fact</th><th>Documented value</th></tr></thead><tbody>
         <tr><td>Included Workers AI allocation</td><td><strong>10,000 neurons/day</strong></td></tr>
         <tr><td>Daily reset</td><td><strong>00:00 UTC</strong></td></tr>
         <tr><td>Workers Paid usage above the included allocation</td><td><strong>$0.011 / 1,000 neurons</strong></td></tr>
       </tbody></table></div>
-      <div class="docs-callout warning"><strong>Capacity is still not known from token counts for Scout's current model.</strong> Knowing the 10,000-neuron allocation does not justify a requests-per-day estimate while the exact <code>${CURRENT_MODEL}</code> token-to-neuron rate remains unpublished.</div>
-      ${sourceRow([[PRICING_SOURCE, 'Cloudflare pricing'], [MODEL_SOURCE, 'Cloudflare -fast model'], [MASTER_PROVIDER, 'ProjectHub production provider adapter'], [FIX_COMMIT, 'exact-model accounting change'], [COMPLETENESS_COMMIT, 'session completeness change'], [REPORT, 'accounting audit report']])}
+      <div class="docs-callout warning"><strong>Capacity still cannot be derived for Scout's current model from token counts.</strong> A known daily allocation does not provide an exact requests-per-day estimate while the <code>${CURRENT_MODEL}</code> token-to-neuron rate is unpublished.</div>
+      ${sourceRow([[PRICING_SOURCE, 'Cloudflare pricing'], [MODEL_SOURCE, 'Cloudflare -fast model'], [MASTER_PROVIDER, 'released provider adapter'], [REPORT, 'accounting correction report'], [RUNTIME_KNOWLEDGE, 'runtime self-knowledge record now tracked as truth debt']])}
     `;
-    current.parentNode.insertBefore(section, current.nextSibling);
 
-    const firstCurrentGroup = document.querySelector('.changelog-page .docs-nav-group');
-    if (firstCurrentGroup && !firstCurrentGroup.querySelector('a[href="#aug23-neuron-accounting"]')) {
-      firstCurrentGroup.insertAdjacentHTML('beforeend', '<a href="#aug23-neuron-accounting"><span class="nav-code">NEW</span>Neuron accounting hotfix</a>');
+    // snapshot-refresh.js inserts the current September release material first.
+    // Keep this historical August correction chronologically below those entries.
+    const after = document.getElementById('sep5-branch-audit') || document.getElementById('sep2-release') || document.getElementById('sep5-release') || current;
+    after.parentNode.insertBefore(section, after.nextSibling);
+
+    const firstGroup = document.querySelector('.changelog-page .docs-nav-group');
+    if (firstGroup && !firstGroup.querySelector('a[href="#aug23-neuron-accounting"]')) {
+      firstGroup.insertAdjacentHTML('beforeend', '<a href="#aug23-neuron-accounting"><span class="nav-code">AUG</span>Neuron accounting correction</a>');
     }
     const mobile = document.querySelector('.changelog-page .docs-mobile-nav select');
     if (mobile && !mobile.querySelector('option[value="aug23-neuron-accounting"]')) {
-      mobile.insertAdjacentHTML('afterbegin', '<option value="aug23-neuron-accounting">Aug 23–24 · Neuron accounting hotfix</option>');
+      mobile.insertAdjacentHTML('beforeend', '<option value="aug23-neuron-accounting">Aug 23–24 · Neuron accounting</option>');
     }
-    const count = document.querySelector('.changelog-page .docs-sidebar-title span:last-child');
-    if (count) count.textContent = '16 topics';
   }
 
   function updateOverview() {
@@ -141,14 +137,15 @@
       const section = document.createElement('section');
       section.id = 'accounting-correction-note';
       section.className = 'section-pad section-dark';
-      section.innerHTML = `<div class="shell"><header class="section-head reveal visible"><div class="section-index">Cloudflare accounting</div><div><h2>The model stayed the same. The rate mapping changed.</h2><p>Scout still uses <code>${CURRENT_MODEL}</code>. Cloudflare's current pricing table does not publish a token-to-neuron rate for that exact identifier, so Scout does not reuse the <code>${FP8_FAST_MODEL}</code> rate. Provider-reported neuron usage is retained when available; otherwise the current model's token-derived usage remains unknown.</p></div></header><div class="metric-grid reveal visible"><article class="metric-card"><span>Workers AI allocation</span><strong>10,000 neurons/day</strong><small>provider platform allocation</small></article><article class="metric-card"><span>reset</span><strong>00:00 UTC</strong><small>Cloudflare daily reset</small></article><article class="metric-card"><span>paid reference</span><strong>$0.011 / 1k neurons</strong><small>above included allocation on Workers Paid</small></article><article class="metric-card"><span>Scout token estimate</span><strong>UNVERIFIED</strong><small>for current ${CURRENT_MODEL}</small></article></div><div class="source-links reveal visible"><a href="${PRICING_SOURCE}" target="_blank" rel="noopener">Source: Cloudflare pricing ↗</a><a href="${MODEL_SOURCE}" target="_blank" rel="noopener">Source: current model page ↗</a><a href="${MASTER_PROVIDER}" target="_blank" rel="noopener">Source: production provider adapter ↗</a></div></div>`;
+      section.innerHTML = `<div class="shell"><header class="section-head reveal visible"><div class="section-index">Cloudflare accounting</div><div><h2>The model stayed the same. The rate mapping changed.</h2><p>Scout uses <code>${CURRENT_MODEL}</code>. Cloudflare's current pricing table does not publish a token-to-neuron rate for that exact identifier, so Scout does not reuse the <code>${FP8_FAST_MODEL}</code> rate. Provider-reported neuron usage is retained when available; otherwise current-model token-derived usage remains unknown.</p></div></header><div class="metric-grid reveal visible"><article class="metric-card"><span>Workers AI allocation</span><strong>10,000 neurons/day</strong><small>provider platform allocation</small></article><article class="metric-card"><span>reset</span><strong>00:00 UTC</strong><small>Cloudflare daily reset</small></article><article class="metric-card"><span>paid reference</span><strong>$0.011 / 1k neurons</strong><small>above included allocation on Workers Paid</small></article><article class="metric-card"><span>Scout token estimate</span><strong>UNVERIFIED</strong><small>for current ${CURRENT_MODEL}</small></article></div><div class="source-links reveal visible"><a href="${PRICING_SOURCE}" target="_blank" rel="noopener">Source: Cloudflare pricing ↗</a><a href="${MODEL_SOURCE}" target="_blank" rel="noopener">Source: current model page ↗</a><a href="${MASTER_PROVIDER}" target="_blank" rel="noopener">Source: released provider adapter ↗</a></div></div>`;
       sourceBand.parentNode.insertBefore(section, sourceBand.nextSibling);
     }
   }
 
   const page = (location.pathname.split('/').filter(Boolean).pop() || 'index.html').toLowerCase();
-  if (page === 'docs.html') updateDocs();
-  if (page === 'api.html') updateApi();
-  if (page === 'changelog.html') updateChangelog();
-  if (page === 'index.html' || page === 'scout') updateOverview();
+  if (page === 'learn.html') updateLearn();
+  else if (page === 'docs.html') updateDocs();
+  else if (page === 'api.html') updateApi();
+  else if (page === 'changelog.html') updateChangelog();
+  else if (page === 'index.html' || page === 'scout') updateOverview();
 })();
