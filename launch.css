@@ -288,3 +288,36 @@ html{font-size:16px}.skip-link{position:fixed;left:1rem;top:-6rem;z-index:9999;p
 @media(max-width:1100px){.nav-shell{flex-wrap:wrap}.nav-links{order:3;width:100%;overflow-x:auto;flex-wrap:nowrap;gap:1.25rem}.site-header .nav-shell{padding-top:.5rem;padding-bottom:.5rem}.nav-pricing{margin-left:auto}.docs-sidebar{top:9rem}.hero{padding-top:3rem}}
 @media(max-width:650px){.hero h1{font-size:2.65rem}.hero-actions{display:flex;flex-wrap:wrap}.docs-grid-3,.docs-grid-2,.engineering-loop-grid{grid-template-columns:1fr}.docs-table-wrap{overflow:auto}.docs-table{min-width:580px}.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.section-head h2{overflow-wrap:anywhere}.phase-copy p{font-size:1rem}.nav-links{padding-bottom:.25rem}.audit-stamp{font-size:.875rem}.docs-section{scroll-margin-top:9rem}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Scout 3D architecture study. All scene assets use the existing publication list. */
+body{isolation:isolate}
+#ambient-three{z-index:-1;opacity:.58}
+.scout-engine-panel{overflow:hidden;isolation:isolate;background:linear-gradient(155deg,#0b1c28,#070e18 55%,#10231f);border-color:#365664;box-shadow:0 35px 100px #0008,0 0 70px #51c7a00d}
+.scout-engine-panel::before,.scout-engine-panel::after{display:none}
+.scout-visual{margin:0;background:radial-gradient(ellipse at 50% 45%,#164e5536,transparent 65%);border-bottom:1px solid #355360}
+.scout-visual-heading{display:flex;justify-content:space-between;gap:1rem;padding:1.2rem 1.2rem 0;font:600 .75rem/1.5 ScoutMono,monospace;text-transform:uppercase;letter-spacing:.12em;color:#90aabc}
+.scout-visual-heading span:first-child{color:#a5f8d1}
+.scout-visual-stage{position:relative;width:100%;height:360px}
+.scout-visual-stage canvas{display:block;width:100%;height:100%;position:absolute;inset:0;opacity:0;cursor:grab;touch-action:pan-y;transition:opacity .6s}
+.scout-visual-stage canvas:active{cursor:grabbing}
+.scout-visual-stage canvas:focus-visible{outline:2px solid #a3f7d1;outline-offset:-5px}
+.scout-visual-fallback{position:absolute;inset:12% 5%;width:90%;height:76%;object-fit:contain;opacity:.85}
+[data-scout-graphics="ready"] .scout-visual-stage canvas{opacity:1}
+[data-scout-graphics="ready"] .scout-visual-fallback{display:none}
+.scout-visual-controls{padding:0 1rem;display:grid;gap:.6rem}
+.scout-visual-controls[hidden]{display:none}
+.scout-stage-buttons,.scout-view-buttons{display:flex;flex-wrap:wrap;gap:.35rem}
+.scout-visual-controls button{border:1px solid #345565;border-radius:3px;background:#0a1823;color:#bdd2df;min-height:40px;padding:.45rem .65rem;font-size:.8125rem;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.scout-visual-controls button:hover,.scout-visual-controls button:focus-visible{background:#173647;border-color:#80d8ce;color:#effffa;outline-offset:3px}
+.scout-stage-buttons button[aria-pressed="true"]{background:#b0f8d8;color:#08241a;border-color:#b0f8d8}
+.scout-view-buttons button{background:transparent;border-color:#294351}
+.scout-view-buttons button[data-scene-pause]{margin-left:auto}
+.scout-visual-controls button:disabled{opacity:.6;cursor:default}
+.scout-visual figcaption{min-height:4.8rem;margin:0;padding:1rem 1.2rem;color:#a8c2cf;font-size:.875rem;line-height:1.55}
+.scout-engine-panel .runtime-body{padding:1rem 1.25rem}
+.scout-engine-panel .runtime-line{padding:9px 0}
+.scout-engine-panel .runtime-header{font-size:.7rem}
+.hero-grid{gap:clamp(1.5rem,4vw,4rem)}
+@media(min-width:1100px){.scout-engine-panel{margin-top:-1rem}.scout-visual-stage{height:390px}}
+@media(max-width:760px){.scout-visual-stage{height:320px}.scout-visual-controls button{min-height:44px}.scout-visual-heading{font-size:.6875rem;letter-spacing:.08em}#ambient-three{opacity:.32}}
+@media(prefers-reduced-motion:reduce){.scout-visual-stage canvas{transition:none}}

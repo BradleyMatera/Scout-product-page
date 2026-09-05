@@ -27,6 +27,7 @@ jobs:
 
       - name: Validate site scripts
         run: |
+          node --check scene.js
           node --check site.js
           node --check docs.js
           node --check learn.js

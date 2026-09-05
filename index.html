@@ -28,7 +28,7 @@
   <div class="scroll-progress" aria-hidden="true"><span></span></div>
 
   <header class="site-header">
-    <div class="shell nav-shell"><a aria-label="Scout overview" href="./index.html#overview" class="brand"><img src="./assets/scout-mark.svg" alt="" width="38" height="38"><span>Scout</span></a><nav aria-label="Scout product navigation" class="nav-links"><a data-nav-key="overview" href="./index.html#overview">Overview</a><a data-nav-key="features" href="./index.html#features">Features</a><a data-nav-key="how-it-works" href="./index.html#how-it-works">How It Works</a><a data-nav-key="docs" href="./docs.html">Docs</a><a data-nav-key="learn" href="./learn.html">Learn</a><a data-nav-key="api" href="./api.html">API</a><a data-nav-key="changelog" href="./changelog.html">Changelog</a><a href="#roadmap">Roadmap</a><a data-nav-key="roadmap" href="./index.html#roadmap">Roadmap</a></nav><a data-nav-key="pricing" href="./pricing.html" class="nav-source nav-pricing">Pricing</a></div>
+    <div class="shell nav-shell"><a aria-label="Scout overview" href="./index.html#overview" class="brand"><img src="./assets/scout-mark.svg" alt="" width="38" height="38"><span>Scout</span></a><nav aria-label="Scout product navigation" class="nav-links"><a data-nav-key="overview" href="./index.html#overview">Overview</a><a data-nav-key="features" href="./index.html#features">Features</a><a data-nav-key="how-it-works" href="./index.html#how-it-works">How It Works</a><a data-nav-key="docs" href="./docs.html">Docs</a><a data-nav-key="learn" href="./learn.html">Learn</a><a data-nav-key="api" href="./api.html">API</a><a data-nav-key="changelog" href="./changelog.html">Changelog</a><a data-nav-key="roadmap" href="./index.html#roadmap">Roadmap</a></nav><a data-nav-key="pricing" href="./pricing.html" class="nav-source nav-pricing">Pricing</a></div>
   </header>
 
   <main id="main-content">
@@ -47,7 +47,30 @@
           </div>
         </div>
 
-        <aside class="runtime-card fx-card reveal visible" data-tilt="6" aria-label="Current production runtime snapshot">
+        <aside class="runtime-card scout-engine-panel reveal visible" aria-label="Current production runtime snapshot">
+<figure class="scout-visual">
+            <div class="scout-visual-heading"><span>Inside Scout</span><span>3D architecture study</span></div>
+            <div class="scout-visual-stage" data-scout-visual>
+              <img class="scout-visual-fallback" src="./assets/docs/how-scout-works.svg" alt="Scout request flow: retrieval, bounded generation, validation, and response.">
+              <canvas id="scout-engine-three" tabindex="0" role="img" aria-label="Interactive layered Scout architecture illustration. Drag with a mouse or use arrow keys to rotate. Stage and zoom controls follow."></canvas>
+            </div>
+            <div class="scout-visual-controls" data-scene-controls hidden>
+              <div class="scout-stage-buttons" role="group" aria-label="Explore the architecture">
+                <button type="button" data-scene-stage="0" aria-pressed="true">Flow</button>
+                <button type="button" data-scene-stage="1" aria-pressed="false">Retrieval</button>
+                <button type="button" data-scene-stage="2" aria-pressed="false">Context</button>
+                <button type="button" data-scene-stage="3" aria-pressed="false">Generation</button>
+                <button type="button" data-scene-stage="4" aria-pressed="false">Validation</button>
+              </div>
+              <div class="scout-view-buttons" role="group" aria-label="3D view controls">
+                <button type="button" data-scene-zoom="-0.7" aria-label="Zoom in">+</button>
+                <button type="button" data-scene-zoom="0.7" aria-label="Zoom out">−</button>
+                <button type="button" data-scene-reset>Reset view</button>
+                <button type="button" data-scene-pause aria-pressed="false">Pause motion</button>
+              </div>
+            </div>
+            <figcaption data-scene-caption aria-live="polite">Selected knowledge enters a bounded context. Drag to explore the layered view.</figcaption>
+          </figure>
           <div class="runtime-header">
             <div><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span></div>
             <span>scout.runtime / master</span>
