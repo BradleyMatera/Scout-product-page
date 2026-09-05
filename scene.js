@@ -109,7 +109,7 @@ function start(THREE){
   controls?.querySelectorAll('[data-scene-zoom]').forEach(b=>b.addEventListener('click',()=>{zoom=Math.max(6,Math.min(13,zoom+Number(b.dataset.sceneZoom)));request();},opts));
   controls?.querySelector('[data-scene-reset]')?.addEventListener('click',()=>{targetYaw=.08;targetPitch=.12;zoom=8.8;setStage(0);},opts);
   controls?.querySelector('[data-scene-pause]')?.addEventListener('click',e=>{paused=!paused;e.currentTarget.setAttribute('aria-pressed',String(paused));e.currentTarget.textContent=paused?'Resume motion':'Pause motion';request();},opts);
-  document.documentElement.dataset.scoutGraphics='ready'; resize(); setStage(0); request();
+  resize(); setStage(0); request();
   return ()=>{abort.abort();cancelAnimationFrame(raf);ro?.disconnect();renderer.dispose();resources.forEach(r=>r.dispose?.());};
 }
 boot();
