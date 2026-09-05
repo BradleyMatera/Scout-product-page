@@ -49,10 +49,10 @@
 
         <aside class="runtime-card scout-engine-panel reveal visible" aria-label="Current production runtime snapshot">
 <figure class="scout-visual">
-            <div class="scout-visual-heading"><span>Inside Scout</span><span>3D architecture study</span></div>
+            <div class="scout-visual-heading"><span>Inside Scout</span><span>How one Scout request is processed</span></div>
             <div class="scout-visual-stage" data-scout-visual>
               <img class="scout-visual-fallback" src="./assets/docs/how-scout-works.svg" alt="Scout request flow: retrieval, bounded generation, validation, and response.">
-              <canvas id="scout-engine-three" tabindex="0" role="img" aria-label="Interactive layered Scout architecture illustration. Drag with a mouse or use arrow keys to rotate. Stage and zoom controls follow."></canvas>
+              <canvas id="scout-engine-three" tabindex="0" role="img" aria-label="A visual explanation of Scout's request path. Each layer represents a stage: retrieve evidence, hold context, generate a reply, then check the claims. Drag to rotate or choose a stage below."></canvas>
             </div>
             <div class="scout-visual-controls" data-scene-controls hidden>
               <div class="scout-stage-buttons" role="group" aria-label="Explore the architecture">
@@ -69,7 +69,7 @@
                 <button type="button" data-scene-pause aria-pressed="false">Pause motion</button>
               </div>
             </div>
-            <figcaption data-scene-caption aria-live="polite">Selected knowledge enters a bounded context. Drag to explore the layered view.</figcaption>
+            <figcaption data-scene-caption aria-live="polite">Scout moves through four stages: retrieve relevant evidence, assemble context, generate a response, and validate its claims. Select a stage to highlight that part of the process.</figcaption>
           </figure>
           <div class="runtime-header">
             <div><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span></div>

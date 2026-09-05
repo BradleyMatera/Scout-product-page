@@ -8,11 +8,11 @@ let cleanup = () => {};
 let disposed = false;
 let library;
 const descriptions = [
-  'Selected knowledge enters a bounded context. Drag to explore the layered view.',
-  'Retrieval ranks local knowledge with BM25 and contextual reciprocal rank fusion.',
-  'Server-owned state and response contracts prepare the evidence for generation.',
-  'Cloudflare Workers AI generates the response from the selected context.',
-  'Post-generation checks inspect claims; invalid output can be repaired or rejected.'
+  'Flow: Scout retrieves relevant evidence, assembles context, generates a response, then validates the claims before replying.',
+  'Retrieval: local BM25 and contextual reciprocal rank fusion rank the knowledge that can support the answer.',
+  'Context: server-owned session state and response contracts decide what evidence and answer shape the model receives.',
+  'Generation: Cloudflare Workers AI writes a response from the bounded evidence and instructions.',
+  'Validation: Scout checks entities, numbers, relationships, polarity, and provenance before returning the reply.'
 ];
 
 async function boot() {
@@ -24,7 +24,7 @@ async function boot() {
     cleanup = start(library);
   } catch (error) {
     document.documentElement.dataset.scoutGraphics = 'fallback';
-    if (caption) caption.textContent = 'Retrieval → context → generation → validation. The source-linked explanation below remains available.';
+    if (caption) caption.textContent = 'The interactive view is unavailable, but the request path is: retrieve evidence → assemble context → generate → validate.';
     if (controls) controls.hidden = true;
     console.warn('Scout graphics unavailable', error);
   }
