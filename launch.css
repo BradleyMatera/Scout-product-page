@@ -321,3 +321,5 @@ body{isolation:isolate}
 @media(min-width:1100px){.scout-engine-panel{margin-top:-1rem}.scout-visual-stage{height:390px}}
 @media(max-width:760px){.scout-visual-stage{height:320px}.scout-visual-controls button{min-height:44px}.scout-visual-heading{font-size:.6875rem;letter-spacing:.08em}#ambient-three{opacity:.32}}
 @media(prefers-reduced-motion:reduce){.scout-visual-stage canvas{transition:none}}
+
+.scene-stage-key{position:absolute;left:5%;right:5%;bottom:1.2rem;display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:center;gap:.35rem;color:#d6e6eb;font:700 .6875rem/1 ScoutMono,monospace;text-transform:uppercase;letter-spacing:.06em;pointer-events:none}.scene-stage-key span{display:flex;align-items:center;justify-content:center;gap:.35rem;padding:.48rem .3rem;background:#06131ccc;border:1px solid #3e6270}.scene-stage-key b{color:#9bf2c9;font-size:.8rem}.scene-stage-key i{color:#8fe5cf;font-style:normal;text-align:center}@media(max-width:760px){.scene-stage-key{font-size:.56rem;letter-spacing:0;gap:.15rem}.scene-stage-key span{padding:.42rem .15rem}.scene-stage-key i{font-size:.7rem}}
