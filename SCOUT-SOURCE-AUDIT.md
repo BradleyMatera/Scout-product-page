@@ -1,253 +1,271 @@
-# Scout Source Audit — 2026-08-22
+# Scout Source Audit — 2026-09-05
 
-This file records the repository evidence used by the Scout implementation-status page. It separates released behavior, integrated development behavior, historical evaluation results, and planned productization.
+This audit is the source record behind the current Scout product-site sync. The previous product-site update was `Scout-product-page@6d5937416a6e6c89cfbf4c849536f14a85578be4`, committed **2026-08-27T19:43:53Z**. This audit therefore treats August 27 at that timestamp as the comparison cutoff.
+
+The audit inspected:
+
+- every visible branch head in `BradleyMatera/ProjectHub`;
+- every visible branch head in `BradleyMatera/ProjectHub-dev`;
+- branch-head commit dates/messages;
+- recent ProjectHub PR/release history;
+- current `master` and `develop` Git trees;
+- `ProjectHub-dev/STAGING-SOURCE.json`;
+- current provider/router/runtime source;
+- current handoff/release documentation;
+- current test/evaluation evidence used by the September release;
+- the existing Scout-product-page freshness, accounting, roadmap, Docs, Learn, API, and Changelog layers.
 
 ## Source priority
 
-When sources disagree, use this order:
+When sources disagree, the product site uses this order:
+
+1. current executable source/runtime configuration;
+2. current production/integration Git trees and staging provenance;
+3. current primary provider documentation for external platform facts;
+4. current repository documentation that agrees with executable source;
+5. dated test/evaluation/release artifacts as historical evidence;
+6. roadmap documents only for planned work.
+
+A stale branch pointer, old self-description, test score, or model output is not promoted to a current runtime fact by itself.
+
+## Current repository state
+
+### ProjectHub production
+
+- branch: `master`
+- commit: `b071e4e4f0bb69faeecd811f31514af30d2e1f61`
+- commit date: `2026-09-05T17:51:29Z`
+- message: `Merge pull request #29 ... release: promote qualified develop tree to production`
+- Git tree: `a0066cc849f33dd84d18d8e8c36b080fed8ce70e`
+
+### ProjectHub integration
+
+- branch: `develop`
+- commit: `4f5ee971488e433ebdf66280cce82e163c5c7688`
+- commit date: `2026-09-05T17:45:50Z`
+- message: `fix: secure diagnostics and retry widget setup`
+- Git tree: `a0066cc849f33dd84d18d8e8c36b080fed8ce70e`
+
+`master` and `develop` have deliberately different Git histories, but their current trees are identical. PR #29 used a production-ancestry-preserving release commit whose tree exactly matches the qualified `develop` tree.
+
+### ProjectHub-dev staging mirror
+
+- branch: `main`
+- commit: `6d36433c040d0bbc903ec26b6968674bd937bcd0`
+- commit date: `2026-09-05T17:46:11Z`
+- message: `staging: mirror from ProjectHub/develop 4f5ee971...`
+- `STAGING-SOURCE.json` source commit: `4f5ee971488e433ebdf66280cce82e163c5c7688`
+
+The staging repository therefore records the same qualified `develop` source used for the September 5 production tree.
+
+## Full ProjectHub branch-head audit
+
+35 visible branches were checked. Twelve have branch heads newer than the August 27 product-page cutoff; 23 point to older July/August work.
 
-1. current executable source and workflows
-2. `ProjectHub:master` for released production behavior
-3. `ProjectHub:develop` for integrated but potentially unreleased behavior
-4. current staging provenance from `ProjectHub-dev:main:STAGING-SOURCE.json`
-5. dated reports and historical evaluation artifacts for the runtime/scorer they describe
-6. roadmap documents only for planned work
+### Post-cutoff/current branches
+
+| Branch | Head | Head date | Audit interpretation |
+|---|---|---:|---|
+| `dependabot/npm_and_yarn/npm_and_yarn-116291eeda` | `c32e83b` | Sep 5 | One lockfile-only commit ahead of current master. Pending maintenance, not shipped Scout behavior. |
+| `develop` | `4f5ee97` | Sep 5 | Current qualified integration tree. |
+| `docs/update-handoff-path-a` | `a280298` | Sep 5 | Handoff update branch; merged via PR #27 and superseded by current develop. |
+| `feat/generic-conversation-sets` | `4f5ee97` | Sep 5 | Currently points at the same commit as develop. |
+| `fix/phase7-8-conversation-gate` | `4d39995` | Sep 5 | Original Phase 7/8 branch pointer. Work merged through PR #23; current develop contains the accepted/squashed result plus later work. |
+| `fix/release-hardening-develop` | `428601a` | Sep 5 | Release-hardening source branch; merged through PR #28. |
+| `fix/release-hardening-gatedebug-init` | `8ac02fb` | Sep 2 | Points at the Sep 2 production release line; not the current Sep 5 integration head. |
+| `hotfix/projecthub-embed-idempotency` | `cdc0a55` | Sep 5 | Widget initialization hotfix; merged through PR #24. |
+| `hotfix/ui-scroll-and-input` | `eed5809` | Sep 5 | Widget input/scroll hotfix; merged through PR #26. |
+| `master` | `b071e4e` | Sep 5 | Current production source commit. |
+| `release/production-2026-09-05` | `2e90ed8` | Sep 5 | Exact-qualified-tree release commit used by PR #29. |
+| `release/scout-prod-2026-09-02` | `39afd75` | Sep 2 | Sep 2 production release branch, superseded by Sep 5 production release. |
 
-## Repositories
+### Pre-cutoff historical branch pointers
 
-### `BradleyMatera/ProjectHub`
+These branch heads predate the August 27 site cutoff. They were still inspected so an old pointer would not be mistaken for newer unmerged Scout work.
 
-Canonical source repository.
+| Branch | Head | Head date / period | Interpretation |
+|---|---|---:|---|
+| `archive/develop-pre-multimachine-20260717` | `d38c5bd` | Jul 17 | Archived pre-multi-machine develop state. |
+| `chatgpt/scout-negative-memory-20260820` | `7eef9b7` | Aug 20 | Historical guarded negative-memory experiment. |
+| `chatgpt/scout-strict-followup-20260820` | `fd5af3a` | Aug 20 | Historical strict-follow-up experiment. |
+| `chore/git-source-of-truth-guardrails` | `15e7651` | Aug 12 | Git safety/source-of-truth work already represented in repo history. |
+| `chore/mark-scout-workspace-published` | `751374c` | Aug 12 | Workspace metadata branch. |
+| `chore/mark-scout-workspace-published-temp` | `9899ae2` | Aug 12 | Historical workspace pointer. |
+| `chore/multi-workspace-git-guardrails` | `ec06351` | Aug 12 | Multi-PC/IDE/agent Git guardrails. |
+| `chore/safe-workspace-base` | `ffc96a6` | Aug 12 | Historical safe-workspace branch. |
+| `docs/branch-protection` | `38b3aef` | Jul 17 | Historical branch-protection docs. |
+| `docs/spec-housekeeping` | `97f7c71` | Jul 17 | Historical release-spec housekeeping. |
+| `feat/agent-systems-network` | `ef892a0` | Aug 16 | Historical agent-system development pointer. |
+| `feat/architecture-refactor` | `dcba6bd` | Aug 17 | Historical architecture branch. |
+| `feat/rag-primary-restoration` | `d32b75e` | Aug 21 | Historical RAG/model qualification branch. |
+| `feature/ci-hardening` | `ffe281e` | Jul 17 | CI hardening merged long before cutoff. |
+| `feature/coordinated-releases` | `0e2dd71` | Jul 17 | Coordinated release workflow branch. |
+| `feature/deploy-safety` | `6bf6d13` | Jul 17 | Deployment guard/backup/rollback branch. |
+| `feature/staging-isolation` | `25fab33` | Jul 17 | Staging-isolation branch. |
+| `feature/think-mode-release-compat` | `7220b06` | Jul 17 | Historical Think Mode compatibility branch. |
+| `fix/secret-name-and-env-setup` | `5a5f3a3` | Jul 17 | Historical environment/secret setup fix. |
+| `hotfix/cloudflare-neuron-accounting` | `a205e30` | Aug 24 | Historical accounting hotfix branch. Its exact-model/null-safe behavior is present in the current released tree even though PR #20 remains open against an obsolete base. |
+| `hotfix/name-extraction` | `40b2296` | Aug 20 | Historical name-extraction fix. |
+| `release/public-refresh-2026-08-20` | `68a28ed` | Aug 20 | Superseded public refresh branch. |
+| `revert/accidental-desktop-master-20260812` | `8981102` | Aug 12 | Historical revert/source-of-truth cleanup branch. |
 
-- `master` = released production line
-- `develop` = protected integration/development line
-- contains the ProjectHub frontend, Scout backend, tests, evals, documentation, workflows, deployment scripts, Docker configuration, and analytics
+Important Git nuance: several merged branches still appear `ahead` or `diverged` when compared to current develop because the accepted work was merged/squashed and the original branch pointer was left in place. PR merge state, current tree content, dates, and current branch tips are therefore used together rather than treating raw ahead/behind counts as product status.
 
-At the time of this audit:
+## Full ProjectHub-dev branch audit
 
-- `master` tip: `4a1eee70821ed83f50be1fe2ff6286abfaa4a15c` (`fix(cache): bump production ProjectHub.js bundle to v16`)
-- production release parent: `5c49c9a2db915a426ee85dba1943c1bdcb370683` (`Release: Scout 8B Fast + RAG-first + composer fix`)
-- `develop` tip: `f56b7688de8d89de9d692acd261f95764dc48e1b` (`fix(rag): avoid skill-framing for role targets, strengthen UNKNOWN/NO answer instructions`)
-- both `master` and `develop` are protected and require `Test and Verify / verify`
+Two branches were visible:
 
-`master` and `develop` were diverged at audit time. `develop` contained post-release RAG/contract/validation work that was not necessarily in production.
+| Branch | Head | Date | Interpretation |
+|---|---|---:|---|
+| `main` | `6d36433` | Sep 5 | Current staging mirror, generated from ProjectHub `develop@4f5ee971`. |
+| `dependabot/npm_and_yarn/npm_and_yarn-116291eeda` | `abf2c3a` | Aug 9 | Old dependency proposal based on an old staging tree; not current runtime state. |
 
-### `BradleyMatera/ProjectHub-dev`
+## Post-August-27 release history
 
-Staging deployment mirror.
+### PR #23 — Phase 7/8 conversation gate
 
-`STAGING-SOURCE.json` records the canonical `ProjectHub/develop` commit used to generate the staging tree. At audit time it pointed to:
+Merged Sep 5 into `develop`.
 
-`a2415db33c1d98a65387bfa4158215d6e44d245f`
+Changed the actual conversation stack, including:
 
-The current `sync-staging.yml` prepares a staging-specific tree, writes provenance metadata, and pushes it to `ProjectHub-dev:main`.
+- response-policy classification;
+- query understanding and conversation resolution;
+- response contracts and completeness handling;
+- RAG agent/chunks;
+- claim, grounding, relationship, and technology-claim validation;
+- provider/router behavior;
+- server orchestration;
+- ProjectHub widget bundle;
+- 132-turn conversation harness and new Phase 7/8/synthetic regressions.
 
-## Branch audit
+Recorded qualification at branch commit `4d39995`:
 
-`ProjectHub` had 25 visible branches during the audit.
+- 995 local tests passed at the PR checkpoint;
+- live dev qualification improved from 16/33 conversations to **21/33**;
+- turns improved from 88/132 to **94/132**;
+- 14 of 38 remaining failures were classified by the harness as `inference-unavailable`.
 
-Most old feature/chore/release branches contained zero unique commits ahead of current `develop` and functioned as historical pointers. Examples:
+That last category is an observed outcome, not proof that every such failure was externally caused.
 
-- `feat/agent-systems-network`
-- `feat/architecture-refactor`
-- `feat/rag-primary-restoration`
-- `feature/ci-hardening`
-- `feature/coordinated-releases`
-- `feature/deploy-safety`
-- `feature/staging-isolation`
-- `feature/think-mode-release-compat`
-- `fix/secret-name-and-env-setup`
-- `hotfix/name-extraction`
-- `release/public-refresh-2026-08-20`
-- older Git/workspace/doc/revert/archive branches
+### PR #24 — widget initialization
 
-Two stale ChatGPT experiment branches each retained one unique patch script while being roughly 90 commits behind `develop`:
+Merged Sep 5.
 
-- `chatgpt/scout-negative-memory-20260820`
-- `chatgpt/scout-strict-followup-20260820`
+- `initProjectHub()` became idempotent;
+- duplicate calls are guarded;
+- `window.initProjectHub` is exposed for explicit dynamic-embed initialization;
+- duplicate listeners/UI caused by repeated initialization are prevented.
 
-Those scripts are not treated as integrated Scout capabilities.
+### PR #26 — chat input and scrolling
 
-The active Dependabot branch only changed dependency lock data.
+Merged Sep 5.
 
-## Current runtime architecture
+- auto-scroll occurs only when the user is already near the bottom;
+- composer input remains usable while a request/reply is in flight;
+- a submitted follow-up can be queued;
+- the queued query is sent after the active turn finishes.
 
-Current source, README, AGENTS instructions, and runtime knowledge agree on these points:
+### PR #28 — release hardening
 
-- Scout is the orchestration/intelligence layer used by ProjectHub Recruiter Alpha.
-- Production and staging generation use Cloudflare Workers AI.
-- Current configured production model: `@cf/meta/llama-3.1-8b-instruct-fast`.
-- Ollama `qwen2.5:1.5b` is the current development/evaluation model.
-- Cloudflare-to-Ollama production fallback requires explicit enablement and a qualification flag.
-- Browser/WebGPU inference is experimental.
-- Substantive questions use a RAG-first path.
-- Local Okapi BM25 performs retrieval.
-- Contextual follow-ups can fuse BM25 rankings with RRF (`k=60`).
-- The backend owns structured per-session state.
-- Five recent compact turns are retained in server state.
-- Current public tools are allowlisted and read-only.
-- Tools can add evidence but are not the primary replacement for retrieved RAG evidence.
-- Generated output is validated after inference.
-- Normal conversational prose is generative; deterministic code controls routing, evidence, contracts, and validation.
-- Canonical direct knowledge paths can emit `DIRECT_KB`; model output is `MODEL_GENERATION`; infrastructure/validation failure can emit `TECHNICAL_ERROR`.
-- The documented end-to-end request budget is 15 seconds.
+Merged Sep 5.
 
-## Current application scope
+- `gateDebug` diagnostics now require both server authorization (`SCOUT_GATE_DEBUG=true`) and request opt-in;
+- debug responses are marked `Cache-Control: no-store` and are isolated from normal response-cache reads/writes;
+- dead timeout helpers were removed without changing the 15-second Scout request deadline;
+- partial widget initialization can roll back DOM/listeners and retry safely;
+- browser tests fixed/proved draft preservation and bottom-follow behavior.
 
-`data/scout-runtime-knowledge.json` on current `develop` states that the current Scout application is not a general-purpose assistant. Its allowed scope is Bradley Matera's projects, skills, experience, education, certifications, career goals, public contact information, and Scout's own runtime/architecture.
+Recorded local verification:
 
-The implementation-status page therefore does not label these as shipped capabilities:
+- **1019/1019** tests, zero skipped;
+- retrieval Recall@6 **1.000**;
+- retrieval MRR@6 **0.942**;
+- build, widget rebuild/parity, syntax, whitespace and workspace checks passed.
 
-- general-purpose no-KB Scout
-- arbitrary customer/domain packages
-- any-industry specialization without core changes
-- finished multi-tenant SaaS
-- production browser/WebGPU inference
-- automatic qualified local Ollama production fallback
+### PR #29 — September 5 production source release
 
-## Current evidence tools
+Merged Sep 5.
 
-`lib/agent-tools.js` currently defines recruiter-specific, allowlisted functions including:
+- release commit `2e90ed8` was parented from current production ancestry;
+- release tree exactly matched qualified `develop@4f5ee971` tree `a0066cc...`;
+- resulting `master@b071e4e4` also has tree `a0066cc...`.
 
-- `search_portfolio`
-- `get_project`
-- `compare_projects`
-- `match_role`
-- `get_candidate_profile`
-- `get_skill_evidence`
-- `build_recruiter_brief`
+Recorded release evidence also states:
 
-The current tool catalog is tenant/domain-specific even though the execution boundary can be generalized later.
+- staging `STAGING-SOURCE.json` pins `4f5ee971`;
+- staging ProjectHub.js was recorded byte-identical to develop source;
+- dev backend source was hash-verified at `4f5ee971` with health/smoke verification;
+- known residuals from the pre-existing qualification remained deferred rather than being silently reclassified as fixed.
 
-## Session state
+The PR body lists additional post-merge production deployment checks as required steps. Git merge history proves the source release; it does not by itself prove every external production host check after the merge. The product site keeps that distinction.
 
-`lib/session-state.js` tracks:
+### September 2 production release
 
-- current topic
-- current projects
-- job description context
-- company
-- active comparison
-- last intent
-- unresolved reference
-- visitor name
-- five recent compact turns
+PR #22 released the earlier qualified Scout staging tree to production on Sep 2 after a direct develop→master PR (#21) was replaced by a clean master-parented release branch because of branch-history divergence. The same ancestry-preserving pattern was used again for the Sep 5 release.
 
-Current constants also set a two-hour in-memory state TTL and a 250-session cap for the public widget process.
+### Direct Sep 5 release PR #25
 
-## Grounding and validation
+PR #25 (`develop → master`) was closed without merge. PR #29 superseded it with a tree-exact production-ancestry-preserving release commit. The site must not describe #25 as the production merge.
 
-`lib/grounding-validator.js` includes checks for:
+## Current runtime facts verified against source
 
-- overclaim patterns
-- entity grounding
-- number grounding
-- content-word overlap
-- question relevance
-- answer length/structure
-- evidence-strength upgrades
-- negation-aware claim validation
-- relationship validation
-- project/technology provenance
-- professional/seniority inflation
+- normal hosted model: `@cf/meta/llama-3.1-8b-instruct-fast`;
+- production RAG/LITE generation uses temperature `0`, top-p `0.9`;
+- Cloudflare adapter default temperature is also `0` when not explicitly supplied;
+- production-primary Cloudflare→Ollama fallback is disabled by default and requires explicit fallback enablement plus `SCOUT_OLLAMA_QUALIFIED=true`;
+- local development/evaluation model remains `qwen2.5:1.5b`;
+- request deadline remains 15 seconds;
+- substantive requests remain RAG-first;
+- local BM25 and contextual RRF remain the retrieval foundation;
+- tools supplement evidence rather than replacing RAG as the primary answer context;
+- current public evidence tools remain allowlisted/read-only;
+- generated output is validated after inference;
+- current recruiter application remains scoped to Bradley Matera's verified professional information and Scout runtime, not a shipped general-purpose assistant.
 
-Post-release `develop` commits continued changing future/hypothetical-role and UNKNOWN/negative-answer handling.
+## Cloudflare accounting truth
 
-## Tests and CI
+Current executable provider/accounting code correctly keeps model identifiers exact:
 
-Current engineering instructions describe:
+- normal Scout model `@cf/meta/llama-3.1-8b-instruct-fast` has no borrowed token→neuron rate;
+- `@cf/meta/llama-3.1-8b-instruct-fp8-fast` retains `4119 / 34868` only for that exact identifier;
+- `@cf/meta/llama-3.1-8b-instruct-fp8` retains `13778 / 26128` for that exact identifier;
+- provider-reported actual neurons can be preserved;
+- unverified estimates remain `null`/unknown rather than zero;
+- session/cost completeness fails closed when a contributing value is unknown.
 
-- six legacy API suites
-- checked-in Node test suites
-- a 61-request local API evaluation
-- a 132-input conversation regression: 126 retained production inputs plus a six-turn unknown-technology repair regression
-- a 40-query retrieval golden set
+### Current source inconsistency
 
-Current documented retrieval result:
+`data/scout-runtime-knowledge.json` is still marked `lastVerified: 2026-08-21` and still contains the old sentence assigning `4119 / 34868` to the normal `-fast` model. This conflicts with executable provider/accounting code and current Cloudflare pricing evidence. The product page treats that record as stale truth debt and does not repeat it as current behavior.
 
-- Recall@6 = `1.000` on the 40-query golden set
+## Current evidence/test boundary
 
-Current CI (`.github/workflows/test.yml`) includes:
+Use test/evaluation numbers only with their scope:
 
-- dependency install and high-severity production dependency audit
-- analytics build
-- committed analytics build freshness check
-- generated `ProjectHub.js` freshness check
-- JavaScript syntax checks
-- cost ledger tests
-- retrieval unit tests
-- retrieval evaluation
-- Recall@6 floor of `0.90`
-- required knowledge JSON structure validation
-- common secret-pattern scanning
-- staging routing isolation check
-- metered backend fetch-site check
+- **1019/1019**: Sep 5 local release-hardening test suite;
+- Recall@6 **1.000**, MRR@6 **0.942**: Sep 5 retrieval verification;
+- **94/132 turns, 21/33 conversations**: pre-release Phase 7/8 live qualification at `4d39995`;
+- **14/38 inference-unavailable outcomes**: failure classification from that live run;
+- older `dfe1385`, `2d358ac`, August gate, strict-scorer and local-model results remain historical comparison points only.
 
-## Evaluation/scorer correction history
+No one of these values is a universal production quality percentage.
 
-Earlier August 19 live runs were summarized by the original scorer as `114/115` plus a focused `40/40` run.
+## Productization boundary
 
-A later raw-output audit identified false positives. Recorded examples include:
+The September release advances the working recruiter implementation and release truth. It does not prove these later product claims:
 
-- a Google employment question received a definitive closed-world negative when the evidence state should have remained UNKNOWN
-- `Could he learn COBOL?` was scored GOOD even though the visible answer began with the wrong denial
-- a future senior-role question carried FALSE/NO contract state where the evidence state should have been UNKNOWN
-- a Rust claim was attributed to a project whose canonical technology list did not include Rust
+- general-purpose no-KB Scout;
+- finished customer/domain-package installer;
+- arbitrary-industry portability without core changes;
+- public multi-tenant developer API/key product;
+- production browser/WebGPU primary inference;
+- unbounded agent/tool execution;
+- completed customer/operator handoff.
 
-The repository then added a stricter semantic scorer and re-scored the preserved pre-strict artifacts.
-
-Commit `e013a320d0495b56bd5cde0cee993d848f4323ec` records an offline strict baseline of:
-
-- `131/178`
-- `73.6%`
-
-That result is historical. Later model, contract, routing, RAG, and validation changes mean it should not be presented as a current production quality percentage.
-
-## Release and operations history
-
-Merged PR history includes implemented work for:
-
-- staging isolation
-- CI hardening
-- deployment backup / rollback / health checks
-- coordinated production releases
-- branch protection and GitHub environments
-- GitHub-first source-of-truth guardrails
-- multi-PC / multi-IDE / multi-agent workspace safety
-
-One documentation/workflow mismatch was found during this audit:
-
-- older release documentation describes production Pages as manual after backend verification
-- current `.github/workflows/pages.yml` triggers on pushes to `master` and also supports manual dispatch
-
-The implementation-status page follows the current workflow file for this behavior.
-
-## Deployment state
-
-Current ProjectHub runtime knowledge states:
-
-- public frontend: GitHub Pages
-- chat backend: separate backend on a free-tier GCP VM
-- normal generation: Cloudflare Workers AI
-
-Dockerfiles and production-parity assets exist in the repository, but the canonical release documentation still identifies the SCP-style GCP deployment path as legacy infrastructure intended to be replaced by image-based deployment after qualification.
-
-The page therefore does not claim that production is already fully image-deployed.
-
-## Planned productization represented on the page
-
-The page labels these as not implemented yet:
-
-- tenant-neutral core boundaries
-- supported empty/no-KB mode
-- validated customer/domain package schemas
-- generalized tool/workflow extension interfaces
-- unrelated-domain portability tests
-- product-level deployment/config validation, documentation, security review, licensing/IP inventory, and operator handoff
+Those remain roadmap/productization work.
 
 ## Retest references
 
-Useful current commands from `package.json` and release documentation include:
+Current repository scripts continue to expose reproducible checks such as:
 
 ```bash
 npm test
@@ -257,7 +275,9 @@ npm run eval:local-api
 npm run eval:conversation
 npm run eval:production-conversations
 npm run build
+npm run build:widget
 node --check server-gemini.js
+git diff --check
 ```
 
-Historical results should be reproduced against the matching historical commit if exact comparison is required. Current-state claims should be re-run against current `develop` or the current deployed target.
+Exact historical comparisons should be reproduced at the matching historical commit. Current claims should be tested against the current released/integration tree and the intended deployment target.
