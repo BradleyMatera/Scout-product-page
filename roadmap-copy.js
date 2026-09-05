@@ -6,6 +6,29 @@
     if (el) el.textContent = text;
   }
 
+  function setSnapshot(card, label, strongText, smallText) {
+    if (!card) return;
+    const span = card.querySelector('span');
+    const strong = card.querySelector('strong');
+    const small = card.querySelector('small');
+    if (span) span.textContent = label;
+    if (strong) strong.textContent = strongText;
+    if (small) small.textContent = smallText;
+  }
+
+  function setPhase(phase, status, title, copy, gateLabel, gate) {
+    if (!phase) return;
+    phase.classList.toggle('active', /active/i.test(status));
+    const statusEl = phase.querySelector('.phase-status');
+    const strong = phase.querySelector('.phase-copy strong');
+    const p = phase.querySelector('.phase-copy p');
+    const gateEl = phase.querySelector('.phase-gate');
+    if (statusEl) statusEl.textContent = status;
+    if (strong) strong.textContent = title;
+    if (p) p.innerHTML = copy;
+    if (gateEl) gateEl.innerHTML = `<b>${gateLabel}</b>${gate}`;
+  }
+
   function apply() {
     const workflow = document.getElementById('engineering-workflow');
     const roadmap = document.getElementById('roadmap');
@@ -16,7 +39,7 @@
       setText(
         workflow,
         '.section-head p',
-        'Scout development separates product direction, implementation, verification, and release authority. Changes advance only when source state, tests, deployed behavior, and human evaluation support them.'
+        'Scout development separates product direction, implementation, verification, and release authority. Changes advance only when source state, tests, deployment provenance, and human evaluation support them.'
       );
 
       const grid = workflow.querySelector('.engineering-loop-grid');
@@ -25,99 +48,92 @@
           <article class="engineering-role">
             <span class="role-kicker">Product direction + acceptance</span>
             <h3>Bradley Matera</h3>
-            <p>Defines the product goals, architecture requirements, behavior constraints, and the standard a change has to meet before it moves forward.</p>
-            <ul>
-              <li>product direction and architecture requirements</li>
-              <li>behavior constraints and acceptance criteria</li>
-              <li>human conversation evaluation</li>
-              <li>integration and production authorization</li>
-            </ul>
+            <p>Defines product goals, architecture requirements, behavior constraints, and the standard a change has to meet before it moves forward.</p>
+            <ul><li>product direction and architecture requirements</li><li>behavior constraints and acceptance criteria</li><li>human conversation evaluation</li><li>integration and production authorization</li></ul>
           </article>
           <article class="engineering-role">
             <span class="role-kicker">Implementation workspace</span>
             <h3>Local repository + Devin/Windsurf</h3>
-            <p>Scoped engineering tasks are implemented against the real local workspace, then exercised through tests, evaluation harnesses, and development deployments where required.</p>
-            <ul>
-              <li>source edits in the local repository</li>
-              <li>unit, regression, and conversation test execution</li>
-              <li>development deployment when the task requires it</li>
-              <li>commits and implementation reports for review</li>
-            </ul>
+            <p>Scoped engineering tasks are implemented against the real workspace, then exercised through tests, evaluation harnesses, staging, and development deployment where required.</p>
+            <ul><li>source edits in the working repository</li><li>unit, regression, browser, and conversation tests</li><li>development/staging deployment when required</li><li>commits and implementation evidence for review</li></ul>
           </article>
           <article class="engineering-role">
             <span class="role-kicker">Research + independent verification</span>
             <h3>GitHub + ChatGPT review</h3>
-            <p>Architecture decisions and implementation reports are checked against repository state, branch history, test evidence, deployment markers, runtime behavior, and external technical sources when needed.</p>
-            <ul>
-              <li>source, branch, and deployment inspection</li>
-              <li>architecture and failure analysis</li>
-              <li>implementation planning and review criteria</li>
-              <li>independent verification before the next gate</li>
-            </ul>
-          </article>
-        `;
+            <p>Architecture decisions and reports are checked against repository state, all branch heads, PR history, test evidence, staging markers, runtime behavior, and external technical sources when needed.</p>
+            <ul><li>source, branch, PR, and deployment inspection</li><li>architecture and failure analysis</li><li>implementation planning and review criteria</li><li>independent verification before the next gate</li></ul>
+          </article>`;
       }
 
       const loop = workflow.querySelector('.engineering-loop');
-      if (loop) {
-        loop.innerHTML = `
-          <strong>Review loop</strong>
-          <code>Requirement → scoped implementation → local code/test cycle → independent source and deployment review → human behavior review → accept / revise → integration or release gate</code>
-        `;
-      }
+      if (loop) loop.innerHTML = '<strong>Review loop</strong><code>Requirement → scoped implementation → local code/test cycle → source + deployment review → human behavior review → accept / revise → integration or release gate</code>';
 
       const rule = workflow.querySelector('.verification-rule');
-      if (rule) {
-        rule.innerHTML = '<strong>Evidence gate:</strong> no completion report, test count, or model output advances code on its own. Source state, test evidence, deployed behavior, and human evaluation are checked before integration or release.';
-      }
+      if (rule) rule.innerHTML = '<strong>Evidence gate:</strong> no completion report, test count, branch name, or model output advances code on its own. Source state, tests, deployment provenance, and human evaluation are checked before integration or release.';
     }
 
-    if (roadmap) {
-      setText(
-        roadmap,
-        '.section-head p',
-        'This roadmap separates active branch work, integration, staging, production release, system-truth cleanup, and the later Scout Core portability work. Passing unit tests is evidence, not a release decision.'
-      );
+    if (!roadmap) return;
 
-      const snapshotCards = roadmap.querySelectorAll('.roadmap-current-snapshot article');
-      if (snapshotCards[2]) {
-        const strong = snapshotCards[2].querySelector('strong');
-        const small = snapshotCards[2].querySelector('small');
-        if (strong) strong.textContent = 'fix/phase7-8-conversation-gate';
-        if (small) small.textContent = '2d358ac · 28 commits ahead of develop, 0 behind. The same revision is deployed to the development backend for Phase 02 evaluation.';
-      }
-      if (snapshotCards[3]) {
-        const small = snapshotCards[3].querySelector('small');
-        if (small) small.textContent = 'ProjectHub-dev records d1da87b; develop 2c140ba was 16 commits ahead of that marker at verification.';
-      }
+    setText(roadmap, '.section-head h2', 'Released source first. Productization second.');
+    setText(
+      roadmap,
+      '.section-head p',
+      'The August 27 roadmap showed Phase 02 as active branch work. That iteration has since been merged, staged, and released. The current phase is system-truth cleanup and post-release verification before the larger Scout Core portability work.'
+    );
 
-      const activeCopy = roadmap.querySelector('.roadmap-active-note p');
-      if (activeCopy) {
-        activeCopy.innerHTML = 'Phase 02 has a conservative evaluation gate and a fixed comparison checkpoint. Revision <code>dfe1385</code> recorded <strong>93/132 turns</strong> and <strong>19/33 conversations</strong> in a clean live run. The focused non-tech-experience and negative-assessment work at <code>2d358ac</code> passes <strong>970/970 unit tests</strong>, <strong>6/6 synthetic routing tests</strong>, and a <strong>4/4 focused recruiter conversation</strong>, while its full live gate records <strong>86/132 turns</strong> and <strong>17/33 conversations</strong>. The focused behavior is improved in isolation, but the broader result requires regression and provider-failure classification before the branch can advance.';
-      }
+    const snapshot = roadmap.querySelectorAll('.roadmap-current-snapshot article');
+    setSnapshot(snapshot[0], 'production', 'master · b071e4e4', 'September 5 production release · Git tree a0066cc.');
+    setSnapshot(snapshot[1], 'integration', 'develop · 4f5ee971', 'Qualified integration source · same Git tree a0066cc.');
+    setSnapshot(snapshot[2], 'staging source', '4f5ee971', 'ProjectHub-dev main 6d36433c records this exact develop source.');
+    setSnapshot(snapshot[3], 'pending maintenance', 'dependabot · c32e83b', 'One package-lock-only commit ahead of master; not shipped runtime behavior.');
 
-      const metrics = roadmap.querySelectorAll('.roadmap-active-note .metric-line span');
-      if (metrics[0]) metrics[0].textContent = 'current full gate · 86/132';
-      if (metrics[1]) metrics[1].textContent = 'conversations · 17/33';
-      if (metrics[2]) metrics[2].textContent = 'focused routing · 6/6';
-      if (metrics[3]) metrics[3].textContent = 'unit suite · 970/970';
+    const active = roadmap.querySelector('.roadmap-active-note');
+    if (active) {
+      const label = active.querySelector('.roadmap-band-label');
+      const h3 = active.querySelector('h3');
+      const p = active.querySelector('p');
+      if (label) label.textContent = 'CURRENT ACTIVE PHASE';
+      if (h3) h3.textContent = 'Phase 06 · System truth cleanup + post-release verification';
+      if (p) p.innerHTML = 'The September 5 qualified tree is released, but source truth still needs cleanup. The clearest current example is <code>data/scout-runtime-knowledge.json</code>: it is still marked <code>lastVerified: 2026-08-21</code> and repeats the superseded Cloudflare neuron-rate mapping even though executable provider/accounting code is corrected. The same phase keeps branch history, staging provenance, live evaluation results, and public documentation from being collapsed into one misleading “current” claim.';
+      const metrics = active.querySelectorAll('.metric-line span');
+      if (metrics[0]) metrics[0].textContent = 'production · b071e4e4';
+      if (metrics[1]) metrics[1].textContent = 'develop/staging source · 4f5ee971';
+      if (metrics[2]) metrics[2].textContent = 'retrieval · Recall 1.000 / MRR 0.942';
+      if (metrics[3]) metrics[3].textContent = 'unit suite · 1019/1019';
+    }
 
-      const activePhase = roadmap.querySelector('.roadmap-phase.active .phase-gate');
-      if (activePhase) {
-        activePhase.innerHTML = '<b>Current gate</b>Focused routing/evidence behavior must remain tenant-neutral and must not regress the broader conversation gate. The 2d358ac full-run failures need apples-to-apples classification against the dfe1385 checkpoint before integration can be considered.';
-      }
+    const phases = roadmap.querySelectorAll('.roadmap-phase');
+    setPhase(phases[0], '01 · released', 'Working Scout foundation', 'Preserve the RAG-first retrieval, hosted generation, validation, state, provider, telemetry, and release foundations already in the system.', 'Invariant', 'Later work must not silently regress the working foundation.');
+    setPhase(phases[1], '02 · released iteration', 'Conversation quality gate', 'The accepted Phase 7/8 iteration was merged through PR #23 and released. The last pre-release live checkpoint was <strong>94/132 turns</strong> and <strong>21/33 conversations</strong>, so release is not presented as a perfect-suite claim.', 'Continuation rule', 'Keep residual failures classified, preserve open-world/grounding behavior, and convert legitimate defects into generic regressions rather than benchmark-specific prose.');
+    setPhase(phases[2], '03 · completed', 'Integrate accepted conversation work', 'Accepted Phase 7/8 work and subsequent widget/release-hardening changes are integrated in <code>develop@4f5ee971</code>.', 'Evidence', 'PR #23 merged the conversation stack; PRs #24, #26, and #28 added widget and release hardening before the final release.');
+    setPhase(phases[3], '04 · completed', 'Staging truth + parity', 'ProjectHub-dev currently records <code>develop@4f5ee971</code> in <code>STAGING-SOURCE.json</code>.', 'Boundary', 'A source marker proves provenance; browser/backend runtime behavior remains a separate check.');
+    setPhase(phases[4], '05 · completed Sep 5', 'Production source release', 'PR #29 promoted an ancestry-preserving release commit whose Git tree exactly matches qualified <code>develop@4f5ee971</code>. Current <code>master@b071e4e4</code> and develop share tree <code>a0066cc</code>.', 'Boundary', 'Git proves the source release. External production-host deployment and browser verification are separate operational evidence.');
+    setPhase(phases[5], '06 · active', 'System truth cleanup', 'Align executable behavior, runtime self-knowledge, telemetry semantics, deployment provenance, documentation, and historical test claims before the portability refactor.', 'Current gate', 'Fix or explicitly label stale truth such as the runtime-neuron self-description; keep historical scores dated; never turn unknown into zero or source release into unverified deployment claims.');
 
-      const productizationIntro = roadmap.querySelectorAll('.roadmap-band')[1];
-      if (productizationIntro) {
-        const p = productizationIntro.querySelector(':scope > p');
-        if (p) p.textContent = 'A refactor only succeeds if Scout still works afterward. ProjectHub Recruiter Alpha must remain a real configuration of the same core, not become a discarded prototype beside a second rewrite.';
-      }
+    const bands = roadmap.querySelectorAll('.roadmap-band');
+    if (bands[0]) {
+      const h3 = bands[0].querySelector('h3');
+      const p = bands[0].querySelector(':scope > p');
+      if (h3) h3.textContent = 'Phases 01–06 · current engine/release truth';
+      if (p) p.textContent = 'The current recruiter implementation has crossed integration, staging, and production source gates for this iteration. Phase 06 remains active because release truth still includes documentation, provenance, telemetry, and known residuals.';
+    }
+    if (bands[1]) {
+      const p = bands[1].querySelector(':scope > p');
+      if (p) p.textContent = 'A refactor only succeeds if Scout still works afterward. ProjectHub Recruiter Alpha must remain a real configuration of the same core, not become a discarded prototype beside a second rewrite.';
+    }
+
+    const sourceLinks = roadmap.querySelector('.roadmap-source-links');
+    if (sourceLinks) {
+      sourceLinks.innerHTML = `
+        <a href="https://github.com/BradleyMatera/ProjectHub/commit/b071e4e4f0bb69faeecd811f31514af30d2e1f61" target="_blank" rel="noopener">Production master · b071e4e4 ↗</a>
+        <a href="https://github.com/BradleyMatera/ProjectHub/commit/4f5ee971488e433ebdf66280cce82e163c5c7688" target="_blank" rel="noopener">Develop · 4f5ee971 ↗</a>
+        <a href="https://github.com/BradleyMatera/ProjectHub-dev/blob/main/STAGING-SOURCE.json" target="_blank" rel="noopener">Staging provenance ↗</a>
+        <a href="https://github.com/BradleyMatera/ProjectHub/pull/29" target="_blank" rel="noopener">PR #29 release evidence ↗</a>
+        <a href="./SCOUT-ROADMAP.md">Full roadmap source ↗</a>
+        <a href="./SCOUT-SOURCE-AUDIT.md">September branch audit ↗</a>`;
     }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', apply, { once: true });
-  } else {
-    apply();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply, { once: true });
+  else apply();
 })();
