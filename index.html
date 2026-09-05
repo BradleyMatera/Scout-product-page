@@ -51,8 +51,60 @@
 <figure class="scout-visual">
             <div class="scout-visual-heading"><span>Inside Scout</span><span>How one Scout request is processed</span></div>
             <div class="scout-visual-stage" data-scout-visual>
-              <canvas id="scout-engine-three" tabindex="0" role="img" aria-label="A visual map of Scout’s four stacked processing stages. From bottom to top: retrieve evidence, assemble context, generate a reply, then validate the claims. Drag to rotate or choose a stage below."></canvas>
-            </div>
+<svg class="scout-diagram" viewBox="0 0 1200 430" role="img" aria-labelledby="scout-diagram-title scout-diagram-desc" preserveAspectRatio="xMidYMid meet">
+  <title id="scout-diagram-title">Scout request path</title>
+  <desc id="scout-diagram-desc">An isometric illustration of four connected stages: retrieval gathers evidence, context assembles the request, generation writes a response, and validation checks it.</desc>
+  <defs>
+    <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9af7ce"/><stop offset="1" stop-color="#237b72"/></linearGradient>
+    <linearGradient id="sb" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8ae3ff"/><stop offset="1" stop-color="#2769a8"/></linearGradient>
+    <linearGradient id="sv" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ddd2ff"/><stop offset="1" stop-color="#6655bd"/></linearGradient>
+    <linearGradient id="sa" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe2a9"/><stop offset="1" stop-color="#b76e36"/></linearGradient>
+    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#315365" stroke-opacity=".28"/></pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#bdf9e6"/></marker>
+  </defs>
+  <rect x="16" y="18" width="1168" height="350" rx="22" fill="#06131d" stroke="#3d6374"/>
+  <rect x="28" y="30" width="1144" height="326" rx="16" fill="url(#grid)"/>
+  <g class="diagram-flow" fill="none" stroke="#bdf9e6" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow)" opacity=".8">
+    <path d="M44 204H92"/><path d="M270 204H358"/><path d="M566 204H648"/><path d="M856 204H940"/><path d="M1104 204H1156"/>
+  </g>
+  <g class="diagram-packet" filter="url(#glow)"><circle cx="44" cy="204" r="8" fill="#f3fff9"><animate attributeName="cx" values="44;260;358;556;648;846;940;1094;1156" dur="6s" repeatCount="indefinite"/></circle></g>
+  <g class="diagram-stage" data-stage="1">
+    <g class="diagram-shadow"><ellipse cx="180" cy="306" rx="112" ry="20" fill="#78e6b4" opacity=".12"/></g>
+    <path d="M83 131L277 131L235 247L125 247Z" fill="url(#sg)" fill-opacity=".36" stroke="#9af7ce" stroke-width="3"/>
+    <path d="M125 247L235 247L214 285L146 285Z" fill="#1b7066" fill-opacity=".72" stroke="#9af7ce" stroke-width="3"/>
+    <path d="M83 131L125 155L235 155L277 131" fill="none" stroke="#c7ffe9" stroke-opacity=".8" stroke-width="2"/>
+    <g fill="#d7fff0" stroke="#78e6b4" stroke-width="2"><rect x="102" y="83" width="48" height="30" rx="3" transform="rotate(-8 102 83)"/><rect x="158" y="72" width="48" height="30" rx="3"/><rect x="214" y="84" width="48" height="30" rx="3" transform="rotate(8 214 84)"/></g>
+    <text x="180" y="330" text-anchor="middle" class="diagram-name">RETRIEVE</text><text x="180" y="349" text-anchor="middle" class="diagram-sub">BM25 + RRF evidence</text>
+  </g>
+  <g class="diagram-stage" data-stage="2">
+    <g class="diagram-shadow"><ellipse cx="462" cy="306" rx="112" ry="20" fill="#62c9f2" opacity=".12"/></g>
+    <path d="M382 130V250C382 271 542 271 542 250V130" fill="url(#sb)" fill-opacity=".24" stroke="#8ae3ff" stroke-width="3"/>
+    <ellipse cx="462" cy="130" rx="80" ry="22" fill="#8ae3ff" fill-opacity=".3" stroke="#8ae3ff" stroke-width="3"/>
+    <ellipse cx="462" cy="170" rx="80" ry="20" fill="none" stroke="#8ae3ff" stroke-width="3" opacity=".8"/>
+    <ellipse cx="462" cy="210" rx="80" ry="20" fill="none" stroke="#8ae3ff" stroke-width="3" opacity=".8"/>
+    <ellipse cx="462" cy="250" rx="80" ry="20" fill="none" stroke="#8ae3ff" stroke-width="3"/>
+    <g fill="#d7f6ff"><circle cx="402" cy="102" r="6"/><circle cx="522" cy="100" r="6"/><circle cx="462" cy="92" r="6"/></g>
+    <text x="462" y="330" text-anchor="middle" class="diagram-name">CONTEXT</text><text x="462" y="349" text-anchor="middle" class="diagram-sub">state + response contract</text>
+  </g>
+  <g class="diagram-stage" data-stage="3">
+    <g class="diagram-shadow"><ellipse cx="752" cy="306" rx="112" ry="20" fill="#a59bff" opacity=".14"/></g>
+    <path d="M752 78L830 170L752 286L674 170Z" fill="url(#sv)" fill-opacity=".48" stroke="#e0dcff" stroke-width="3"/>
+    <path d="M752 78L752 286L674 170Z" fill="#594da9" fill-opacity=".42"/><path d="M752 78L830 170L752 286Z" fill="#b6aaff" fill-opacity=".28"/>
+    <g fill="none" stroke="#ddd2ff" stroke-width="3" opacity=".9"><circle cx="752" cy="170" r="103"/><path d="M752 48V18M855 170H885M752 292V322M649 170H619"/></g>
+    <circle cx="752" cy="170" r="13" fill="#fff" filter="url(#glow)"/>
+    <text x="752" y="330" text-anchor="middle" class="diagram-name">GENERATE</text><text x="752" y="349" text-anchor="middle" class="diagram-sub">bounded Workers AI reply</text>
+  </g>
+  <g class="diagram-stage" data-stage="4">
+    <g class="diagram-shadow"><ellipse cx="1042" cy="306" rx="112" ry="20" fill="#ffca82" opacity=".14"/></g>
+    <path d="M1042 74L1130 108V187C1130 243 1095 277 1042 298C989 277 954 243 954 187V108Z" fill="url(#sa)" fill-opacity=".28" stroke="#ffe2a9" stroke-width="3"/>
+    <path d="M1000 184L1028 213L1086 145" fill="none" stroke="#fff3d3" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+    <circle cx="1042" cy="108" r="8" fill="#fff3d3"/><path d="M982 120L1042 144L1102 120" fill="none" stroke="#ffe2a9" stroke-width="2" opacity=".7"/>
+    <text x="1042" y="330" text-anchor="middle" class="diagram-name">VALIDATE</text><text x="1042" y="349" text-anchor="middle" class="diagram-sub">grounding + provenance checks</text>
+  </g>
+  <text x="44" y="54" class="diagram-kicker">QUESTION IN</text><text x="1156" y="54" text-anchor="end" class="diagram-kicker">CHECKED RESPONSE OUT</text>
+</svg>
+</div>
             <div class="scout-visual-controls" data-scene-controls hidden>
               <div class="scout-stage-buttons" role="group" aria-label="Explore the architecture">
                 <button type="button" data-scene-stage="0" aria-pressed="true">Flow</button>
@@ -61,14 +113,8 @@
                 <button type="button" data-scene-stage="3" aria-pressed="false">Generation</button>
                 <button type="button" data-scene-stage="4" aria-pressed="false">Validation</button>
               </div>
-              <div class="scout-view-buttons" role="group" aria-label="3D view controls">
-                <button type="button" data-scene-zoom="-0.7" aria-label="Zoom in">+</button>
-                <button type="button" data-scene-zoom="0.7" aria-label="Zoom out">−</button>
-                <button type="button" data-scene-reset>Reset view</button>
-                <button type="button" data-scene-pause aria-pressed="false">Pause motion</button>
-              </div>
             </div>
-            <figcaption data-scene-caption aria-live="polite">Scout moves through four stages: retrieve relevant evidence, assemble context, generate a response, and validate its claims. Select a stage to highlight that part of the process.</figcaption>
+            <figcaption data-scene-caption aria-live="polite">Flow: a question moves through evidence, context, generation, and validation before Scout replies.</figcaption>
           </figure>
           <div class="runtime-header">
             <div><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span></div>
