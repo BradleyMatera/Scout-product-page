@@ -1,3 +1,46 @@
+# Product-site release audit — September 15, 2026
+
+## Verified release state
+
+- Production source: `ProjectHub:master@7d01170830949a0ef85da58bab6a0a2b266b0e9c`
+- Protected integration: `ProjectHub:develop@e74ac22b5a4c9f39b578191e7e673a0fa16b2e80`
+- Shared Git tree: `92b4d14960a6e34a51691a6692f0ecc7ac514f52`
+- Staging mirror: `ProjectHub-dev:main@201beb9cf220e2b12a7fbf8469e2f8e209488d95` sourced from `e74ac22b5a4c9f39b578191e7e673a0fa16b2e80`
+- PR #31 merged into develop as `e74ac22b5a4c9f39b578191e7e673a0fa16b2e80`
+- PR #32 released the exact qualified tree to master as `7d01170830949a0ef85da58bab6a0a2b266b0e9c`
+- Qualified feature runtime: `654d25e625b15c3fb043e442fcfcfb813bf71aa9`
+- Feature CI: `34922407613`; develop merge-result CI: `34925217993`
+- Deterministic tests: **1452/1452**
+- Retrieval Recall@6: **1.000**
+- Dated DEV conversation gate: **100/132 turns · 20/33 conversations**, zero HTTP 429 in the recorded run
+- Production GitHub Pages run 34925715817 completed with conclusion success on 7d011708.
+- Production backend health was independently reachable during this refresh.
+
+Production and integration now have different Git ancestry but the same tree. The source-release claim is therefore stronger than raw branch-ahead/behind interpretation: the production tree is the qualified integration tree.
+
+## What materially changed since the September 5 audit
+
+The September 5 product site described tenant-neutral Core and empty/no-KB operation primarily as future productization. That wording is now stale.
+
+The released September 15 tree contains substantial tenant-neutral Core behavior, including canonical subject/entity identity, structured semantic query planning, server-owned discourse state, request-context separation, proposition-scoped relationships/properties, generic answer obligations, empty-KB coverage, and synthetic unrelated-domain regressions. Normal visible prose remains model-generated; deterministic code plans, retrieves, calculates, validates, rejects, and triggers bounded recovery.
+
+This does **not** mean Scout has shipped a self-service multi-tenant SDK, formal domain-package manifest, public developer API product, or permissioned action platform. Those remain productization work.
+
+## Release evidence boundaries
+
+- Source release is proven by PR/commit/tree parity.
+- Staging provenance is proven by the generated staging mirror/source marker.
+- Pages publication is a separate workflow fact. Production GitHub Pages run 34925715817 completed with conclusion success on 7d011708.
+- Backend runtime deployment is a separate operational fact. Production backend health was independently reachable during this refresh.
+- Browser behavior is a separate end-to-end fact and is not inferred merely from Git state.
+- The 100/132 turns · 20/33 conversations conversation result is dated qualification evidence, not a universal accuracy percentage.
+
+## Product-direction correction
+
+The forward roadmap now treats Phase 07 (Core neutrality) as a substantially complete foundation and Phase 08 (empty/general operation) as a released runtime capability. Phase 09 domain-package contracts is the next major productization feature. Phase 10 has meaningful synthetic portability proof but still needs runnable unrelated packages. Phase 11 remains the controlled extension/action platform, and Phase 12 remains operator/commercial handoff.
+
+---
+
 # Product-site overhaul audit — September 5, 2026
 
 Starting product revision: `c6bc2973fd03ce2846c75081fdda883306c88045`.

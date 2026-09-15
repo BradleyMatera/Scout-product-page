@@ -1,273 +1,177 @@
-> September 5 follow-up: active discourse branch is now `cddb3bc`, +3/-0 from develop.
-> Its third commit is a handoff after the two code commits; implementation remains `5bd9437`.
-> It is still unmerged, and the handoff acknowledges thin-evidence recovery failures.
-> Production/integration/staging are unchanged. Current page rendering is static HTML;
-> old renderer/copy scripts are compatibility markers. See `source-state.json` and the latest source audit.
-
 # Scout Roadmap
 
-Last refreshed: **September 5, 2026**
+Last refreshed: **September 15, 2026**
 
-This roadmap describes the engineering path from the current released ProjectHub Recruiter Alpha implementation toward a portable Scout product. It distinguishes released source, protected integration, staging provenance, active unmerged work, dated evaluation evidence, current truth debt, and later productization.
+This roadmap describes Scout's engineering path from the released ProjectHub Recruiter Alpha reference application toward a portable product. It separates shipped runtime behavior, integration/release truth, productization milestones, and later extension/operator work.
 
-Passing tests is evidence. A branch name is evidence. A deployment marker is evidence. None of them, by itself, is a universal quality claim.
+Passing tests is evidence. A deployment marker is evidence. A branch name is evidence. None of those alone is a universal quality claim.
 
 ## Current source state
 
-- **Production:** `ProjectHub:master@b071e4e4f0bb69faeecd811f31514af30d2e1f61`
-- **Integration:** `ProjectHub:develop@4f5ee971488e433ebdf66280cce82e163c5c7688`
-- **Production + integration Git tree:** `a0066cc849f33dd84d18d8e8c36b080fed8ce70e`
-- **Staging:** `ProjectHub-dev:main@6d36433c040d0bbc903ec26b6968674bd937bcd0`
-- **Staging source marker:** `4f5ee971488e433ebdf66280cce82e163c5c7688`
-- **Active unmerged runtime branch:** `feat/generic-conversation-sets@5bd9437b1811957f20d1a217c854d46228ace12c`, **2 ahead / 0 behind develop** at audit recheck
-- **Pending dependency maintenance:** Dependabot `c32e83b`, one lockfile-only commit ahead of `master`
+- **Production source:** `ProjectHub:master@7d01170830949a0ef85da58bab6a0a2b266b0e9c`
+- **Integration source:** `ProjectHub:develop@e74ac22b5a4c9f39b578191e7e673a0fa16b2e80`
+- **Production + integration Git tree:** `92b4d14960a6e34a51691a6692f0ecc7ac514f52`
+- **Staging mirror:** `ProjectHub-dev:main@201beb9cf220e2b12a7fbf8469e2f8e209488d95` sourced from `develop@e74ac22b5a4c9f39b578191e7e673a0fa16b2e80`
+- **Qualified pre-integration runtime:** `654d25e625b15c3fb043e442fcfcfb813bf71aa9`
+- **Production Pages:** Production GitHub Pages run 34925715817 completed with conclusion success on 7d011708.
+- **Provider/model:** Cloudflare Workers AI · `@cf/meta/llama-3.1-8b-instruct-fast`
+- **Scout request deadline:** 15,000 ms
 
-The histories of `master` and `develop` are intentionally different. The September 5 production release preserved production ancestry while promoting the exact qualified `develop` tree, so current source-tree parity is more meaningful than raw branch ahead/behind counts.
+PR #31 merged the semantic-reliability and tenant-portability line into protected `develop`. PR #32 then promoted the exact qualified develop tree to `master` while preserving production ancestry. The current production and integration commits have different ancestry but the same tree, so tree parity is the release invariant.
 
-The active discourse branch is separate from that released tree and must not be described as integrated or production behavior.
+## September 15 release record
 
-## September release record
+The release includes:
 
-The August 27 product-site snapshot showed Phase 02 as active branch work. That accepted iteration moved forward:
+- canonical subject/entity identity precedence shared across planning, extraction, relationship support, grounding, and semantic-plan equivalence;
+- structured per-turn semantic query plans instead of bag-of-words history contamination;
+- server-owned discourse/context state with explicit current-target semantics;
+- weighted retrieval legs with provenance;
+- proposition-scoped entity/relationship/property validation;
+- answer obligations and false-unknown/enumeration completeness checks;
+- generative freedom for UNKNOWN/future-capability answers without exact sentence templates;
+- empty-knowledge and synthetic cross-domain portability coverage;
+- reproducible browser QA dependencies and clean-install verification.
 
-- PR #23 merged the Phase 7/8 conversation-gate changes into `develop`.
-- PR #24 merged idempotent/retry-oriented widget initialization behavior.
-- PR #26 merged chat scroll/input behavior and queued follow-ups.
-- PR #28 merged release hardening and the final 1019-test released-tree verification state.
-- `ProjectHub-dev` was regenerated from `develop@4f5ee971`.
-- PR #29 released the exact qualified tree to `master` on September 5.
+Recorded qualification for the frozen feature runtime `654d25e625b15c3fb043e442fcfcfb813bf71aa9`:
 
-Recorded qualification evidence for the released iteration:
+- **1452/1452** deterministic tests;
+- retrieval Recall@6 **1.000**;
+- dated DEV conversation gate **100/132 turns · 20/33 conversations** with zero 429s;
+- exact-SHA feature CI and develop-merge CI both green.
 
-- Sep 5 local tests: **1019 / 1019**
-- retrieval Recall@6: **1.000**
-- retrieval MRR@6: **0.942**
-- Phase 7/8 live qualification at `4d39995`: **94 / 132 turns**, **21 / 33 conversations**
-- remaining live failures at that checkpoint: **38**, of which **14** were classified as `inference-unavailable`
-
-The release did not convert those residuals into a perfect-score claim. They remain dated evidence and deferred failure cases.
-
-## Active post-release conversation work
-
-After the release tree was established, `feat/generic-conversation-sets` advanced two commits beyond `develop`:
-
-- `f145f8c` — generic server-owned discourse frames + generated clarification;
-- `5bd9437` — commit discourse state before cache/direct-KB early returns + `CLARIFICATION` mode.
-
-The branch tracks the active conversational relation and ordered user-introduced alternatives without hard-coded domain vocabulary. Its stated mechanics include corrections/removals/ordinals, exclusion of assistant mentions from the authoritative set, and generated clarification when a plural reference such as “which of those?” has no active set.
-
-Compared with `develop`, it changes conversation/session/policy/RAG/server code and adds `test/discourse-frames.test.js`.
-
-At the audit recheck:
-
-- branch relation: **2 ahead / 0 behind develop**;
-- open PR for this head: **none found**;
-- GitHub Actions runs exposed for this branch: **0**.
-
-That makes it active engineering evidence, not an integrated or validated product claim.
-
-## Engineering controls
-
-Scout development separates product direction, implementation, independent verification, and release authority.
-
-Review loop:
-
-`Requirement → scoped implementation → local code/test cycle → source/deployment review → human behavior review → accept/revise → integration/release gate`
-
-Current source of release truth is GitHub plus explicit staging/deployment provenance, not a local agent report.
+The conversation score is historical evidence for that runtime/model/scorer combination, not a timeless product-quality percentage.
 
 ---
 
-# Engine hardening + release truth
+# Foundation and release truth
 
 ## Phase 01 — Working Scout foundation
 
 **Status: RELEASED FOUNDATION**
 
-Maintain the working runtime foundations:
+Scout has a working runtime foundation: retrieval, server-owned state, semantic contracts, hosted generation, post-generation validation, telemetry/accounting, and explicit development/staging/production boundaries.
 
-- RAG-first evidence path;
-- local BM25 retrieval;
-- contextual RRF where applicable;
-- server-owned conversation state;
-- response policy/contracts;
-- Cloudflare-hosted generation;
-- grounded post-generation validation;
-- telemetry/accounting;
-- explicit release/staging boundaries.
+**Invariant:** later productization must not silently regress the working foundation.
 
-**Invariant:** later work must not silently regress the working foundation.
+## Phase 02 — Conversation quality
 
----
+**Status: RELEASED MAJOR MILESTONE; ONGOING NORMAL MAINTENANCE**
 
-## Phase 02 — Conversation quality gate
+The September 15 release integrates the long-running semantic-reliability work: structured discourse, referent handling, requested facets, canonical identity, open-world UNKNOWN behavior, evidence selection, answer obligations, validation, and bounded repair.
 
-**Status: RELEASED ITERATION + ACTIVE CONTINUATION**
-
-The August 27 site showed the original Phase 7/8 work as an unmerged branch. That accepted iteration is now merged and released.
-
-Released work includes broader generic conversation routing, follow-up/referent handling, response-contract behavior, evidence selection, open-world/negative handling, and validator/repair regressions.
-
-The latest pre-release live checkpoint for that iteration was:
-
-- **94/132 turns**
-- **21/33 conversations**
-- **14/38 remaining failures** classified as `inference-unavailable`
-
-A new post-release branch, `feat/generic-conversation-sets@5bd9437`, continues conversation work with generic discourse frames and generated clarification. It is not yet part of `develop`, staging, or production.
-
-**Continuation rule:** keep failure categories separated, preserve tenant-neutral mechanisms, avoid benchmark-specific final prose, and turn legitimate defects into generic regressions.
-
----
+This phase is no longer the whole future of Scout. Future conversation work should be defect-driven rather than endless benchmark tuning.
 
 ## Phase 03 — Integrate accepted conversation work
 
-**Status: COMPLETED FOR RELEASED ITERATION / PENDING FOR NEW BRANCH**
+**Status: COMPLETED FOR THE SEPTEMBER 15 RELEASE**
 
-PR #23 integrated the accepted Phase 7/8 branch into protected `develop`. Subsequent widget and release-hardening PRs also merged before the September 5 source release.
-
-The newer `feat/generic-conversation-sets` work has **not** crossed this gate yet.
-
-**Current integration SHA:** `4f5ee971488e433ebdf66280cce82e163c5c7688`.
-
----
+PR #31 merged the accepted feature line into protected `develop` as `e74ac22b5a4c9f39b578191e7e673a0fa16b2e80`.
 
 ## Phase 04 — Staging truth + parity
 
-**Status: COMPLETED FOR CURRENT RELEASED ITERATION**
+**Status: COMPLETED FOR THE SEPTEMBER 15 RELEASE**
 
-`ProjectHub-dev:main` records:
-
-`STAGING-SOURCE.json → ProjectHub/develop@4f5ee971488e433ebdf66280cce82e163c5c7688`
-
-The Sep 5 release PR records the staging ProjectHub.js artifact as byte-identical to the qualified develop source.
-
-The active discourse branch is not represented by this staging marker.
-
-**Caution:** a matching source marker proves source provenance. It does not automatically prove every external browser/backend behavior forever; those are separate runtime checks.
-
----
+`ProjectHub-dev:main@201beb9cf220e2b12a7fbf8469e2f8e209488d95` records the new integration source `e74ac22b5a4c9f39b578191e7e673a0fa16b2e80`. Staging provenance and the qualified develop tree are aligned.
 
 ## Phase 05 — Production release gate
 
-**Status: SOURCE RELEASE COMPLETED SEP 5 FOR CURRENT RELEASED ITERATION**
+**Status: SOURCE RELEASE COMPLETED SEPTEMBER 15, 2026**
 
-PR #29 released a master-parented commit whose Git tree exactly matches the qualified `develop@4f5ee971` tree.
+PR #32 promoted the exact qualified develop tree to `master@7d01170830949a0ef85da58bab6a0a2b266b0e9c`. Production and integration share tree `92b4d14960a6e34a51691a6692f0ecc7ac514f52`.
 
-- release branch commit: `2e90ed88a32b00f33d68736f08f18f98412f85a4`
-- production commit: `b071e4e4f0bb69faeecd811f31514af30d2e1f61`
-- released tree: `a0066cc849f33dd84d18d8e8c36b080fed8ce70e`
-
-The earlier direct `develop → master` PR #25 was closed without merge and superseded by the tree-exact release path.
-
-The active discourse branch has not crossed this gate.
-
-**Boundary:** Git history proves the source release. Production backend/frontend host checks remain operational evidence and should be stated separately when independently verified.
-
----
+Source release, backend deployment health, Pages publication, and browser behavior remain separate operational facts. Production GitHub Pages run 34925715817 completed with conclusion success on 7d011708. Production backend health was independently reachable during this refresh.
 
 ## Phase 06 — System truth cleanup + post-release verification
 
-**Status: ACTIVE**
+**Status: ACTIVE RELEASE-CLOSURE WORK**
 
-This remains the current release-truth phase even while new conversation work proceeds on a separate branch.
+Keep executable behavior, runtime self-knowledge, telemetry, deployment provenance, public documentation, and product explanations synchronized. This product-site refresh is part of that work.
 
-The goal is to make executable behavior, runtime self-knowledge, telemetry, deployment provenance, documentation, and public explanations agree.
+Exit conditions include:
 
-Current concrete truth debt includes:
-
-1. `data/scout-runtime-knowledge.json` is still `lastVerified: 2026-08-21` and contains the superseded Cloudflare neuron-rate sentence for normal `-fast`, while executable provider/accounting code correctly treats that exact-model rate as unknown.
-2. Historical branch pointers remain visible after squash/merge, so raw ahead/behind counts can misrepresent whether work is actually integrated.
-3. Dated conversation results need to remain labeled by commit/environment rather than displayed as timeless production quality.
-4. Source release, staging provenance, development backend smoke, production-host deployment, and browser behavior are separate facts and should not be collapsed into one “deployed” label.
-5. Runtime documentation must reflect current temperature `0`, current fallback gating, current gate-debug authorization/cache isolation, and current widget behavior.
-6. New post-release branch work must remain visibly separated from released capabilities until it crosses integration/staging/release gates.
-
-**Exit gate:**
-
-- current self-knowledge agrees with executable code;
-- current public docs agree with released source;
-- historical results are clearly dated/scoped;
-- unknown never becomes zero;
-- estimated never becomes actual;
-- branch/release status does not confuse active or stale pointers with shipped work;
-- current production host provenance can be stated without inference from Git alone.
+- current docs agree with shipped source;
+- historical results stay dated and scoped;
+- unknown usage never becomes zero;
+- estimated usage never becomes actual;
+- staging/source/deployment/browser claims remain distinguishable;
+- public product scope does not lag multiple releases behind the runtime.
 
 ---
 
 # Productization boundary
 
-Phases 01–06 operate on the current working recruiter implementation and release truth. Phases 07–12 deliberately move Scout toward a portable product.
-
-A refactor only succeeds if Scout still works afterward.
+A refactor only succeeds if Scout still works afterward. Recruiter Alpha remains a real configuration of the same Core, not a discarded prototype beside a second rewrite.
 
 ## Phase 07 — Scout Core extraction
 
-**Status: LATER**
+**Status: SUBSTANTIALLY COMPLETE FOUNDATION; FORMAL PACKAGE BOUNDARY REMAINS**
 
-Separate reusable orchestration from Bradley/recruiter-specific knowledge, identity assumptions, policies, tools, and workflows while keeping ProjectHub Recruiter Alpha on the same core.
+The released runtime has removed broad Bradley/recruiter assumptions from Core paths and now uses tenant-neutral identity, entity, relationship, property, discourse, and validation logic. Recruiter Alpha continues to run on that same Core.
 
-**Exit gate:** normal specialization requires no customer-specific branches inside Scout Core.
+Remaining product work is less about rewriting intelligence and more about formalizing stable specialization interfaces around the working Core.
 
----
+**Exit gate:** normal specialization requires no customer-specific Core branch and package boundaries are explicit/documented.
 
 ## Phase 08 — General Scout / empty-knowledge mode
 
-**Status: LATER**
+**Status: RELEASED RUNTIME CAPABILITY; PRODUCT MODE STILL NEEDS PACKAGING**
 
-Prove that Scout Core functions independently of a customer knowledge package.
+Empty/no-KB operation is covered by the released runtime and portability regressions. Scout can remain conversational and fail tenant-fact questions safely without assuming Bradley/recruiting.
 
-Expected invariant:
-
-`Scout Core + no domain package → General Scout`
-
-Knowledge specializes Scout; it does not create Scout.
-
----
+The next step is to make General Scout a first-class documented runtime mode rather than only a supported configuration/test condition.
 
 ## Phase 09 — Domain package contracts
 
-**Status: LATER**
+**Status: NEXT MAJOR PRODUCTIZATION FEATURE**
 
-Define stable specialization interfaces for knowledge, configuration, identity, policies, workflows, and tools/extensions.
+Define stable specialization interfaces for:
 
-Executable extensions require explicit schemas, permissions, timeouts, validation, side-effect classification, failure isolation, logging, and ownership boundaries.
+- identity and aliases;
+- structured knowledge/entities/relationships;
+- application/runtime configuration;
+- scope and answer policy;
+- workflows;
+- tools/capabilities;
+- permissions/confirmation metadata;
+- optional presentation metadata.
 
----
+Packages must validate cleanly and must not patch Core code.
 
 ## Phase 10 — Cross-domain portability proof
 
-**Status: LATER**
+**Status: PARTIAL PROOF IN REGRESSIONS; RUNNABLE PRODUCT PACKAGES NOT YET SHIPPED**
 
-Demonstrate portability with unrelated domain packages while holding Scout Core constant.
+The test suite now exercises unrelated synthetic tenants, empty-KB behavior, products/services, research-like entities, and local-business-style properties. That is meaningful Core evidence, but it is not the same as shipping runnable domain packages.
 
-Example proof set:
-
-- recruiter/portfolio;
-- inventory/fruit store;
-- IT support.
-
-**Pass condition:** the same Scout Core SHA powers the unrelated domains; only domain packages change.
-
----
+The next proof should run the same Core SHA with multiple real package fixtures such as recruiter/professional, local service business, product/inventory, research/academic, and General Scout.
 
 ## Phase 11 — Extension and agent platform
 
-**Status: LATER**
+**Status: PLANNED AFTER PACKAGE CONTRACT FOUNDATION**
 
-Support richer customer tools, workflows, integrations, and controlled agent-to-agent capabilities without turning Scout into an unbounded tool-calling shell.
+Build a controlled capability/action layer rather than an unbounded model tool shell.
 
-**Exit gate:** permissioned extension lifecycle, validation, observability, safe failure behavior, and test coverage exist before broad executable-extension support is treated as shipped.
+Target concepts include:
 
----
+- ToolRegistry / CapabilityDescriptor;
+- schema-validated arguments/results;
+- read-only vs side-effect classification;
+- permission and confirmation policy;
+- execution timeouts;
+- result provenance;
+- action audit;
+- workflow state.
+
+Existing arithmetic is a good first capability to move behind the generic abstraction. Later SEO, CRM, messaging, scheduling, and follow-up workflows should share this substrate.
 
 ## Phase 12 — Commercial/operator handoff
 
-**Status: LATER**
+**Status: PLANNED**
 
-Make Scout installable, configurable, testable, deployable, operable, troubleshootable, and extensible by another competent developer/customer without hidden Bradley-only knowledge.
+Make Scout installable, configurable, testable, deployable, troubleshootable, extensible, and operable by another competent technical team without hidden Bradley-only knowledge.
 
-Required work includes deployment docs, ADRs, developer/agent instructions, configuration validation, security review, licensing/IP inventory, known limitations, operator runbooks, and handoff documentation.
+Required work includes deployment docs, package authoring docs, ADRs, security/permission documentation, licensing/IP inventory, known limitations, operator runbooks, upgrade procedures, and bounded handoff materials.
 
 ---
 
@@ -286,4 +190,4 @@ Priority order:
 9. Human understandability and maintainability.
 10. Repository aesthetics/cleanup.
 
-Do not sacrifice the first four items to make later productization appear finished sooner.
+Do not sacrifice the first four items to make later productization appear finished sooner. Also do not remain forever in benchmark micro-tuning once the architecture is structurally sound; move forward through the productization phases.
