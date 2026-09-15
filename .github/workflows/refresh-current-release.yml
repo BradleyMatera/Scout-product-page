@@ -18,6 +18,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Make branch inventory resilient
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('.github/refresh-scout-site.py')
+          s = p.read_text()
+          start = s.index('def all_branch_records(repo):')
+          end = s.index('\n\ndef text(path):', start)
+          replacement = '''def all_branch_records(repo):\n    rows = gh(f'/repos/{repo}/branches?per_page=100')\n    return sorted([\n        {'name': row['name'], 'sha': row['commit']['sha'], 'date': None, 'subject': None}\n        for row in rows\n    ], key=lambda x: x['name'].lower())\n'''
+          p.write_text(s[:start] + replacement + s[end:])
+          PY
+
       - name: Refresh current release content
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
