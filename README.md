@@ -13,23 +13,25 @@ Public customer-facing and implementation-reference site for **Scout**, a reusab
 
 A GitHub Pages mirror is also deployed from this repository.
 
-## September 5 product-site overhaul
+## September 15 release refresh
 
-All six pages now own their content as static HTML. Release/accounting notes, diagrams,
-roadmap, navigation, and Learn mathematics no longer require browser correction scripts.
-The publication step validates pages; it does not rewrite facts.
+Scout's semantic-reliability and tenant-portability work has now crossed the full source-release path.
 
-Audited production: `b071e4e4f0bb69faeecd811f31514af30d2e1f61`.
-Audited integration: `4f5ee971488e433ebdf66280cce82e163c5c7688`.
-Both share tree `a0066cc849f33dd84d18d8e8c36b080fed8ce70e`.
-Staging: `6d36433c040d0bbc903ec26b6968674bd937bcd0`, recording the integration SHA.
-Active discourse branch: `cddb3bca1410f9cee04372e0670037244ffc8d3d`, three ahead / zero behind integration.
-The third commit is a handoff; runtime implementation remains `5bd9437`.
-This branch is unmerged. Its handoff reports 12 discourse tests and a dev-VM deployment,
-and acknowledges unresolved thin-evidence recovery. These reported results are not independent live qualification.
+- Production source: `7d01170830949a0ef85da58bab6a0a2b266b0e9c`
+- Protected integration: `e74ac22b5a4c9f39b578191e7e673a0fa16b2e80`
+- Shared release tree: `92b4d14960a6e34a51691a6692f0ecc7ac514f52`
+- Staging mirror: `201beb9cf220e2b12a7fbf8469e2f8e209488d95`, sourced from integration `e74ac22b5a4c9f39b578191e7e673a0fa16b2e80`
+- PR #31: merged into `develop` as `e74ac22b5a4c9f39b578191e7e673a0fa16b2e80`
+- PR #32: exact-tree release merged into `master` as `7d01170830949a0ef85da58bab6a0a2b266b0e9c`
+- Qualified feature runtime: `654d25e625b15c3fb043e442fcfcfb813bf71aa9`
+- Deterministic verification: **1452/1452** tests; retrieval Recall@6 **1.000**
+- Dated live qualification: **100/132 turns · 20/33 conversations** on DEV, zero 429s in the recorded run
+- Production GitHub Pages run 34925715817 completed with conclusion success on 7d011708.
+- Production backend health was independently reachable during this refresh.
 
-See [source-state.json](./source-state.json) for the timestamped inventory of all 35 ProjectHub
-and two ProjectHub-dev branches. See [SCOUT-SOURCE-AUDIT.md](./SCOUT-SOURCE-AUDIT.md) for evidence and remaining limitations.
+The released tree now includes structured semantic query planning, canonical entity/subject identity precedence, server-owned discourse state, proposition-scoped relationship validation, answer obligations/completeness checks, empty-knowledge support, and tenant-neutral portability regressions. ProjectHub Recruiter Alpha remains the reference application, but Scout Core is no longer accurately described as recruiter-only.
+
+Formal domain-package contracts, runnable unrelated domain packages, a permissioned action/tool platform, and commercial/operator handoff remain forward productization work.
 
 ## Local verification and publication
 
@@ -86,6 +88,5 @@ for source/release state, official provider documentation for external pricing, 
 reports for historical results. The runtime self-knowledge JSON still contains a superseded
 neuron-rate statement; do not copy that claim back into these pages.
 
-Scout's released application is ProjectHub Recruiter Alpha. A customer-neutral core,
-empty-knowledge operation, generalized domain packages, and commercial handoff remain roadmap work.
-The pricing page describes one negotiated acquisition of the existing implementation, not an already delivered generic SDK or hosted service operation.
+Scout's released reference application is ProjectHub Recruiter Alpha. The released runtime now contains tenant-neutral Core behavior and empty-knowledge operation; formal domain-package contracts, packaged cross-domain applications, the extension/action platform, and operator handoff remain roadmap work.
+The pricing page still describes one negotiated acquisition of the existing implementation, not a hosted SaaS tier or an already delivered self-service SDK.
